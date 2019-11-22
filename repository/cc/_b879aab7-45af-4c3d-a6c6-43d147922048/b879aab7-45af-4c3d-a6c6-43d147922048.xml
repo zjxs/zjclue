@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ccModel>
+    <id>b879aab7-45af-4c3d-a6c6-43d147922048</id>
+    <createUser>admin</createUser>
+    <createTime>2019-08-30 15:57:44</createTime>
+    <updateUser>admin</updateUser>
+    <updateTime>2019-08-30 16:01:03</updateTime>
+    <signature>tGOmxiTgjT/77UoYpSlq8Vc+hHPRoJWHdZexXc7zEpYuMNdhvSICeJnlc/RzRHGroFx6WiCqtsK2VB6F9k5mb8weMpLQT9CCRBecS4ZnlDdz6agzYsiMq4i63B1HslUT</signature>
+    <managed>false</managed>
+    <name>测试数据</name>
+    <type>jdbc</type>
+    <group></group>
+    <log>false</log>
+    <properties>{"user":"root","password":"VzBsdkeSsmi6pgWJ/gnF5A==","driver":"com.mysql.jdbc.Driver","url":"jdbc:mysql://192.168.0.178:3306/test","poolInit":"10","poolMax":"100","group":"","desc":"1231","diyData":[]}</properties>
+    <desc>1231</desc>
+</ccModel>

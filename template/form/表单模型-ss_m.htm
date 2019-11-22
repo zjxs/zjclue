@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+		<title>ss</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+		<meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width">
+		<!--公共的js和css start-->
+		[#AWSImport]
+		[#AWSUIImport]
+		<!--配色方案-->
+		<link rel='stylesheet' id='schemeCss' href='../apps/_bpm.platform/css/colorschemes/scheme_aws.css'  name='schemeCss'/>
+	<link type='text/css' rel='stylesheet' id='themeCss' href='../apps/_bpm.platform/css/theme/theme_m.css' name='themeCss'/>
+</head>
+	<body>
+		<form id='frmMain' name='frmMain' method="post" >
+			
+			<div id='aws-form-container' class="mui-scroll-wrapper mobile-main-form"><!--class="aws-form-ux-container"-->
+				<table  id='aws-form-maintable' class="awsui-ux aws-form-ux-maintable" style="table-layout: auto;" align="center" border="0" cellpadding="0" cellspacing="0">
+					<!--每个模板必须含有 aws-form-titlebg 和 title样式 否则无法应用配色风格-->
+					<tr id='aws-form-titlebg' class='aws-form-ux-titlebg' style="display: none;">
+						<!--若自定义模板title的 id -->
+						<td id='aws-form-title' class='aws-form-ux-header'> ss </td>
+					</tr>
+					<tr class="aws-form-ux-formcontent" id='aws-form-formcontent'>
+						<td>
+							<table id='table_container'  class="awsui-ux table-striped" style="padding: 0px;" width='100%' cellspacing='0' cellpadding='0'>
+								<tbody>
+									<tr><td class='awsui-ux-title'><label id='GLYWBHLabel' for='GLYWBH'>关联业务编号</label></td><td  class='aws-form-ux-content'>[#GLYWBH]</td></tr><tr><td class='awsui-ux-title'><label id='FJMCLabel' for='FJMC'>附件名称</label></td><td  class='aws-form-ux-content'>[#FJMC]</td></tr><tr><td class='awsui-ux-title'><label id='FJDXLabel' for='FJDX'>附件大小</label></td><td  class='aws-form-ux-content'>[#FJDX]</td></tr><tr><td class='awsui-ux-title'><label id='FJLXLabel' for='FJLX'>附件类型</label></td><td  class='aws-form-ux-content'>[#FJLX]</td></tr><tr><td class='awsui-ux-title'><label id='FJLJLabel' for='FJLJ'>附件路径</label></td><td  class='aws-form-ux-content'>[#FJLJ]</td></tr><tr><td class='awsui-ux-title'><label id='DJSJLabel' for='DJSJ'>登记时间</label></td><td  class='aws-form-ux-content'>[#DJSJ]</td></tr><tr><td class='awsui-ux-title'><label id='XXDJDW_GAJGJGDMLabel' for='XXDJDW_GAJGJGDM'>信息登记单位_公安机关机构代码/CODE_GXS</label></td><td  class='aws-form-ux-content'>[#XXDJDW_GAJGJGDM]</td></tr><tr><td class='awsui-ux-title'><label id='XXDJDW_GAJGMCLabel' for='XXDJDW_GAJGMC'>信息登记单位_公安机关名称</label></td><td  class='aws-form-ux-content'>[#XXDJDW_GAJGMC]</td></tr><tr><td class='awsui-ux-title'><label id='XXDJRY_XMLabel' for='XXDJRY_XM'>信息登记人员_姓名</label></td><td  class='aws-form-ux-content'>[#XXDJRY_XM]</td></tr><tr><td class='awsui-ux-title'><label id='XXDJRY_GMSFHMLabel' for='XXDJRY_GMSFHM'>信息登记人员_公民身份号码</label></td><td  class='aws-form-ux-content'>[#XXDJRY_GMSFHM]</td></tr><tr><td class='awsui-ux-title'><label id='XXDJRY_LXDHLabel' for='XXDJRY_LXDH'>信息登记人员_联系电话</label></td><td  class='aws-form-ux-content'>[#XXDJRY_LXDH]</td></tr><tr><td class='awsui-ux-title'><label id='XXSC_PDBZLabel' for='XXSC_PDBZ'>信息删除_判断标识/CODE_IF</label></td><td  class='aws-form-ux-content'>[#XXSC_PDBZ]</td></tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+					<tr class="aws-form-ux-formcontent">
+						<td>[#historyOpinions]</td>
+					</tr>
+					
+					<tr class="aws-form-bottom">
+						<td class="aws-form-ux-actionsoft" >[#Actionsoft]</td>
+					</tr>
+				</table>
+			</div>
+		</form>
+	</body>
+</html>

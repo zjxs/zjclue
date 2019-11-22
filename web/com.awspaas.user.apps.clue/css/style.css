@@ -1,0 +1,415 @@
+body{
+    height: 100%;
+    background:#f3f3f3!important;
+}
+html{
+    height: 100%;
+}
+.square-lev{
+    height: 24px !important;
+    width: 24px;
+    font-size: 16px !important;
+    line-height: 24px !important;
+    vertical-align: middle !important;
+    font-weight: bold;
+    padding-left: 6.5px !important;
+    margin-bottom: 13px !important;
+}
+
+.header {
+    width: 100%;
+    height: 485px;
+    background: url('../img/background.jpg') no-repeat;
+    background-size: 100% 100%;
+}
+
+.header .title{
+    font-style: normal;
+    font-size: 30px;
+    color: #333333;
+    text-indent: 1em;
+}
+
+.header .sub-title{
+    line-height: 4em;
+    font-style: normal;
+    font-size: 20px;
+    color: #666666;
+}
+
+.header dl{
+    font-size: 14px;
+}
+
+.header dt{
+    display: inline;
+}
+
+.header dd{
+    display: inline;
+    color: #000;
+}
+
+.header dd.long{
+    position: absolute;
+}
+.poptipExplain{
+	width:100%;
+	white-space:normal;
+	word-break:break-all;
+	
+}
+
+.header dd>div{
+    overflow: hidden;
+    -webkit-line-clamp:4;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    width: 100%;
+}
+
+.vertical-divider{
+    border-left: 1px solid #000;
+    height: 140px;
+}
+
+/*附件部分*/
+.file-icon{
+    width: 30px;
+    height: 30px;
+    vertical-align: middle
+}
+.file-name{
+    display:inline-block;
+    width:13em;
+    padding-left:5px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    position: relative;
+    top: 7px;
+}
+.file-download{
+    color: #0099FF;
+    cursor: pointer;
+}
+
+/*折疊部分*/
+.ivu-collapse{
+    border-top: none!important;
+}
+
+.ivu-collapse>.ivu-collapse-item:before{
+    display: block;
+    content: '';
+    height: 20px;
+    background: rgba(242, 242, 242, 0.8);
+    width: 100%;
+}
+
+.ivu-collapse>.ivu-collapse-item {
+    border-top: none!important;
+}
+
+.ivu-collapse-header{
+    font-size: 16px;
+    padding-left:25px!important; 
+    height: 45px!important;
+    line-height: 45px!important;
+    background-color: #fff;
+}
+.ivu-collapse-header .ivu-icon-ios-arrow-forward{
+    position: absolute;
+    right: 20px;
+    top: 14px;
+}
+/**/
+.block_level{
+    display:inline-block;
+}
+/*沟通*/
+/* 沟通按钮 */
+.communicate_btn{
+    float:right;
+    margin-right:20px;
+}
+.talk_back{
+    background:#fff;
+    margin-top: 2em!important;
+}
+.talk_time{
+    text-align:center;
+    margin-top: 2em;
+}
+.talk_width{
+    width:100%;
+}
+.talk_top{
+    margin-top: 1em;
+}
+.policephotos{
+    display: inline-block;
+    text-align: center;
+    background: #ccc;
+    color: #fff;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+    vertical-align: middle;
+    width: 60px;
+    height: 60px;
+    line-height: 48px;
+    border-radius: 36px;
+    vertical-align:middle;
+    float:right
+}
+.talk_width>div{
+    float:right;
+    padding-right: 2em;
+}
+.tag_right{
+    float:right!important;
+    border-radius: 10px!important;
+    margin-top: -0.1em!important;
+}
+.tag_left{
+    border-radius:10px!important;
+    margin-top: -0.1em!important;
+}
+.talk_bottom{
+    margin-bottom: 0.5em;
+}
+.talk_action{
+    font-weight:bold;
+}
+.form_top{
+    margin-top: 1em;
+}
+.form_popout{
+    line-height:90px;
+    text-align:center;
+}
+.popout_addaj{
+    text-align:right;
+    dislpay:inline-block;
+    float:left;
+    width: 120px;
+    padding:10px 12px 10px 0;
+}
+.popout_addtop{
+    margin-top: -15px;
+    padding:0px 20px 0px 0px;
+}
+.gl_title{
+    border-top: 1px solid rgba(228, 228, 228, 1);
+    border-bottom: 1px solid rgba(228, 228, 228, 1);
+    height: 35px;
+    line-height: 35px;
+    font-size: 16px;
+    text-indent: 2em;
+    margin: -10px 0px 10px 0px;
+}
+.entry,
+.entry_left {
+    background:#ded7c7;
+    padding: 10px;
+    position: relative;
+    border-radius:8px;
+    width: 76%;
+    margin-left: calc(24% - 69px);
+    word-wrap: break-word;
+    margin-top: 2.5em;
+}
+.entry_left {
+  margin-left: 70px;
+  width: 76%;
+  background: rgb(254, 248, 229);
+  margin-top:7px;
+}
+.left-entry-trangle,
+.right-entry-trangle {
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: 2.5px;
+  border-top: 5px solid transparent;
+  border-bottom: 10px solid transparent;
+  z-index: 500;
+}
+.left-entry-trangle {
+  margin-left: -19px;
+  border-right: 15px solid rgb(254, 248, 229);
+}
+.right-entry-trangle {
+  margin-left: calc(100% - 12px);
+  border-left: 10px solid #ded7c7;
+  transform: rotate(346deg);
+}
+.gridTitle{
+    font-size: 16px;
+    font-family: '微软雅黑';
+    color: #333333;
+}
+.dashed {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    #adadaf,
+    #adadaf 15px,
+    transparent 15px,
+    transparent
+  );
+  margin-bottom: 1em;
+  background-size: 30px 100%;
+  margin-top: 2em;
+}
+.add_conn {
+  height: 30px;
+  line-height: 30px;
+  display: inline-block;
+  float: left;
+  text-align: right;
+  width: 108px;
+  margin-right: 12px;
+}
+.paging {
+  text-align: center;
+  margin-top: 15px;
+}
+.time_item .ivu-form-item .ivu-form-item-content{
+    margin-left: 10px!important;
+}
+.time_item .ivu-form-item{
+    width:calc(50% - 60px);
+    float: left;
+}
+.blue{
+    background:#3656A9;
+}
+.yellow{
+    background:#67C23A;
+}
+.orange{
+    background:#FE9900;
+}
+.red{
+    background:red;
+}
+.ivu-tree{
+    height: 300px!important;
+    overflow-y: auto!important;
+}
+.photoFrame{
+    border: 2px solid #f56c6c;
+}
+.w_bg{
+	background: #fff;
+	padding: 10px 40px;
+	margin-top: 15px;
+}
+/* 新的上传附件列表的样式 */
+.demo-upload-list {
+    float: left;
+    width: 75px;
+    height: 90px;
+    text-align: center;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    overflow: visible;
+    background: #fff;
+    position: relative;
+    margin-right: 0px;
+    overflow: hidden;
+    top: -11px;
+    margin-left: 10px;
+}
+.demo-upload-list div{
+    height: 100%;
+}
+.demo-upload-list img {
+    width: 50px;
+    height: 50px;
+    margin-top: 10px;
+    margin-left: -40px;
+}
+.up_remove {
+    color: #f00;
+    font-size: 16px;
+    position: relative;
+    top: -41px;
+    left: 30px;
+}
+.demo-upload-list p{
+	height: 15px;
+	line-height: 15px;
+}
+.demo-upload-list-cover{
+    display: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,.6);
+}
+.demo-upload-list:hover .demo-upload-list-cover{
+    display: block;
+}
+.demo-upload-list-cover i{
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    margin: 0 2px;
+}
+.gap{
+    height: 100px;
+}
+.head_picture{
+    height: 40px!important;
+    border-bottom: 1px solid #dcdee2;
+    margin-left: -16px!important;
+    width: calc(100% + 32px);
+    margin-top: -10px;
+}
+.ivu-table th{
+    background-color: rgba(242, 242, 242, 1)!important;
+}
+.round {
+    width: 10px;
+    height: 10px; 
+    border-radius: 25px; 
+    position: relative;
+}
+.file_img{
+  width: 30px;
+  height: 30px;
+  vertical-align: middle
+}
+.file_name{
+  display:inline-block;
+  width:13em;
+  padding-left:5px;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
+  position: relative;
+  top: 5px;
+}
+.file_download{
+  color: #0099FF;
+  cursor: pointer;
+  position: relative;
+  top: 3px;
+}
+.file_download:hover{
+  text-decoration: underline;
+}
+/* 即时通讯 收起CSS */
+.tall_retract{
+	font-size: 14px;
+	float: right;
+	margin-top: 0.5em;
+	color: #0099FF;
+	cursor:pointer;
+}

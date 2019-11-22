@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<title>上报表单</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<meta name="renderer" content="webkit">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		[#AWSImport]
+		[#AWSUIImport]
+		<link rel='stylesheet' id='schemeCss' href='../apps/_bpm.platform/css/colorschemes/scheme_aws.css'  name='schemeCss'/>
+	
+<link type='text/css' rel='stylesheet' id='themeCss' href='../apps/_bpm.platform/css/theme/theme.css' name='themeCss'/>
+</head>
+	<body>
+<iframe id="urlFormIframe" style="width: 100%;" src="[#urlOfForm]" name="urlFormIframe" frameborder="0"></iframe><form id="frmMain" style="display: none;" method="post" name="frmMain">
+<div id="aws-form-container" class="aws-form-ux-container" border="0" style="width: 100%; height: 100%; padding: 0px; margin: 0px;">
+<table id="aws-form-maintable" class="awsui-ux aws-form-ux-maintable" style="table-layout: auto;" border="0" cellspacing="0" cellpadding="0" align="center">
+<tbody>
+<tr id="aws-form-titlebg" class="aws-form-ux-titlebg">
+<td id="aws-form-title" class="aws-form-ux-header">上报表单</td>
+</tr>
+<tr id="aws-form-formcontent" class="aws-form-ux-formcontent">
+<td>
+<table id="table_container" class="awsui-ux table-striped" style="padding: 0px;" width="100%" cellspacing="3" cellpadding="0">
+<tbody>
+<tr>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="aws-form-bottom">
+<td class="aws-form-ux-actionsoft">[#Actionsoft]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</form>
+<script id="formOnload">// <![CDATA[
+function formOnload(){
+  var a ="@portalUrl";
+  alert(a);
+}
+function changeFrameHeight(){
+        document.getElementById("urlFormIframe").height=window.innerHeight-3;
+    }
+window.onresize=function(){ changeFrameHeight();}
+$(function(){changeFrameHeight();});
+// ]]></script>
+</body>
+</html>

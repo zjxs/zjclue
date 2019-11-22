@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<formModel>
+    <id>06acbc03-b23a-46b0-b327-83c5c29718d7</id>
+    <createUser>admin</createUser>
+    <createTime>2019-02-14 10:24:50</createTime>
+    <updateUser></updateUser>
+    <updateTime>2019-05-14 13:39:51</updateTime>
+    <signature>tGOmxiTgjT/77UoYpSlq8Vc+hHPRoJWHdZexXc7zEpYuMNdhvSICeJnlc/RzRHGrvzqIaZCe8PsqMJf/gOyevteaapynuAh2LEDo2FrL1yIdh4uH+Rr6ub2Sjr+qst6k</signature>
+    <managed>false</managed>
+    <title>ss</title>
+    <deleted>false</deleted>
+    <categoryName>表单模型</categoryName>
+    <administrator>admin</administrator>
+    <defaultLanguage></defaultLanguage>
+    <url></url>
+    <urlHeight></urlHeight>
+    <formItems>
+        <formItem>
+            <id>a59860f7-e4e0-4969-b77d-ea7871a51580</id>
+            <title>ss</title>
+            <templateFile>{"pc":"表单模型-ss.htm","mobile":"表单模型-ss_m.htm","tablet":"表单模型-ss.htm"}</templateFile>
+            <grid>false</grid>
+            <gridSetting></gridSetting>
+            <orderBy></orderBy>
+            <pageLimit>0</pageLimit>
+            <boModelId>33600a65-ffdc-42ff-a89f-a7465e70b525</boModelId>
+            <dictionaryFileName></dictionaryFileName>
+            <hiddenHead>false</hiddenHead>
+            <theme>{"pc":"_bpm.platform","mobile":"_bpm.platform"}</theme>
+            <itemDisplays/>
+            <scheme>{"pc":"scheme_aws.css","mobile":""}</scheme>
+            <calcFormula></calcFormula>
+            <conditionControl></conditionControl>
+            <validate></validate>
+            <icon></icon>
+            <gridControl></gridControl>
+            <summaryControl></summaryControl>
+            <ruleControl></ruleControl>
+            <hiddenFields></hiddenFields>
+            <hiddenAddBtn>false</hiddenAddBtn>
+        </formItem>
+    </formItems>
+</formModel>

@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<aws-actions>
+	<!-- 通用 -->
+	<cmd-bean name="com.awspaas.user.apps.clue.packageCode4Select">
+		<param name="table" />
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.packageCode4Tree">
+		<param name="json" />
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getTreeComboForTreeSelect">
+		<param name="json" />
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getTreeComboForTreeSelectAll">
+		<param name="json" />
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.packageCode4Tree_new">
+		<param name="tableName" />
+		<param name="parentCode" />
+		<param name="parentLev" />
+		<param name="searchWord" />
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getAttachmentDownloadURL">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.batchAttachmentDownloadURL">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.router">
+		<param name="classify" />
+		<param name="action"></param>
+		<param name="extendParams"></param>
+		<param name="rwglxsId"></param>
+		<param name="cookiename"></param>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getAllCase">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getAllEscapee">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getRelevanceAttachment">
+		<param name="json"/>
+	</cmd-bean>
+	<!-- 串并业务 -->
+	<cmd-bean name="com.awspaas.user.apps.clue.addSeriesBiz">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.deleteSeriesBiz">
+		<param name="json"/>
+	</cmd-bean>
+    <cmd-bean name="com.awspaas.user.apps.clue.getSeriesCase">
+        <param name="json"/>
+    </cmd-bean>
+    <cmd-bean name="com.awspaas.user.apps.clue.getSeriesCase">
+        <param name="json"/>
+    </cmd-bean>
+    <cmd-bean name="com.awspaas.user.apps.clue.getSeriesCb">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getRelevanceClue">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getSeriesGoods">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getAllGoods">
+		<param name="json"/>
+	</cmd-bean>
+	<!-- 流程 -->
+	<cmd-bean name="com.awspaas.user.apps.clue.sign">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.back">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.transfer">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.transferBack">
+		<param name="json"/>
+	</cmd-bean>
+    <cmd-bean name="com.awspaas.user.apps.clue.feedback">
+        <param name="json"/>
+    </cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.reply">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.backApproveEnd">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.backApprovePass">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.assess">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getTalkingPerson">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.overrule">
+		<param name="json"/>
+	</cmd-bean>
+	<!-- 线索 -->
+	<cmd-bean name="com.awspaas.user.apps.clue.getMyClue">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getAreaClue">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.addClue">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.deleteClue">
+		<param name="json"/>
+	</cmd-bean>
+    <cmd-bean name="com.awspaas.user.apps.clue.updateClue">
+        <param name="json"/>
+    </cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getClueRelevanceTask">
+		<param name="json"/>
+	</cmd-bean>
+	<!-- 任务 -->
+	<cmd-bean name="com.awspaas.user.apps.clue.getUnitOtherUser">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.addTaskRelevanceClue">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.deleteTaskRelevanceClue">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getTaskRelevanceClue">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getCommunicationContent">
+		<param name="json"/>
+	</cmd-bean>
+	<!-- 上报 -->
+	<cmd-bean name="com.awspaas.user.apps.clue.getMyReportTask">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getSupIssueTask">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getUnitReportTask">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getAreaReportTask">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.addReportTask">
+        <param name="json"/>
+    </cmd-bean>
+	<!-- 下发 -->
+	<cmd-bean name="com.awspaas.user.apps.clue.getMyIssueTask">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getSupIssueTask">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getUnitIssueTask">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getAreaIssueTask">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.addIssueTask">
+        <param name="json"/>
+    </cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getSubReceiveUnit">
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getDepartmentUser">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.importRelevanceLogistics">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.updateRelevanceLogistics">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.addProcessRecord">
+		<param name="json"/>
+	</cmd-bean>
+    <cmd-bean name="com.awspaas.user.apps.clue.getProcessRecord">
+        <param name="json"/>
+    </cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getTalkingDetail">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getClueRelevanceLogistics">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.deleteRelevanceEscapee">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.addRelevanceEscapee">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getClueRelevanceEscapee">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getEscapeeTrail">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.deleteRelevanceLogistics">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.copyClue">
+		<param name="json"/>
+	</cmd-bean>
+	<!-- add_get_HttpClient -->
+	<cmd-bean name="com.awspaas.user.apps.clue.handAdd">
+		<param name="json"/>
+	</cmd-bean>
+	
+	<cmd-bean name="com.awspaas.user.apps.clue.getOrguserMap">
+		<param name="departmentid"/>
+	</cmd-bean>
+	
+	<cmd-bean name="com.awspaas.user.apps.clue.packageCode4Tree_select">
+		<param name="json"/>
+	</cmd-bean>
+	
+	<!-- select_code_xsly -->
+	<cmd-bean name="com.awspaas.user.apps.clue.getClueSource">
+		<param name="json"/>
+	</cmd-bean>
+
+	<!-- selectCodeMap -->
+	<cmd-bean name="com.awspaas.user.apps.clue.getCodeMap">
+		<param name="json"/>
+	</cmd-bean>
+	
+	<!-- getSid -->
+	<cmd-bean name="com.awspaas.user.apps.clue.getSid">
+		<param name="uid"/>
+		<param name="pwd"/>
+		<param name="type"/>
+	</cmd-bean>
+	
+	<!-- revokeProcess -->
+	<cmd-bean name="com.awspaas.user.apps.clue.revokeProcess">
+		<param name="rwbh"/>
+		<param name="classify"/>
+		<param name="action"/>
+	</cmd-bean>
+	
+	<!-- updateRw -->
+	<cmd-bean name="com.awspaas.user.apps.clue.updateRw">
+		<param name="json"/>
+	</cmd-bean>
+	
+	<!-- updateRw -->
+	<cmd-bean name="com.awspaas.user.apps.clue.updateUser">
+		<param name="type"/>
+	</cmd-bean>
+
+	<!-- addClueResubmit -->
+	<cmd-bean name="com.awspaas.user.apps.clue.addClueResubmit">
+		<param name="json"/>
+	</cmd-bean>
+
+	<!--  getMyResubmitTask	-->
+	<cmd-bean name="com.awspaas.user.apps.clue.getMyResubmitTask">
+		<param name="json"/>
+	</cmd-bean>
+
+	<!--  getSubResubmitTask -->
+	<cmd-bean name="com.awspaas.user.apps.clue.getSubResubmitTask">
+		<param name="json"/>
+	</cmd-bean>
+
+	<!-- 续报模块 -->
+
+	<!--  修改续报内容 -->
+	<cmd-bean name="com.awspaas.user.apps.clue.updateResubmite">
+		<param name="json"/>
+	</cmd-bean>
+
+	<!--  续报签收 -->
+	<cmd-bean name="com.awspaas.user.apps.clue.resubmit_sign">
+		<param name="json"/>
+	</cmd-bean>
+
+	<!--  续报回退 -->
+	<cmd-bean name="com.awspaas.user.apps.clue.resubmit_back">
+		<param name="json"/>
+	</cmd-bean>
+
+	<!--  续报审批通过 -->
+	<cmd-bean name="com.awspaas.user.apps.clue.resubmit_pass">
+		<param name="json"/>
+	</cmd-bean>
+
+	<!--  续报审批驳回 -->
+	<cmd-bean name="com.awspaas.user.apps.clue.rejected">
+		<param name="json"/>
+	</cmd-bean>
+
+	<!--  续报放弃 -->
+	<cmd-bean name="com.awspaas.user.apps.clue.abandon">
+		<param name="json"/>
+	</cmd-bean>
+
+	<!--  续报信息更新 -->
+	<cmd-bean name="com.awspaas.user.apps.clue.updateResubmit">
+		<param name="json"/>
+	</cmd-bean>
+
+	<!-- clueSue -->
+	<cmd-bean name="com.awspaas.user.apps.clue.getClueSueXsbh">
+		<param name="rwbh"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.updateClueSue">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getClueSue">
+		<param name="json"/>
+	</cmd-bean>
+
+	<cmd-bean name="com.awspaas.user.apps.clue.getAllGywByCle">
+		<param name="json"/>
+	</cmd-bean>
+	
+	
+	<!-- 外部平台对接 -->
+	<cmd-bean name="com.awspaas.user.apps.clue.getOtherReportTask">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getRelevanceCBByOther">
+		<param name="json"/>
+	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getRelevanceAJByOther">
+		<param name="json"/>
+	</cmd-bean>
+</aws-actions>

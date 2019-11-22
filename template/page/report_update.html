@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>新建上报</title>
+    <link type="text/css" rel="stylesheet" href="../apps/com.awspaas.user.apps.clue/css/common.css"/>
+    <link type="text/css" rel="stylesheet" href="../apps/com.awspaas.user.apps.clue/css/iview.css"/>
+	<link rel="Bookmark" type="image/x-icon" href="../favicon.ico" />
+	<link rel="icon" type="image/x-icon" href="../favicon.ico" />
+	<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
+</head>
+<style>
+    .ivu-breadcrumb {
+        font-size: 18px;
+    }
+	.ivu-poptip-body-content-inner,.ivu-poptip-inner ,.ivu-poptip-content{
+		color:#fff;
+		background-color:rgba(70,76,91,.9)
+	}
+	.ivu-poptip-body-content-inner{
+		width:87%
+	}
+</style>
+<body class="bkg">
+    <div id="app" v-cloak>
+        <div class="Lowerhair newclue">
+            <Row class="w_bg">
+                <i-col span="24">
+                    <Breadcrumb separator=">">
+                        <breadcrumb-item>上报管理</breadcrumb-item>
+                        <breadcrumb-item>新建上报</breadcrumb-item>
+                    </Breadcrumb>
+                </i-col>
+            </Row>
+            <i-form ref="issueInfo" :model="issueInfo" :rules="clueValidate" :label-width="120">
+            	<Row class="w_bg" id="title">
+                    <i-col span="20" class="title_name">
+                        <form-item label="标题名称" prop="RWMC">
+                            <i-input class="title_input" v-model="issueInfo.RWMC" placeholder="请输入任务名称" @on-blur="valiName"></i-input>
+                        </form-item>
+                    </i-col>
+                </Row>
+               	<Row class="w_bg" id="Inferiortype">
+                    <div class="info_title" >上报信息</div>
+                    <i-col span="8">
+                        <form-item label="上报类型" prop="SBLXDM">
+                            <i-select v-model="issueInfo.SBLXDM" codeName="CODE_XSHB_SBLX">
+                                <i-option value="01">上报</i-option>
+                                <i-option value="02">情报产品</i-option>
+                            </i-select>
+                        </form-item>
+                    </i-col>
+                    <i-col span="8">
+                        <form-item label="是否公开" prop="SFSMDM">
+                            <i-select v-model="issueInfo.SFSMDM" codeName="CODE_XSHB_SFSM" @on-change="isPrivate">
+                                <i-option value="01">公开</i-option>
+                                <i-option value="02">私密</i-option>
+                            </i-select>
+                        </form-item>
+                    </i-col>
+                    <i-col span="8">
+                        <form-item label="信息等级" prop="RWJBDM">
+                            <i-select v-model="issueInfo.RWJBDM" codeName="CODE_XSHB_JB">
+                                <i-option value="01">A</i-option>
+                                <i-option value="02">B</i-option>
+                                <i-option value="03">C</i-option>
+                                <i-option value="04">D</i-option>
+                            </i-select>
+                        </form-item>
+                    </i-col>
+                    <Poptip word-wrap placement="bottom" trigger="hover" class="caserank" content="A:限时2小时反馈 B:限时8小时反馈 C:限时24小时反馈 D:限时48小时反馈">
+                        <Icon type="ios-information-circle-outline" size="20"style="margin-top:20px;"></Icon>
+                    </Poptip>
+                    <i-col span="24">
+                        <form-item label="上报描述" prop="RWMS">
+                            <i-input type="textarea" v-model="issueInfo.RWMS" placeholder="最多输入1000字" :rows="8" :autosize="{minRows: 8,maxRows: 10}"></i-input>
+                        </form-item>
+                    </i-col>
+                    <i-col span="24">
+                        <form-item label="信息附件" style="margin-bottom: 0px">
+                            <Upload 
+                                ref="upload" 
+                                :show-upload-list="false" 
+                                :default-file-list="defaultList" 
+                                :on-success="handleSuccess" 
+								:on-progress="handlerprogress"
+                                :max-size="102400" 
+                                :on-format-error="handleFormatError" 
+                                :on-exceeded-size="handleMaxSize" 
+                                :before-upload="handleBeforeUpload" 
+                                multiple type="drag" 
+                                action="./uf?appId=com.awspaas.user.apps.clue&sid=<#sid>&groupValue=report&fileValue=<#UUID>&repositoryName=sy" 
+                                style="display: inline-block;width:58px;">
+                                <div style="width: 58px;height:58px;line-height: 58px;">
+                                    <Icon type="ios-add" size="20"></Icon>
+                                </div>
+                            </Upload>
+                            <div class="demo-upload-list" v-for="(item,index) in uploadList" :key="item.value">
+                                <div :title="item.name" v-if="matchType(item)==='xlsx'||matchType(item)==='xls'">
+                                    <Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" ></Icon>
+                                    <img src="../apps/com.awspaas.user.apps.clue/img/icon/excel.png">
+                                    <p>附件{{index + 1}}</p>
+                                </div>
+                                <div :title="item.name" v-else-if="matchType(item) === 'doc'||matchType(item)=== 'docx'">
+                                    <Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" ></Icon>
+                                    <img src="../apps/com.awspaas.user.apps.clue/img/icon/word.png">
+                                    <p>附件{{index + 1}}</p>
+                                </div>
+                                <div :title="item.name" v-else-if="matchType(item) === 'pptx'">
+                                    <Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" ></Icon>>
+                                    <img src="../apps/com.awspaas.user.apps.clue/img/icon/ppt.png">
+                                    <p>附件{{index + 1}}</p>
+                                </div>
+                                <div :title="item.name" v-else-if="matchType(item) === 'png'||matchType(item) === 'jpg'||matchType(item) === 'jpeg'||matchType(item) === 'gif'">
+                                    <Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" ></Icon>
+                                    <img src="../apps/com.awspaas.user.apps.clue/img/icon/image.png">
+                                    <p>附件{{index + 1}}</p>
+                                </div>
+                                <div :title="item.name" v-else-if="matchType(item) === 'mp4'">
+                                    <Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" ></Icon>
+                                    <img src="../apps/com.awspaas.user.apps.clue/img/icon/video.png">
+                                    <p>附件{{index + 1}}</p>
+                                </div>
+                                <div :title="item.name" v-else-if="matchType(item) === 'zip'||matchType(item) === 'rar'||matchType(item) === '7z'">
+                                    <Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" ></Icon>
+                                    <img src="../apps/com.awspaas.user.apps.clue/img/icon/zip.png">
+                                    <p>附件{{index + 1}}</p>
+                                </div>
+                                <div :title="item.name" v-else>
+                                    <Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" ></Icon>
+                                    <img src="../apps/com.awspaas.user.apps.clue/img/icon/unknown.png">
+                                    <p>附件{{index + 1}}</p>
+                                </div>
+                            </div>
+                            <Tooltip content="最多上传15个附件，每个附件最大100M" style="position: absolute;top: 16px;left: -47px;">
+                                <Icon type="ios-information-circle-outline" size="20" />
+                            </Tooltip>
+                        </form-item>
+                    </i-col>
+                </Row>
+                <Row class="w_bg" style="margin-top: 0px;">
+                    <i-col span="24">
+                        <form-item label="线索列表">
+                            <Row>
+                                <i-col span="8">
+                                    <i-button class="cluebtn" @click="callModal()">
+                                        <Icon type="ios-add" size="50" />
+                                    </i-button>
+                                </i-col>
+                                <i-col  span="8" v-for="item in griddata.xscheck" v-if="xscheckshow" :key="item.XSMC">
+                                    <!-- 展示上传的线索 -->
+                                    <div  class="blackgl":title="item.XSMC">
+                                        <div :class='returnColor(item.XSJBDM)'>
+                                            <div style="height:50px;margin-left:1.8em;margin-top:0.8em;color:#fff;">{{item.XSJBDM}}</div>
+                                        </div>
+                                        <div style="float:left; margin: 0.5em;">
+                                            {{item.XSMC}}</br>
+                                            <span style="color:#01a4fc">{{item.XSBH}}</span>
+                                        </div>
+                                        <Icon type="md-close" class="reclue_close" @click="deleteRelevanceClue(item.XSBH)" />
+                                    </div>
+                                </i-col>  
+                            </Row>
+                            <Modal v-model="addClueModal" title="串并线索"  width="70%" @on-cancel="cancel" footer-hide :closable="false">
+                                <div slot="header" style="height: 35px;line-height: 35px;">
+                                    <label>串并线索</label>
+                                    <div style="float:right;">
+                                        <i-button @click="addClueModal=false">取消</i-button>
+                                        <i-button type="primary" @click="addClueTab()">确定</i-button>
+                                    </div>
+                                </div>    
+                                <Row>
+                                    <i-form ref="addClue" v-model="addClue" v-bind:label-width="30">
+                                        <i-col span="5" label>
+                                            <form-item>
+                                                <i-input v-model="addClue.XSBH" placeholder="请输入线索编号"></i-input>
+                                            </form-item>
+                                        </i-col>
+                                        <i-col span="5" label>
+                                            <form-item prop="XSLXDM">
+                                                <i-select v-model="addClue.XSLXDM" codeName="CODE_XSHB_XSLX"  placeholder="请输入线索类型">
+                                                    <i-option v-for="item in optiondata.zllx" :value="item.value" :key="item.value">{{item.label}}</i-option>
+                                                </i-select>
+                                            </form-item>
+                                        </i-col>
+                                        <i-col span="5" label>
+                                            <form-item prop="XSJBDM">
+                                                <i-select v-model="addClue.XSJBDM" codeName="CODE_XSHB_JB" placeholder="请输入线索级别">
+                                                    <i-option v-for="item in optiondata.xsjb" :value="item.value" :key="item.value">{{item.label}}</i-option>
+                                                </i-select>
+                                            </form-item>
+                                        </i-col>
+                                        <i-col span="5" label>
+                                            <form-item>
+                                                <date-picker type="daterange" style="width:100%;" confirm v-model="addClue['DJSJ~11']" format="yyyy-MM-dd" placeholder="开始日期-截止日期"  @on-change="addClue['DJSJ~11']=$event"></date-picker>
+                                            </form-item>
+                                        </i-col>
+                                        <i-col span="4">
+                                            <form-item>
+                                                <i-button type="primary" @click="searchAllClue()">查询</i-button>
+                                                <i-button @click="resetForm('addClue')">清空</i-button>
+                                            </form-item>
+                                        </i-col>
+                                    </i-form>
+                                </Row>
+                                <sy-table
+                                    id-field="XSBH"
+                                    ref="seriesClue"
+                                    :url="seriesClue.url" 
+                                    :columns="seriesClue.columns" 
+                                    :query-params="seriesClue.params"
+                                    :pager-page-size="5" 
+                                    :pager-page-size-opts="[5, 10, 20, 30]">
+                                </sy-table>
+                            </Modal> 
+                        </form-item>
+                    </i-col>
+                </Row>  
+                <i-form ref="Lowerhair" v-bind:model="Lowerhair" v-bind:rules="Lowerhaira" v-bind:label-width="120" style="padding: 0px;">
+                	<Row class="w_bg">
+                        <div class="info_title">选择上级</div>
+                        <i-col span="24">
+                            <form-item label="接收类型" prop="JSLX" >
+                                <Radio-group v-model="Lowerhair.JSLX" @on-change="showOtherform()">
+                                    <Radio label="02"  :disabled="unitAvailable">单位接收</Radio>
+                                    <!--02-->
+                                    <Radio label="01">个人接收</Radio>
+                                    <!--01-->
+                                </Radio-group>
+                            </form-item>
+                            <i-col span="8" v-if="person_part.show">
+                                <form-item label="选择个人" prop="personal">
+                                    <i-select v-model="Lowerhair.personal"  filterable @on-change="v=>{choosePer(v,'type')}">
+                                        <i-option v-for="item in grList" :value="item.value" :key="item.value">
+                                            {{ item.label }}
+                                        </i-option>
+                                    </i-select>
+                                </form-item>
+                            </i-col>
+                		</i-col>
+                	</Row>
+                </i-form>
+            </Row>
+	        </i-form>
+	            <Row class="w_bg fixed_bar" style="width: calc(100%);margin-right: 1em;">
+	                <i-button class="pull-right btn" type="primary" @click="submitData()">确定</i-button>
+	                <Modal title="上报成功" v-model="xsk" @on-ok="cancela" @on-cancel="cancela" class-name="vertical-center-modal">
+	                    <p>上报成功</p>
+	                </Modal>
+	                <i-button class="pull-right btn" @click="formCancel()">取消</i-button>
+	            </Row>
+	        </i-form>
+    	</div>
+    </div>
+</body>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/vue.min.js" ></script>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/iview.min.js"></script>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/zh-CN.js"></script>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/axios.min.js"></script>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/common.js"></script>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/sy-table.js"></script>
+    
+    <script>
+        var rw='<#rw>';
+        var obj=new Object();
+        var user='<#user>';
+        var sid = '<#sid>';
+        var rwglxsId = '<#reportIds>';
+        var vm = new Vue({
+            el:'#app',
+            data:{
+                //下方选中的已经串并的案件
+                xscheckshow:false,
+                    user:'',
+                    xsk: false,
+                    //下发信息
+                issueInfo: {
+                    //标题名称
+                    RWMC: '',
+                    //下发线索类型
+                    SBLXDM: '',
+                    //是否公开
+                    SFSMDM: '',
+                    //紧急程度
+                    RWJBDM: '',
+                    //任务描述
+                    RWMS: '',
+                    //任务编号
+                    RWBH:''
+                },
+                superior: [{'JSDXLXDM':'02'}],
+                allpersoninfo: [],
+                filePath: [], //附件路径
+                GLXSID: [], //关联线索ID
+                //线索弹框里面的数据
+                addClueModal: false,
+                griddata: {
+                    xscol: [
+                        { type: "selection",width: 60,align: "center"},
+                        {title:'线索编号',key:'XSBH',render:(h,params)=>{
+                                let joinStyle = {}, joinText='';
+                                if( params.row.GLXSS > 0){
+                                    joinStyle = {
+                                        color:'#fff',
+                                        display:'inline-block',
+                                        width: '20px',
+                                        height: '20px',
+                                        backgroundColor: 'rgba(45, 183, 245, 1)',
+                                        marginRight:'5px',
+                                        textAlign:'center',
+                                        borderRadius: '5px',
+                                        lineHeight:'20px'
+                                    };
+                                    joinText = '串'
+                                }else{
+                                }
+                                return h('div', [
+                                    h('span',{
+                                        style:joinStyle
+                                    },joinText),
+                                    h('a',{
+                                        attrs: {
+                                            href: './w?cmd=com.awspaas.user.apps.clue.router&classify=clue&action=detail&sid='+sid+'&extendParams={"XSBH":"'+params.row.XSBH+'"}',
+                                            target:'_blank'
+                                        }
+                                    }, params.row.XSBH)
+                                ]);
+                            },
+                        },
+                        { title: "线索名称",key: "XSMC",tooltip: "true",tooltip: true},
+                        { title: "线索类型",key: "XSLXDM",tooltip: true},
+                        { title: "线索级别",key: "XSJBDM",tooltip: true},
+                        { title: "登记时间",key: "DJSJ",tooltip: true},
+                        { title: "登记单位",key: "XXDJDW_GAJGMC",tooltip: true},
+                    ],
+                    xsdata: [],
+                    xscheck: [],
+                },
+                addClue:{
+                    XSBH: "",
+                    XSJBDM: "",
+                    XSLXDM: "",
+                    "DJSJ~11":""
+                },
+                dwry: "",
+                Lowerhair: {
+                    JSLX: "02",
+                    //选择单位
+                    personal:'',
+                },
+                //选择单位
+                cityList: [],
+                //选择个人
+                grList: [],
+                unit: [],
+                xzdwdxmd: [],
+                //文件上传
+                defaultList: [],
+                imgName: "",
+                visible: false,
+                uploadList: [],
+                Lowerhaira: {
+                    JSLX: [
+                        { required: true,message: "此项为必填项",trigger: "change"}
+                    ],
+                    personal: [
+                        { required: true,message: "此项为必填项",trigger: "change"}
+                    ],
+                },
+                //验证
+                clueValidate: {
+                    RWMC: [
+                        { required: true,message: "此项为必填项",trigger: "change"},
+                        { type: 'string',max: 50,message: '最多输入50字',trigger: 'change'}
+                    ],
+                    SBLXDM: [
+                        { required: true,message: "此项为必填项",trigger: "change"}
+                    ],
+                    SFSMDM: [
+                        { required: true,message: "此项为必填项",trigger: "change"}
+                    ],
+                    RWJBDM: [
+                        { required: true,message: "此项为必填项",trigger: "change"}
+                    ],
+                    RWYQ_JYQK: [
+                        { required: true,message: "此项为必填项",trigger: "change"}
+                    ],
+                    RWMS: [
+                        { required: true,message: "此项为必填项",trigger: "change"},
+                        { type: 'string',max: 1000,message: '最多输入1000字',trigger: 'change'}
+                    ]
+                },
+                person_part: {
+                    show: false,
+                    person_show: false
+                },
+                person_list: [],
+                company_name: [],
+                defaultList: [],
+                visible: false,
+                uploadList: [],
+                //表格所有选中项
+                selection:[],
+                //串并线索
+                seriesClue:{
+                    url:'./jd?cmd=com.awspaas.user.apps.clue.getAreaClue&sid='+sid,
+                    params:{},
+                    columns:[
+                        {type: "selection",width: 60,align: "center"},
+                        {title:'线索编号',key:'XSBH',width:220,render:(h,params)=>{
+                                let joinStyle = {}, joinText='';
+                                if( params.row.GLXSS > 0){
+                                    joinStyle = {
+                                        color:'#fff',
+                                        display:'inline-block',
+                                        width: '20px',
+                                        height: '20px',
+                                        backgroundColor: 'rgba(45, 183, 245, 1)',
+                                        marginRight:'5px',
+                                        textAlign:'center',
+                                        borderRadius: '5px',
+                                        lineHeight:'20px'
+                                    };
+                                    joinText = '串'
+                                }else{
+                                }
+                                return h('div', [
+                                    h('span',{
+                                        style:joinStyle
+                                    },joinText),
+                                    h('a',{
+                                        attrs: {
+                                            href: './w?cmd=com.awspaas.user.apps.clue.router&classify=clue&action=detail&sid='+sid+'&extendParams={"XSBH":"'+params.row.XSBH+'"}',
+                                            target:'_blank'
+                                        }
+                                    }, params.row.XSBH)
+                                ]);
+                            },
+                        },
+                        {title: "线索名称",key: "XSMC",tooltip: "true"},
+                        {title: "线索类型",key: "XSLXDM"},
+                        {title: "线索级别",key: "XSJBDM"},
+                        {title: "登记时间",key: "DJSJ"},
+                        {title: "登记单位",key: "XXDJDW_GAJGMC",tooltip: "true"},
+                    ],
+                },
+                optiondata: {
+                    zllx: [
+                    	{value: "01",label: "常规线索"},
+	                    {value: "02",label: "贩枪线索"},
+	                    {value: "03",label: "逃犯线索"},
+                    ],
+                    xsjb: [
+                    	{value: "01",label: "A"},
+                        {value: "02",label: "B"},
+                        {value: "03",label: "C"},
+                        {value: "04",label: "D"}],
+	                },
+	                unitAvailable:false,
+            	},
+                methods: {
+	                searchData(json, url, callback) {
+	                	let param = new URLSearchParams();
+	                	param.append("json",JSON.stringify(json));
+	                    axios({
+	                        url: "./jd?sid="+sid+"&cmd="+url,
+	                        method: "post",
+	                        data: param
+	                    }).then(response => {
+	                        callback(response);
+	                    }).catch(error => {
+	                        console.log(error);
+	                    });
+	                },
+	                returnColor(type){
+	                    switch(type)
+	                        {
+		                        case 'A':
+		                        return 'red'
+		                        break;
+		                        case 'B':
+		                        return 'blue'
+		                        break;
+		                        default:
+		                        return 'red'
+	                        }
+	                },
+	                cancela () {
+	                    window.location.href='./w?sid=<#sid>&cmd=com.awspaas.user.apps.clue.router&classify=report&action=search';
+	                },
+	                showLoadMask() {
+	                    this.$Spin.show({
+	                        render: (h) => {
+	                            return h('div', [
+	                                h('Icon', {
+	                                    'class': 'demo-spin-icon-load',
+	                                    props: {
+	                                        type: 'ios-loading',
+	                                        size: 18
+	                                    }
+	                                }),
+	                                h('div', '加载中')
+	                            ])
+	                        }
+	                    });
+	                },
+	                hideLoadMask() {
+	                    setTimeout(() => {
+	                        this.$Spin.hide();
+	                    }, 100);
+	                },
+	                //接收人员
+	                Receive() {
+	                    this.showLoadMask();
+	                    var _this = this;
+	                    
+	                    var json = {
+	                        gxs: JSON.parse(user).parentGxsCode
+	                    };
+	                    var url = "com.awspaas.user.apps.clue.getDepartmentUser";
+	                    axios({
+	                            url: "./jd?",
+	                            method: "post",
+	                            params: {
+	                                sid: sid,
+	                                json: json,
+	                                cmd: url
+	                            }
+	                        })
+	                        .then(response => {
+	                            var data = response.data.data;
+	                            var grsz = [];
+	                            for(var i = 0; i < data.length; i++) {
+	                                var obj = {
+	                                    'label': data[i].USERNAME,
+	                                    'value': data[i].USERID
+	                                };
+	                                grsz.push(obj);
+	                                var obj2 = new Object();
+	                                obj2.JSDXLXDM = "01";
+	                                obj2.JSRY_XM = data[i].USERNAME;
+	                                obj2.JSRY_GMSFHM = data[i].USERID;
+	                                obj2.JSRY_LXDH = data[i].MOBILE;
+	                                obj2.JSDW_GAJGMC = data[i].DEPARTMENTNAME;
+	                                obj2.JSDW_GAJGJGDM =data[i].ID;;
+	                                _this.allpersoninfo.push(obj2);
+	                            }
+	                            _this.grList = grsz;
+	                            //callback(response);
+	                            _this.hideLoadMask();
+	                        })
+	                        .catch(error => {
+	                            console.log(error);
+	                        });
+	                },
+	                //提交
+	                submitData() {
+	                    var _this=this;
+	                    //验证必填项
+	                    _this.$refs['issueInfo'].validate(valid => {
+	                        _this.$refs.Lowerhair.validate(valid2 => {
+	                            if(valid && valid2){
+	                                    this.showLoadMask();
+	                                    var json = this.$refs['issueInfo'].model;
+	                                    var newjson = new Object();
+	                                    for(var key in json) {
+	                                        if(json[key] != "" && json[key] != undefined) {
+	                                            newjson[key] = json[key];
+	                                        }
+	                                        if(key == 'RWMS'){
+	                                            newjson[key] = newjson[key].replace(/\n/g,'');
+	                                        }
+	                                    }
+	                                    var jsonn = {
+	                                        "data": {
+	                                            "BO_EU_XSHB_RW_SB": newjson,
+	                                            "BO_EU_XSHB_RW_LZ": this.superior,
+	                                        }
+	                                    };
+	                                    if(this.GLXSID.length > 0){
+	                                        jsonn.data['BO_EU_XSHB_RW_GLXS'] = {
+	                                            "ID": this.GLXSID.join()
+	                                        }
+	                                    };
+	                                    if(this.filePath.length > 0){
+	                                        jsonn.data['BO_EU_XSHB_FJ'] = {
+	                                            "FJLJ": this.filePath.join()
+	                                        }
+	                                    }
+	                                    var url = "com.awspaas.user.apps.clue.updateRw";
+	                                    this.searchData(jsonn, url, function(response) {
+	                                        var data = response.data;
+	                                        if(data.result == 'ok'){
+	                                            _this.hideLoadMask();
+	                                            vm.$Modal.success({
+	                                                title: '上报成功',
+	                                                content: '点击确定后返回查询页面',
+	                                                onOk: () => {
+	                                                    window.location.href = './w?sid=<#sid>&cmd=com.awspaas.user.apps.clue.router&classify=report&action=search'
+	                                                },
+	                                            });
+	                                        }
+	                                    });
+	
+	                            }else {
+	                            this.$Message.error("请检查填写内容!");
+	                            }
+	                        });
+	                    });
+	                },
+					//取消方法
+					formCancel(){
+						((typeof rwglxsId == 'object') || (typeof rwglxsId == 'string')) ? (rwglxsId =rwglxsId):(rwglxsId =JSON.parse(rwglxsId));
+						this.$Modal.confirm({
+							title: '取消任务创建',
+							//content: '<p>Content of dialog</p><p>Content of dialog</p>',
+							onOk: () => {
+								window.location.href='./w?cmd=com.awspaas.user.apps.clue.router&sid='+sid+'&classify=report&action=search&rwglxsId='+rwglxsId.GLXSID+''; 
+							},
+							onCancel: () => {
+								//this.$Message.info('Clicked cancel');
+							}
+						});
+						
+					},
+                	valiName() {},
+	                //文件上传
+	
+	                //上传附件
+	                matchType(item) {
+	                    //return item.FJLX;
+	                    return item.name.substring(
+	                    item.name.lastIndexOf(".") + 1,
+	                    item.name.length
+	                    );
+	                },
+	                handleRemove(file) {
+	                    const fileList = this.$refs.upload.fileList;
+	                    this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
+	                    this.filePath.splice(fileList.indexOf(file), 1);
+	                },
+	                handleSuccess(res, file, fileList) {
+	                    let msg = res.data.msg;
+	                    let filePath = typeof msg == 'string' ? JSON.parse(res.data.msg).filePath : res.data.msg.filePath;
+	                    this.filePath.push(filePath);
+						this.hideLoadMask();
+	                    // this.filePath.push(res.data.msg.filePath);
+	                },
+					handlerprogress(event, file, fileList){
+						this.showLoadMask();
+					},
+	                handleFormatError(file) {
+	                    this.$Notice.warning({
+	                        title: "错误的文件格式",
+	                        desc: "文件 " +
+	                            file.name +
+	                            " 格式不正确"
+	                    });
+	                },
+	                handleMaxSize(file) {
+	                    this.$Notice.warning({
+	                        title: "文件内容过大",
+	                        desc: "文件  " + file.name + "超出100M."
+	                    });
+	                },
+	                handleBeforeUpload() {
+	                    const check = this.uploadList.length <= 14;
+	                    if(!check) {
+	                        this.$Notice.warning({
+	                            title: "最多上传15个附件！"
+	                        });
+	                    }
+	                    return check;
+	                },
+	                //上传结束
+	                //隐藏表单的显示隐藏
+	                showOtherform() {
+	                    let status = this.Lowerhair.JSLX;
+	                    switch(status) {
+	                        case "01":
+	                            this.person_part.show = true;
+	                            this.unit = "";
+	                            this.dwry = false;
+	                            this.superior = [];
+	                            break;
+	                        case "02":
+	                            this.person_part.show = false;
+	                            this.unit = "";
+	                            this.person_part.person_show = false;
+	                            this.dwry = true;
+	                            this.superior = [{"JSDXLXDM":"02"}];
+	                            break;
+	                    }
+	                },
+                choosePer(value, type) {
+					this.superior=[];
+                    if(this.Lowerhair.personal.length == 0) {
+                        this.person_part.person_show = false;
+                    } else {
+                        this.person_part.person_show = true;
+                    }
+                    var grnames = [];
+                    var grnamesList = this.grList;
+                    for(var i = 0; i < grnamesList.length; i++) {
+                        grnames.push(grnamesList[i].label);
+                    }
+                    this.grnamesList = grnames;
+                    var valuea = [];
+//                     for(var i = 0; i < value.length; i++) {
+//                         valuea.push(value[i].label);
+                        for(var m = 0; m < this.allpersoninfo.length; m++) {
+                            if(this.allpersoninfo[m].JSRY_GMSFHM == value) {
+                                if(this.contains(this.allpersoninfo[m], this.superior) == false) {
+                                    this.superior.push(this.allpersoninfo[m]);
+                                }
+                            }
+                        }
+//                     }
+                    obj[this.unit] = valuea;
+                    this.person_list = obj;
+                },
+                contains(obj, arr) {
+                    var i = arr.length;
+                    while(i--) {
+                        if(arr[i] === obj) {
+                            return true;
+                        }
+                    }
+                    return false;
+                },
+                //关联线索方法
+                cancel() {},
+                callModal() {
+                    for(var key in this.addClue){
+                        this.addClue[key] = ''
+                    }
+                    this.addClueModal = true;
+                    this.seriesClue.params= {
+                        "ID~10": this.GLXSID.join()
+                    };
+                    setTimeout(() => {
+                        this.$refs['seriesClue'].init();
+                    }, 1);
+                },
+                searchAllClue() {
+                    var json = this.addClue;
+                    json["ID~10"] = this.GLXSID.join();
+                    this.seriesClue.params= json;
+                    setTimeout(() => {
+                        this.$refs['seriesClue'].init();
+                    }, 1);
+                },
+                //串并案件点击确定增加下方表格
+                addClueTab() {
+                    var _this = this;
+                    let idList = this.$refs.seriesClue.getSelectionsId();
+                    if(idList.length == 0){
+						this.$Message.warning('请选择关联线索！');
+						return;
+					} 
+                    let params = [];
+                    idList.forEach((item) => {
+                        params.push({
+                            XSBH : item
+                        });
+                    });
+                    axios({
+                        url:'./jd?cmd=com.awspaas.user.apps.clue.addTaskRelevanceClue&sid='+sid,
+                        method: 'post',
+                        params:{json:{data:{BO_EU_XSHB_RW_GLXS: params}}}
+                    }).then(response => {
+                        if(response.data.result == 'ok'){
+                            _this.addClueModal = false;
+                            _this.hideLoadMask();
+                            _this.GLXSID = _this.GLXSID.concat(response.data.data.ID);
+                            var url = 'com.awspaas.user.apps.clue.getTaskRelevanceClue';
+                            var json = {
+                                data: {
+                                    "gl.ID":  response.data.data.ID.join()
+                                },
+                                "page": 1,
+                                "rows": 100,
+                            }
+                            this.searchData(json, url, function(response) {
+                                var data = response.data;
+                                if(data.result=='ok'){
+                                    _this.xscheckshow = true;
+                                    for(var i=0;i<data.data.rows.length;i++){
+                                        _this.griddata.xscheck.push(data.data.rows[i]);
+                                    }
+                                    _this.hideLoadMask();
+                                }
+                            })
+                        }else{
+                            that.$Message.warning('系统异常，请联系工作站！');
+                        }
+                    })
+                },
+                //删除已经关联线索
+                deleteRelevanceClue(xsbh){
+                    vm.showLoadMask();
+                    axios({
+                        url:'./jd?cmd=com.awspaas.user.apps.clue.deleteTaskRelevanceClue&sid='+sid,
+                        method:'post',
+                        params:{json:{"data": { "BO_EU_XSHB_RW_GLXS": { "XSBH":xsbh } }}}
+                    }).then(response =>{
+                        let data = response.data;
+                        if(data.result == 'ok'){
+                            let checkData = vm.griddata.xscheck;
+                            let index = checkData.findIndex((element)=>(element['XSBH'] == xsbh));
+                            let deleteId = checkData[index].ID;
+                            let deleteIndex = vm.GLXSID.findIndex((element)=>(element == deleteId));
+                            vm.GLXSID.splice(deleteIndex,1);
+                            checkData.splice(index,1);
+                            vm.hideLoadMask();
+                        }
+                    })
+                },
+                isPrivate(value){
+					// this.superior=[];
+					this.Lowerhair.personal = '';
+                    if(value == '02'){
+                        //私密
+                        this.Lowerhair.JSLX='01';
+                        this.unitAvailable = true;
+                        this.person_part.show = true;
+                    }else{
+                        this.Lowerhair.JSLX='02';
+                        this.unitAvailable = false;
+                        this.person_part.show = false;
+                    }
+                },
+                resetForm(name){
+                    for(let key in this[name]){
+                        this[name][key] = '';
+                    }
+                },
+            },
+            mounted(){
+                this.user=user;
+                this.showLoadMask();
+                this.Receive();
+                //选择下级对象
+                var _this = this;
+                var transdata;
+                var url = "com.awspaas.user.apps.clue.getSubReceiveUnit";
+                this.searchData(transdata, url, function(response) {
+                    var data = response.data.data;
+                    // code/name
+                    var newData = [];
+
+                    for(var i = 0; i < data.length; i++) {
+                        var obj = new Object();
+                        obj.label = data[i].NAME + "【" + data[i].CODE + "】";
+                        obj.value = data[i].CODE;
+                        newData.push(obj);
+                    }
+                    _this.cityList = newData;
+                    _this.hideLoadMask();
+                });
+                //从线索页面操作跳过来
+
+                var isEdit=getParameter('extendParams');
+				// isEdit = isEdit.replace(/%22/g, "");
+                if(isEdit!=undefined){
+                    if(rw != '<#'+'rw>'){
+                        rw=JSON.parse(rw);
+                        for(var key in this.issueInfo){
+							this.$set(this.issueInfo, key, rw[key]);
+                        }
+						this.superior=[{"JSDXLXDM":rw['JSDXLXDM']}];
+						this.$set(this.Lowerhair, 'JSLX', rw['JSDXLXDM']);
+						this.showOtherform();
+                    }
+                    rwglxsId = JSON.parse(rwglxsId);
+                    if(rwglxsId.GLXSID.length!=0){
+						this.GLXSID.push(rwglxsId.GLXSID);
+                        var url = 'com.awspaas.user.apps.clue.getTaskRelevanceClue';
+                        var json = {
+                            data: {
+                                 "gl.ID": (typeof rwglxsId.GLXSID != 'object' ? rwglxsId.GLXSID : rwglxsId.GLXSID.join() )
+                            },
+                            "page": 1,
+                            "rows": 100,
+                        }
+                        this.searchData(json, url, function(response) {
+                            var data = response.data;
+                            if(data.result=='ok'){
+                                _this.xscheckshow = true;
+                                for(var i=0;i<data.data.rows.length;i++){
+                                    _this.griddata.xscheck.push(data.data.rows[i]);
+                                }
+                                _this.hideLoadMask();
+                            }
+                        })
+                    };
+                    if(typeof(rwglxsId.fjIDs) != 'undefined' ){
+						if(rwglxsId.fjIDs.length != 0){
+							let json = { ID:rwglxsId.fjIDs.join()};
+							this.searchData(json, 'com.awspaas.user.apps.clue.getRelevanceAttachment', function(response) {
+								let data = response.data;
+								if(data.result == 'ok'){
+									let rows = data.data.rows;
+									for(let i=0;i<rows.length;i++){
+										vm.filePath.push(rows[i].FJLJ);
+										let msg = {
+											filePath:rows[i].FJLJ,
+											result:'ok',
+											id:':RO;'
+										} 
+										let checkFiles = {
+											name:rows[i].FJMC,
+											percentage: 100,
+											response:{
+												data:{msg:JSON.stringify(msg)},
+												files:{
+													size:rows[i].FJDX,
+													name:rows[i].FJMC,
+													role: "app"
+												}
+											},
+											showProgress: false,
+											size: rows[i].FJDX,
+											status: "finished",
+											uid: 1551948821278
+										} 
+										vm.$refs.upload.fileList.push(checkFiles);
+									}
+								}else{
+									console.log('error');
+								}
+							})
+						}
+					}
+				}
+                this.uploadList = this.$refs.upload.fileList;
+            },			
+        })
+</script>		
+</html>

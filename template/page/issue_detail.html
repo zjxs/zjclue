@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link type="text/css" rel="stylesheet" href="../apps/com.awspaas.user.apps.clue/css/common.css" />
+		<link type="text/css" rel="stylesheet" href="../apps/com.awspaas.user.apps.clue/css/iview.css" />
+		<link rel="Bookmark" type="image/x-icon" href="../favicon.ico" />
+		<link rel="icon" type="image/x-icon" href="../favicon.ico" />
+		<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
+	</head>
+
+	<body class="bkg">
+		<div id="app" v-cloak>
+			<div id="Superior">
+				<div class="backgroundImg">
+					<Row>
+						<Col span="24">&nbsp;</Col>
+						<Col span="24">&nbsp;</Col>
+						<Col span="24">&nbsp;</Col>
+						<Col span="24">&nbsp;</Col>
+						<Col span="24">&nbsp;</Col>
+						<Col span="24">&nbsp;</Col>
+						<div style="margin-left:10%;">
+							<Col span="24" style="line-height: 2.4em;">
+							<Tag color="error" style="float: left;">{{detailData.RWDJ}}</Tag>
+							<div style="float: left;font-size: 2.5em;">&nbsp;{{detailData.RWMC}}</div>
+							</Col>
+							<Col span="12"></Col>
+							<Col span="24" style="font-size: 20px;">{{detailData.RWBH}}</Col>
+							<div style="float: left; width:65%;border-right:1px solid #000000;">
+								<Col span="12">
+								<label>&nbsp;</label>
+								</Col>
+								<Col span="12">
+								<label>&nbsp;</label>
+								</Col>
+								<Col span="13">
+								<label>
+                  下发类型：
+                  <span>{{detailData.XFLXDM}}</span>
+                </label>
+								</Col>
+								<Col span="11">
+								<label>
+                  下发公开：
+                  <span>{{detailData.SFSMDM}}</span>
+                </label>
+								</Col>
+								<Col span="12">
+								<label>&nbsp;</label>
+								</Col>
+								<Col span="12">
+								<label>&nbsp;</label>
+								</Col>
+								<Col span="13">
+								<label>
+                  接收单位：
+                  <span>{{detailData.JSDW_GAJGMC}}</span>
+                </label>
+								</Col>
+								<Col span="11">
+								<label>
+                  接收人员：
+                  <span>{{detailData.JSRY_XM}}</span>
+                </label>
+								</Col>
+								<Col span="12">
+								<label>&nbsp;</label>
+								</Col>
+								<Col span="12">
+								<label>&nbsp;</label>
+								</Col>
+								<Col style="display: inline-block;width: 5.3em; float: left;">
+								<label>任务描述：</label>
+								</Col>
+								<Col span="20" style="height: 100px;">{{detailData.RWMS}}</Col>
+							</div>
+							<div style="float: left;width: 35%; ">
+								<Col span="13">&nbsp;</Col>
+								<Col span="13" offset="3">
+								<label>
+                  下发时间：
+                  <span>{{detailData.XFSJ}}</span>
+                </label>
+								</Col>
+								<Col span="13">&nbsp;</Col>
+								<Col span="13" offset="3">
+								<label>
+                  下发单位：
+                  <span>{{detailData.XFDW_GAJGMC}}</span>
+                </label>
+								</Col>
+								<Col span="13">&nbsp;</Col>
+								<Col span="13" offset="3">
+								<label>
+                  下发人员：
+                  <span>{{detailData.XFRY_XM}}</span>
+                </label>
+								</Col>
+								<Col span="13">&nbsp;</Col>
+								<Col span="13" offset="3">
+								<label>
+                  下发状态：
+                  <span>{{detailData.RWZTDM}}</span>
+                </label>
+								</Col>
+							</div>
+						</div>
+					</Row>
+				</div>
+				<!-- 关联附件 -->
+				<Row class="w_bg">
+					<div class="info_title">关联附件</div>
+					<div>
+						<!--  v-for="item in tabs" -->
+						<div v-for="(item,index) in tabs" :key="index">
+							<!-- <Col span="6" style="margin-top: 2em;">
+              {{item.text}}
+              <span>下载</span>
+            </Col> -->
+							<Col span="6" style="margin-left:2em;">
+							<div style="padding:15px">
+								<span style="display:inline-block" v-if="matchType(item)==='xlsx'||matchType(item)==='xls'">
+                <img src="img/filetype/excel.png" class="file_img">
+              </span>
+								<span style="display:inline-block" v-if="matchType(item)==='doc'||matchType(item)==='docx'">
+                <img src="img/filetype/word.png" class="file_img">
+              </span>
+								<span v-else>
+                 <img src="img/filetype/unknown.png" class="file_img">
+              </span>
+
+								<span class="file_name" title="item.FJMC">{{item.FJMC}}</span>
+								<span class="file_download" @click="downLoadFile(item.FJMC,item.GLYWBH)">下载</span>
+							</div>
+							</Col>
+
+						</div>
+					</div>
+				</Row>
+				<!-- 关联线索表格 -->
+				<Row class="w_bg">
+					<div class="info_title">关联线索</div>
+					<Table :columns="historyColumns" :data="historyData" style="margin-top: 2em;"></Table>
+					<Page :total="dataCount" :page-size="pageSize" class="paging" @on-change="changepage" @on-page-size-change="pages" style="text-align: center;margin-top: 1em;"></Page>
+				</Row>
+
+				<!-- 即时通讯 -->
+				<Row class="w_bg">
+					<div class="info_title" style="padding:0px 3em 0px 0em">即时沟通
+						<div style="float:right; margin-right:-20px;" v-for="(item,index) in btnList" :key="index">
+							<Button type="primary" @click="returnHandler(item.handler)">
+              {{item.name}}
+            </Button>
+							<!-- <Button type="primary" @click="modal10 = true">评分</Button> -->
+							<!-- 评分弹框 -->
+							<Modal title="评分" v-model="modal10" @on-ok="submitAssess" class-name="vertical-center-modal" width="40">
+								<Form ref="Lowerhair" v-bind:model="Lowerhair" v-bind:rules="clueValidate" v-bind:label-width="120">
+									<Row>
+										<Col span="14">
+										<FormItem label="评分等级">
+											<Rate allow-half v-model="PFDJ" :count="xjsl" />
+										</FormItem>
+										</Col>
+										<Col span="20">
+										<FormItem label="评分总结">
+											<Input v-model="PFYJ_JYQK" type="textarea" maxlength=500 :rows="4" placeholder="Enter something..." />
+										</FormItem>
+										</Col>
+									</Row>
+								</Form>
+							</Modal>
+							<!-- <Button @click="zp = true">转派</Button>-->
+							<!-- 转派弹框 -->
+							<Modal title="转派" v-model="zp" @on-ok="submitTransfer" class-name="vertical-center-modal" width="40">
+								<Form ref="Lowerhair" v-bind:model="Lowerhair" v-bind:rules="clueValidate" v-bind:label-width="120">
+									<Row>
+										<Col span="14">
+										<FormItem label="接收人员">
+											<Select v-model="JSRY_XM" style="width:200px">
+												<Option v-for="item in personList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+											</Select>
+										</FormItem>
+										</Col>
+										<Col span="20">
+										<FormItem label="转派描述">
+											<Input v-model="ZPYY" type="textarea" maxlength=500 :rows="4" placeholder="Enter something..." />
+										</FormItem>
+										</Col>
+									</Row>
+								</Form>
+							</Modal>
+							<!-- <Button>批复</Button>
+            <Button>继续上报</Button>  -->
+						</div>
+					</div>
+					<div class="jsgttx" v-model="txList">
+						<span style="margin-left:30px" v-for="(item,index) in txList" :key="index" @click="Photo(item.value)">{{item.label}}</span>
+					</div>
+				</Row>
+
+				<Scroll style="background:#fff;" height="400" v-if="communication">
+					<Row v-for="(item,index) in processRecord" :key="index">
+						<!-- {{item}} -->
+						<Col span="24" style="text-align:center">{{item.DJSJ}}</Col>
+						<div style="width:100%" v-if="item.XXDJRY_GMSFHM==user.userId">
+							<div style="float:right;	padding-right: 2em;">
+								<Tag color="primary">{{item.XXDJDW_GAJGMC}}</Tag>
+								<span>{{item.XXDJRY_XM}}</span>
+								<img src="img/u18238.png" style="vertical-align: middle;margin-top:2em;">
+								<div class="entry">
+									<div class="right-entry-trangle"></div>
+									<span style="font-weight:bold">操作类型:</span>
+									<span>{{item.CZLXDM}}</span>
+									<br>
+								</div>
+							</div>
+						</div>
+						<div style="width:100%" v-else>
+							<div style="float:left;	padding-left: 2em;">
+								<span>{{item.XXDJRY_XM}}</span>
+								<Tag color="primary">{{item.XXDJDW_GAJGMC}}</Tag>
+								<img src="img/u18238.png" style="vertical-align: middle;margin-top:2em;float:left">
+								<div class="entry_left" style="margin-top:25px">
+									<div class="left-entry-trangle"></div>
+									<span style="font-weight:bold">操作类型:</span>
+									<span>{{item.CZLXDM}}</span>
+									<br>
+								</div>
+							</div>
+						</div>
+					</Row>
+				</Scroll>
+			</div>
+			<!-- 回退弹框 -->
+			<Modal v-model="backModal" @on-ok="submitBack" title="回退">
+				<Row>
+					<i-col span="4" style="line-height:90px;text-align:center">回退原因</i-col>
+					<i-col span="20">
+						<Input v-model="back_reason" type="textarea" maxlength=500 />
+					</i-col>
+				</Row>
+			</Modal>
+			<!-- 转派回退回退弹框 -->
+			<Modal v-model="transferbackModal" @on-ok="submitTransferBack" title="转派回退">
+				<Row>
+					<i-col span="4" style="line-height:90px;text-align:center">回退原因</i-col>
+					<i-col span="20">
+						<Input v-model="transferback_reason" type="textarea" maxlength=500 />
+					</i-col>
+				</Row>
+			</Modal>
+			<!-- 回退审批通过弹框 -->
+			<Modal v-model="backPassModal" @on-ok="submitBackPass" title="回退审批通过">
+				<Row>
+					<i-col span="4" style="line-height:90px;text-align:center">通过原因</i-col>
+					<i-col span="20">
+						<Input v-model="backpass_reason" type="textarea" maxlength=500/>
+					</i-col>
+				</Row>
+			</Modal>
+			<!-- 回退审批驳回弹框 -->
+			<Modal v-model="backEndModal" @on-ok="submitBackEnd" title="回退审批驳回">
+				<Row>
+					<i-col span="4" style="line-height:90px;text-align:center">驳回原因</i-col>
+					<i-col span="20">
+						<Input v-model="backend_reason" type="textarea" maxlength=500/>
+					</i-col>
+				</Row>
+			</Modal>
+			<!-- 反馈/批复弹框 -->
+			<Modal v-model="feedbackModal" @on-ok="submitFeedback" title="回退审批驳回" width=80>
+				<div class="bkg">
+					<!--<div style="float: left;width: 20%;border: 1px solid red;"></div>-->
+					<div id="newclue" class="newclue">
+						<i-form ref="feedbackdata" v-bind:label-width="120">
+							<Row class="w_bg">
+								<i-col span="24">
+									<FormItem label="反馈信息" prop="FKXX">
+										<i-input type="textarea" v-model="feedbackdata.FKXX"></i-input>
+									</FormItem>
+								</i-col>
+								<i-col span="24">
+									<FormItem label="信息附件" style="margin-bottom: 0px">
+										<Upload ref="upload" :show-upload-list="false" :default-file-list="defaultList" :on-success="handleSuccess" :max-size="102400" :on-format-error="handleFormatError" :on-exceeded-size="handleMaxSize" :before-upload="handleBeforeUpload" multiple type="drag" action="//jsonplaceholder.typicode.com/posts/" style="display: inline-block;width:58px;">
+											<div style="width: 58px;height:58px;line-height: 58px;">
+												<Icon type="ios-add" size="20"></Icon>
+											</div>
+										</Upload>
+										<div class="demo-upload-list" v-for="(item,index) in uploadList" :key="item.value">
+											<div v-if="matchType(item)==='xlsx'||matchType(item)==='xls'">
+												<Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" />
+												<img src="img/filetype/excel.png">
+												<p>附件{{index + 1}}</p>
+											</div>
+											<div v-if="matchType(item) === 'doc'||matchType(item)=== 'docx'">
+												<Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" />
+												<img src="img/filetype/word.png">
+												<p>附件{{index + 1}}</p>
+											</div>
+											<div v-if="matchType(item) === 'pptx'">
+												<Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" />>
+												<img src="img/filetype/ppt.png">
+												<p>附件{{index + 1}}</p>
+											</div>
+											<div v-if="matchType(item) === 'png'||matchType(item) === 'jpg'||matchType(item) === 'jpeg'||matchType(item) === 'gif'">
+												<Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" />
+												<img src="img/filetype/image.png">
+												<p>附件{{index + 1}}</p>
+											</div>
+											<div v-if="matchType(item) === 'mp4'">
+												<Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" />
+												<img src="img/filetype/video.png">
+												<p>附件{{index + 1}}</p>
+											</div>
+											<div v-if="matchType(item) === 'zip'||matchType(item) === 'rar'||matchType(item) === '7z'">
+												<Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" />
+												<img src="img/filetype/zip.png">
+												<p>附件{{index + 1}}</p>
+											</div>
+											<div v-else>
+												<Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" />
+												<img src="img/filetype/unknown.png">
+												<p>附件{{index + 1}}</p>
+											</div>
+										</div>
+										<Tooltip content="最多上传15个附件，每个附件最大100M" style="position: absolute;top: 16px;left: -3.5%;">
+											<Icon type="ios-information-circle-outline" size="20" />
+										</Tooltip>
+									</FormItem>
+								</i-col>
+							</Row>
+						</i-form>
+						<Row style="margin-top: -15px;">
+							<row class="w_bg">
+								<span class="add_conn">添加串并</span>
+								<i-col span="2">
+									<i-button @click="callModal('aj')">
+										<Icon type="ios-add" style="color: #000"></Icon>串并案件
+									</i-button>
+									<Modal v-model="addAjmodal" title="串并案件" width="70%" @on-ok="addAjtab()" @on-cancel="cancel">
+										<Row>
+											<Form ref="addaj" v-model="addaj" v-bind:label-width="30">
+												<i-col span="5" label>
+													<FormItem>
+														<i-input v-model="addaj.ASJBH" placeholder="请输入案件编号"></i-input>
+													</FormItem>
+												</i-col>
+												<i-col span="5" label>
+													<FormItem>
+														<MyTree tablename="CODE_GXS" v-model="addaj.LADW_GAJGJGDM" @change="changeData" placeholder="请输入立案单位"></MyTree>
+													</FormItem>
+												</i-col>
+												<i-col span="5" label>
+													<!-- <FormItem><Cascader :data="optiondata.jllb" v-model="addaj.AJLB" placeholder="请输入案件类别"></Cascader></FormItem> -->
+												</i-col>
+												<i-col span="5" label>
+													<FormItem>
+														<date-picker v-model="addaj['LARQ~2']" type="datetime" placeholder="受案起始时间" style="width: 48%"></date-picker>
+														<date-picker v-model="addaj['LARQ~3']" type="datetime" placeholder="受案结束时间" style="width: 48%"></date-picker>
+													</FormItem>
+												</i-col>
+												<i-col span="4">
+													<i-button @click="searchAllcase()">查询</i-button>
+												</i-col>
+											</Form>
+										</Row>
+										<i-table :columns="griddata.col" :data="griddata.ajdata" @on-selection-change="handleChange"></i-table>
+										<Page :current="pagenum" :total="total" :page-size="pageSize" class="paging" @on-change="changepage" @on-page-size-change="pages"></Page>
+									</Modal>
+								</i-col>
+								<i-col span="2">
+									<!-- @click="callwpModal()" -->
+									<i-button>
+										<Icon type="ios-add" style="color: #000"></Icon>串并物品
+									</i-button>
+								</i-col>
+								<i-col span="2">
+									<i-button>
+										<Icon type="ios-add" style="color: #000"></Icon>串并人员
+									</i-button>
+								</i-col>
+								<i-col span="2">
+									<i-button @click="callModal('xs')">
+										<Icon type="ios-add" style="color: #000"></Icon>串并线索
+									</i-button>
+								</i-col>
+							</row>
+						</Row>
+						<Row class="each_cb">
+							<Row class="w_bg" v-if="ajcheckshow">
+								<div class="gl_title">
+									<span>串并案件</span>
+								</div>
+								<i-table :columns="griddata.ajcheckcol" :data="griddata.ajcheck"></i-table>
+							</Row>
+						</Row>
+						<Row class="each_cb">
+							<Row class="w_bg" v-if="xscheckshow">
+								<div class="gl_title">
+									<span>串并线索</span>
+									<!-- <label>收起</label> -->
+								</div>
+								<i-table :columns="griddata.xscheckcol" :data="griddata.xscheck"></i-table>
+							</Row>
+						</Row>
+						<Modal v-model="deleteModel" width="360">
+							<p slot="header" style="color: #f60; text-align: center;">
+								<Icon type="ios-information-circle"></Icon>
+								<span>删除提醒</span>
+							</p>
+							<div style="text-align: center;">
+								<h3>确定要删除此信息吗？</h3>
+							</div>
+							<div slot="footer">
+								<i-button size="large" type="error" @click="delDate()" style="width: 100%;">确定</i-button>
+							</div>
+						</Modal>
+
+					</div>
+				</div>
+
+				<script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/vue.min.js"></script>
+				<script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/iview.min.js"></script>
+				<script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/zh-CN.js"></script>
+				<script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/axios.min.js"></script>
+				<script>
+					var sid = '<#sid>';
+					var user = '<#user>';
+					var fj = '<#fj>';
+					var json = {
+						glxs: '<#glxs>',
+						//附件
+						fj: '<#fj>',
+						//铺页面
+						rw: '<#rw>',
+						//用户
+						user: '<#user>',
+						// 沟通人信息
+						gtryxx: '<#gtryxx>',
+						sid: '<#sid>',
+					};
+					var processInstIds = "";
+					var taskInstIds = "";
+					var ID = "";
+					var RWBH = "";
+					new Vue({
+						el: '#app',
+						data: {
+							/删除modal
+							deleteModel: false,
+							deleteRow: '',
+							deleteRefs: '',
+							deleteXxbh: '',
+							user: user,
+							//即时沟通
+							communication: false,
+							processRecord: [],
+							//回退
+							backModal: false,
+							back_reason: '',
+							//转派回退
+							transferbackModal: false,
+							transferback_reason: '',
+							//回退审批通过与驳回
+							backPassModal: false,
+							backEndModal: false,
+							backend_reason: '',
+							backpass_reason: '',
+							//反馈/批复
+							feedbackModal: false,
+							zpsj: "",
+							glybh: "",
+							JSRY_XM: "",
+							personList: [],
+							zpList: [],
+							txList: [],
+							btnList: [],
+							ZPYY: "",
+							xjsl: 10,
+							PFDJ: 0,
+							PFYJ_JYQK: "",
+							valueHalf: 0,
+							clueValidate: {},
+							detailData: {
+								RWDJ: "",
+								RWMC: "",
+								RWBH: "",
+								SBLXDM: "",
+								SFSMDM: "",
+								JSDW_GAJGMC: "",
+								JSRY_XM: "",
+								RWMS: "",
+								SBSJ: "",
+								SBRY_XM: "",
+								SBDW_GAJGMC: "",
+								RWZTDM: ""
+							},
+							detailGrid: {},
+							Lowerhair: {
+								XFLXDM: ""
+							},
+							modal10: false,
+							zp: false,
+							list1: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 10, 10, 10, 10],
+							value1: "",
+							value2: "1",
+							tabs: [],
+							columns1: [{
+									title: "Name",
+									key: "name"
+								},
+								{
+									title: "Age",
+									key: "age"
+								},
+								{
+									title: "Address",
+									key: "address"
+								}
+							],
+							data1: [{
+									name: "John Brown",
+									age: 18,
+									address: "New York No. 1 Lake Park",
+									date: "2016-10-03"
+								},
+								{
+									name: "Jim Green",
+									age: 24,
+									address: "London No. 1 Lake Park",
+									date: "2016-10-01"
+								},
+								{
+									name: "Joe Black",
+									age: 30,
+									address: "Sydney No. 1 Lake Park",
+									date: "2016-10-02"
+								},
+								{
+									name: "Jon Snow",
+									age: 26,
+									address: "Ottawa No. 2 Lake Park",
+									date: "2016-10-04"
+								}
+							],
+							ajaxHistoryData: [],
+							// 初始化信息总条数
+							dataCount: 0,
+							// 每页显示多少条
+							pageSize: 3,
+							xia: 0, //下一页或者上一页的第一项索引值
+							historyColumns: [{
+									title: "线索编号",
+									key: "XSBH"
+								},
+								{
+									title: "线索名称",
+									key: "XSMC"
+								},
+								{
+									title: "线索类型",
+									key: "XSLXDM"
+								},
+								{
+									title: "线索级别",
+									key: "XSJBDM"
+								},
+								{
+									title: "登记时间",
+									key: "DJSJ"
+								},
+								{
+									title: "线索描述",
+									key: "XSMS"
+								}
+							],
+
+							//线索数据
+							historyData: [],
+							//反馈/批复弹框的数据
+							feedbackOrReply: '',
+							GLXSID: [], //关联线索编号
+							filePath: [], //附件路径
+							defaultList: [],
+							imgName: "",
+							uploadList: [],
+							feedbackdata: {
+								FKXX: ''
+							},
+							clueValidate: {
+								FKXX: [{
+									required: true,
+									message: "此项为必填项",
+									trigger: "change"
+								}, {
+									type: 'string',
+									max: 500,
+									message: '最多输入500字',
+									trigger: 'change'
+								}]
+							},
+							griddata: {
+								col: [],
+								//串并案件
+								ajcol: [{
+										type: "selection",
+										width: 60,
+										align: "center"
+									},
+									{
+										title: "案件编号",
+										key: "ASJBH",
+										tooltip: "true"
+									},
+									{
+										title: "案件名称",
+										key: "AJMC",
+										tooltip: "true"
+									},
+									{
+										title: "案件类别",
+										key: "AJLBDM"
+									},
+									{
+										title: "小类案别",
+										key: "ZATZ_JYQK"
+									},
+									{
+										title: "案件发生时间",
+										key: "SLSJ"
+									},
+									{
+										title: "立案日期",
+										key: "LARQ"
+									},
+									{
+										title: "立案单位",
+										key: "XXDJDW_GAJGMC"
+									}
+								],
+								ajdata: [], //案件选中后下面的展示表格
+								ajcheckcol: [{
+										title: "案件编号",
+										key: "ASJBH"
+									},
+									{
+										title: "案件名称",
+										key: "AJMC",
+										tooltip: "true"
+									},
+									{
+										title: "案件类别",
+										key: "AJLBDM"
+									},
+									{
+										title: "小类案别",
+										key: "ZATZ_JYQK"
+									},
+									{
+										title: "案件发生时间",
+										key: "SLSJ"
+									},
+									{
+										title: "立案日期",
+										key: "LASJ"
+									},
+									{
+										title: "立案单位",
+										key: "XXDJDW_GAJGMC"
+									},
+									{
+										type: "option",
+										title: "操作",
+										width: 100,
+										render: (h, params) => {
+											return h("div", [
+												h("Icon", {
+													props: {
+														type: "md-close"
+													},
+													style: {
+														color: "#f00",
+														fontSize: "16px",
+														fontWeight: "bold",
+														cursor: "pointer"
+													},
+													on: {
+														click: () => {
+															var _this = this;
+															var json = {
+																"data": {
+																	"BO_EU_XSHB_GLYW": {
+																		"ID": params.row.ID
+																	}
+																}
+															}
+															_this.searchData(json, 'com.awspaas.user.apps.clue.deleteSeriesBiz', function(response) {
+																var data = response.data;
+																if(data.result == 'ok') {
+																	_this.removeByValue(_this.GLXSID, params.row.ID);
+																	_this.griddata.ajcheck.splice(params.row._index, 1);
+																	_this.$Message.info("删除成功");
+																}
+															})
+														}
+													}
+												})
+											]);
+										}
+									}
+								],
+								ajcheck: [],
+
+								//线索选中后的显示的表格
+								xscheckcol: [{
+										title: "线索编号",
+										key: "XSBH"
+									},
+									{
+										title: "线索名称",
+										key: "XSMC",
+										tooltip: "true"
+									},
+									{
+										title: "线索类型",
+										key: "XSLXDM"
+									},
+									{
+										title: "登记时间",
+										key: "DJSJ"
+									},
+									{
+										title: "线索描述",
+										key: "XSMS",
+										tooltip: "true"
+									},
+									{
+										type: "option",
+										title: "操作",
+										width: 100,
+										render: (h, params) => {
+											return h("div", [
+												h("Icon", {
+													props: {
+														type: "md-close"
+													},
+													style: {
+														color: "#f00",
+														fontSize: "16px",
+														fontWeight: "bold",
+														cursor: "pointer"
+													},
+													on: {
+														click: () => {
+															var _this = this;
+															var json = {
+																"data": {
+																	"BO_EU_XSHB_GLYW": {
+																		"ID": params.row.ID
+																	}
+																}
+															}
+															_this.searchData(json, 'com.awspaas.user.apps.clue.deleteSeriesBiz', function(response) {
+																var data = response.data;
+																if(data.result == 'ok') {
+																	_this.removeByValue(_this.GLXSID, params.row.ID);
+																	_this.griddata.xscheck.splice(params.row._index, 1);
+																	_this.$Message.info("删除成功");
+																}
+															})
+														}
+													}
+												})
+											]);
+										}
+									}
+								],
+								xscheck: [],
+								xscol: [{
+										type: "selection",
+										width: 60,
+										align: "center"
+									},
+									{
+										title: "线索编号",
+										key: "XSBH"
+									},
+									{
+										title: "线索名称",
+										key: "XSMC",
+										tooltip: "true"
+									},
+									{
+										title: "线索类型",
+										key: "XSLXDM"
+									},
+									{
+										title: "线索级别",
+										key: "XSJBDM"
+									},
+									//  ????
+									{
+										title: "登记时间",
+										key: "DJSJ"
+									},
+									{
+										title: "登记单位",
+										key: "DJDW"
+									},
+								]
+							},
+							addAjmodal: false,
+							addaj: {
+								ASJBH: "",
+								XXDJDW_GAJGMC: "",
+								AJLB: ""
+							},
+							//选中后的下方串并表格的显示隐藏
+							ajcheckshow: false,
+							xscheckshow: false, //表格分页相关
+							pagenum: 1,
+							total: 0,
+							pageSize: 5,
+							xia: '',
+							btn_name: '',
+							//线索保存成功之后返回的编号
+							report_href: '',
+							issue_href: '',
+							//end
+						},
+						methods: {
+							del(row, xxbh, refs) {
+								this.deleteRow = row,
+									this.deleteRefs = refs,
+									this.deleteXxbh = xxbh,
+									this.deleteModel = true;
+							},
+
+							delDate() {
+								vm.deleteSeriesBiz(vm.deleteRow, vm.deleteXxbh, function(response) {
+									setTimeout(() => {
+										vm.$refs[vm.deleteRefs].init();
+										vm.$Message.info("删除成功");
+										vm.deleteModel = false;
+									}, 1);
+								});
+							},
+							searchData(json, url, callback) {
+								let param = new URLSearchParams();
+								param.append("json", JSON.stringify(json));
+								axios({
+									url: "./jd?sid=" + sid + "&cmd=" + url,
+									method: "post",
+									data: param
+								}).then(response => {
+									callback(response);
+								}).catch(error => {
+									console.log(error);
+								});
+							},
+							showLoadMask() {
+								this.$Spin.show({
+									render: (h) => {
+										return h('div', [
+											h('Icon', {
+												'class': 'demo-spin-icon-load',
+												props: {
+													type: 'ios-loading',
+													size: 18
+												}
+											}),
+											h('div', '加载中')
+										])
+									}
+								});
+							},
+							hideLoadMask() {
+								this.$Spin.hide();
+							},
+
+							returnHandler(name) {
+								if(name == 'sign') { //签收(ok)
+									this.sign();
+								} else if(name == 'back') { //回退(ok)
+									this.back();
+								} else if(name == 'feedback') { //沟通-新增-反馈(ok)
+									this.feedbackOrReply = 'feedback';
+									this.communication = true;
+									this.feedback();
+								} else if(name == 'transfer') { //转派(ok)
+									this.transfer();
+								} else if(name == 'backApprovePass') { //回退审批通过(ok)
+									this.backApprovePass();
+								} else if(name == 'backApproveEnd') { //回退审批驳回(ok)
+									this.backApproveEnd();
+								} else if(name == 'transferBack') { //转派回退(ok)
+									this.transferBack();
+								} else if(name == 'reply') { //沟通-新增-批复(ok)
+									this.feedbackOrReply = 'reply';
+									this.communication = true;
+									this.reply();
+								} else if(name == 'assess') { //评分(ok)(接口报0)
+									this.assess();
+								}
+								//return name;
+							},
+							// 获取历史记录信息
+							handleListApproveHistory() {},
+							pages(num) {
+								//修改每页显示条数时调用
+								this.pageSize = num;
+								this.changepage(1);
+							},
+							changepage(index) {
+								this.xia = index;
+								let this1 = this;
+							},
+							jsgt() {
+								var jsgtrx = JSON.parse(json.gtryxx);
+								for(var i = 0; i < jsgtrx.length; i++) {
+									var obj = new Object();
+									obj.label = jsgtrx[i].BLRY_XM;
+									obj.value = jsgtrx[i].RWLZBH;
+									this.txList.push(obj);
+								}
+							},
+							//点击管理员
+							Photo(e) {
+								var RWLZBH = e;
+								this.glybh = e;
+								var processDefId = "";
+								var activityId = "";
+								var processDefIdsj = JSON.parse(json.gtryxx);
+								var _this = this;
+
+								for(var i = 0; i < processDefIdsj.length; i++) {
+									if(processDefIdsj[i].RWLZBH == RWLZBH) {
+										console.log(processDefIdsj[i]);
+										processInstIds = processDefIdsj[i].processInstId
+										taskInstIds = processDefIdsj[i].taskId;
+										ID = processDefIdsj[i].ID;
+										RWBH = processDefIdsj[i].RWBH;
+										processDefId = processDefIdsj[i].processDefId;
+										activityId = processDefIdsj[i].activityId;
+									}
+								}
+								var jsonn = {
+									data: {
+										// RWLZBH: RWLZBH
+										RWLZBH: '330100050000201901170000000113'
+									},
+									processDefId: processDefId,
+									activityId: activityId
+								};
+								var url = "com.awspaas.user.apps.clue.getProcessRecord";
+								axios({
+										url: "./jd?",
+										method: "post",
+										params: {
+											sid: sid,
+											json: jsonn,
+											cmd: url
+										}
+									})
+									.then(response => {
+										var data = response.data.data;
+										_this.btnList = data.action;
+										_this.processRecord = data.record;
+										console.log(data);
+									})
+									.catch(error => {
+										console.log(error);
+									});
+							},
+							sign() {
+								this.showLoadMask();
+								var _this = this;
+								var jsonn = {
+									processInstId: processInstIds,
+									taskInstId: taskInstIds,
+									"BO_EU_XSHB_RW_LZ": {
+										"ID": ID,
+										"RWBH": RWBH
+									}
+								};
+								var url = "com.awspaas.user.apps.clue.sign";
+								this.searchData(jsonn, url, function(response) {
+									var data = response.data;
+									if(data.result == 'ok') {
+										_this.hideLoadMask();
+									}
+								})
+							},
+							back() {
+								this.backModal = true;
+								this.back_reason = '';
+							},
+							submitBack() {
+								this.showLoadMask();
+								var _this = this;
+								var jsonn = {
+									processInstId: processInstIds,
+									taskInstId: taskInstIds,
+									"BO_EU_XSHB_RW_LZ": {
+										"ID": ID,
+										"RWBH": RWBH,
+										"HTYJ_JYQK": this.back_reason
+									}
+								};
+								var url = "com.awspaas.user.apps.clue.back";
+								this.searchData(jsonn, url, function(response) {
+									var data = response.data;
+									if(data.result == 'ok') {
+										_this.hideLoadMask();
+									}
+								})
+							},
+							//转派回退
+							transferBack() {
+								this.transferbackModal = true;
+								this.transferback_reason = ''
+							},
+							submitTransferBack() {
+								this.showLoadMask();
+								var _this = this;
+								var jsonn = {
+									processInstId: processInstIds,
+									taskInstId: taskInstIds,
+									"BO_EU_XSHB_RW_LZ": {
+										"ID": ID,
+										"RWBH": RWBH,
+										"HTYJ_JYQK": this.transferback_reason
+									}
+								};
+								var url = "com.awspaas.user.apps.clue.transferBack";
+								this.searchData(jsonn, url, function(response) {
+									var data = response.data;
+									if(data.result == 'ok') {
+										_this.hideLoadMask();
+									}
+								})
+							},
+							//回退审批通过与驳回
+							backApprovePass() {
+								this.backPassModal = true;
+								this.backpass_reason = ''
+							},
+							backApproveEnd() {
+								this.backEndModal = true;
+								this.backend_reason = ''
+							},
+							submitBackPass() {
+								this.showLoadMask();
+								var _this = this;
+								var jsonn = {
+									processInstId: processInstIds,
+									taskInstId: taskInstIds,
+									"BO_EU_XSHB_RW_LZ": {
+										"ID": ID,
+										"RWBH": RWBH,
+										"HTSPYJ_JYQK": this.backpass_reason,
+										"HTSPSFTG_PDBZ": "1"
+									}
+								};
+								var url = "com.awspaas.user.apps.clue.backApprovePass";
+								this.searchData(jsonn, url, function(response) {
+									var data = response.data;
+									if(data.result == 'ok') {
+										_this.hideLoadMask();
+									}
+								})
+							},
+							submitBackEnd() {
+								this.showLoadMask();
+								var _this = this;
+								var jsonn = {
+									processInstId: processInstIds,
+									taskInstId: taskInstIds,
+									"BO_EU_XSHB_RW_LZ": {
+										"ID": ID,
+										"RWBH": RWBH,
+										"HTSPYJ_JYQK": this.backend_reason,
+										"HTSPSFTG_PDBZ": "0"
+									}
+								};
+								var url = "com.awspaas.user.apps.clue.backApproveEnd";
+								this.searchData(jsonn, url, function(response) {
+									var data = response.data;
+									if(data.result == 'ok') {
+										_this.hideLoadMask();
+									}
+								})
+							},
+							//转让
+							transfer() {
+								this.zp = true
+							},
+							submitTransfer() {
+								this.showLoadMask();
+								var _this = this;
+								var jsryName = this.JSRY_XM;
+								var zpList = this.zpList;
+								var zpSz = [];
+								for(var i = 0; i < zpList.length; i++) {
+									if(zpList[i].JSRY_GMSFHM == jsryName) {
+										zpSz = zpList[i];
+									}
+								}
+								var jsonn = {
+									processInstId: processInstIds,
+									taskInstId: taskInstIds,
+									data: {
+										BO_EU_XSHB_RW_LZ: {
+											RWBH: RWBH,
+											ID: ID,
+											JSRY_XM: zpSz.JSRY_XM,
+											JSRY_GMSFHM: zpSz.JSRY_GMSFHM,
+											JSRY_LXDH: zpSz.JSRY_LXDH,
+											JSDW_GAJGMC: zpSz.JSDW_GAJGMC,
+											JSDW_GAJGJGDM: zpSz.JSDW_GAJGJGDM,
+											ZPYY: this.ZPYY
+										}
+									}
+								};
+								var url = "com.awspaas.user.apps.clue.transfer";
+								this.searchData(jsonn, url, function(response) {
+									var data = response.data;
+									if(data.result == 'ok') {
+										_this.hideLoadMask();
+									}
+								})
+							},
+							//评分
+							assess() {
+								this.modal10 = true;
+								this.PFDJ = 0;
+								this.PFYJ_JYQK = "";
+							},
+							submitAssess() {
+								this.showLoadMask();
+								var _this = this;
+								var jsonn = {
+									processInstId: processInstIds,
+									taskInstId: taskInstIds,
+									data: {
+										BO_EU_XSHB_RW_LZ: {
+											ID: ID,
+											RWBH: RWBH,
+											PFDJ: this.PFDJ,
+											PFYJ_JYQK: this.PFYJ_JYQK
+										}
+									}
+								};
+								var url = "com.awspaas.user.apps.clue.assess";
+								this.searchData(jsonn, url, function(response) {
+									var data = response.data;
+									if(data.result == 'ok') {
+										_this.hideLoadMask();
+									}
+								})
+							},
+							// 反馈/批复
+							feedback() {
+								this.feedbackModal = true;
+							},
+							reply() {
+								this.feedbackModal = true;
+							},
+							submitFeedback() {
+								this.showLoadMask();
+								var _this = this;
+								var newjson = {
+									"RWBH": RWBH,
+									"FKNR_JYQK": this.feedbackdata.FKXX,
+								}
+								var transdata = {
+									data: {
+										BO_EU_XSHB_RW_FK: newjson,
+										BO_EU_XSHB_GLYW: {
+											"ID": _this.GLXSID.join()
+										},
+										"BO_EU_XSHB_RW_LZ": {
+											"ID": ID,
+											"RWBH": RWBH
+										},
+										BO_EU_XSHB_FJ: {
+											FJLJ: this.filePath.join()
+										}
+									}
+								};
+								var url = 'com.awspaas.user.apps.clue.' + this.feedbackOrReply;
+								this.searchData(transdata, url, function(response) {
+									var data = response.data;
+									if(data.result == 'ok') {
+										_this.hideLoadMask();
+									}
+								})
+								// axios({
+								//   url: "./jd?",
+								//   method: "post",
+								//   params: {
+								//     sid: sid,
+								//     json: transdata,
+								//     cmd: "com.awspaas.user.apps.clue.feedback"
+								//   }
+								// }).then(response => {
+
+								// }).catch(error => {
+								//   console.log(error);
+								// });
+							},
+							//反馈/批复弹框里面页面的方法
+							removeByValue(arr, val) {
+								for(var i = 0; i < arr.length; i++) {
+									if(arr[i] == val) {
+										arr.splice(i, 1);
+										break;
+									}
+								}
+							},
+							//提交
+							submitData(name) {
+								var _this = this;
+								this.$refs[name].validate(valid => {
+									if(valid) {
+										this.showLoadMask();
+										var json = this.newClue;
+										var newjson = new Object();
+										for(var key in json) {
+											if(json[key] != "" && json[key] != undefined) {
+												newjson[key] = json[key];
+											}
+										}
+										console.log(_this.GLXSID);
+										var transdata = {
+											data: {
+												BO_EU_XSHB_XS: newjson,
+												BO_EU_XSHB_GLYW: {
+													"ID": _this.GLXSID
+												},
+												BO_EU_XSHB_FJ: {
+													FJLJ: this.filePath.join()
+												}
+											}
+										};
+										axios({
+												url: "./jd?",
+												method: "post",
+												params: {
+													sid: sid,
+													json: transdata,
+													cmd: "com.awspaas.user.apps.clue.addClue"
+												}
+											}).then(response => {
+												_this.nextstep = true;
+												_this.report_href = './jd?cmd=com.awspaas.user.apps.clue.router&classify=report&action=add&extendParams={"XSBH":' + response.data.data.XSBH + '}'
+												_this.issue_href = './jd?cmd=com.awspaas.user.apps.clue.router&classify=issue&action=add&extendParams={"XSBH":' + response.data.data.XSBH + '}'
+												_this.hideLoadMask();
+											})
+											.catch(error => {
+												console.log(error);
+											});
+									} else {
+										this.$Message.error("请填写必填内容!");
+									}
+								});
+							},
+							//添加串并案件串并
+							callModal(name) {
+								this.pagenum = 1;
+								this.btn_name = name;
+								var _this = this;
+								_this.addAjmodal = true;
+								var json = new Object();
+								var url;
+								var newjson = {
+									ID: _this.GLXSID.join()
+								};
+								if(name == 'aj') {
+									_this.griddata.col = _this.griddata.ajcol;
+									json = {
+										data: newjson,
+										page: 1,
+										rows: this.pageSize
+									};
+									url = 'com.awspaas.user.apps.clue.getAllCase'
+								} else {
+									_this.griddata.col = _this.griddata.xscol;
+									json = {
+										"data": {
+											'ID~10': _this.GLXSID.join()
+										},
+										page: 1,
+										rows: this.pageSize
+									}
+									url = 'com.awspaas.user.apps.clue.getAreaClue'
+								}
+								this.searchData(json, url, function(response) {
+									var data = response.data;
+									if(data.result == 'ok') {
+										_this.total = data.data.total;
+										_this.griddata.ajdata = data.data.rows;
+									}
+								})
+
+							},
+
+							ok() {},
+							cancel() {},
+							pages(num) {
+								//修改每页显示条数时调用
+								this.pageSize = num;
+								this.changepage(1);
+							},
+							//选择
+							changepage(index) {
+								var _this = this;
+								this.page = index;
+								var getjson = this.addaj;
+								var newjson = new Object();
+								var url;
+								for(var key in getjson) {
+									if(getjson[key] != "" && getjson[key] != undefined) {
+										newjson[key] = getjson[key];
+									}
+								}
+								var json = {
+									data: newjson,
+									page: this.page,
+									rows: this.pageSize,
+								};
+								if(_this.btn_name == 'aj') {
+									url = 'com.awspaas.user.apps.clue.getAllCase'
+								} else if(_this.btn_name == 'xs') {
+									url = 'com.awspaas.user.apps.clue.getAreaClue'
+								}
+								this.searchData(json, url, function(response) {
+									var data = response.data;
+									if(data.result == 'ok') {
+										_this.griddata.ajdata = data.data.rows;
+									}
+								})
+							},
+							matchType(item) {
+								return item.FJLX;
+							},
+							//上传附件
+							handleRemove(file) {
+								const fileList = this.$refs.upload.fileList;
+								this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
+							},
+							handleSuccess(res, file, fileList) {
+								this.filePath.push(res.data.data.msg.filePath);
+								//      	console.log(file);
+							},
+							handleFormatError(file) {
+								this.$Notice.warning({
+									title: "错误的文件格式",
+									desc: "文件 " +
+										file.name +
+										" 格式不正确"
+								});
+							},
+							handleMaxSize(file) {
+								this.$Notice.warning({
+									title: "文件内容过大",
+									desc: "文件  " + file.name + "超出100M."
+								});
+							},
+							handleBeforeUpload() {
+								const check = this.uploadList.length < 15;
+								if(!check) {
+									this.$Notice.warning({
+										title: "最多上传15个附件！"
+									});
+								}
+								return check;
+							},
+							//串并案件表格选中项
+							handleChange(selection) {
+								if(this.btn_name == 'aj') {
+									this.griddata.ajcheck = selection;
+								} else {
+									this.griddata.xscheck = selection;
+								}
+
+							},
+							//串并案件点击确定增加下方表格
+							addAjtab() {
+								this.showLoadMask();
+								var _this = this;
+								if(this.btn_name == 'aj') {
+									if(this.griddata.ajcheck.length == 0) {
+										this.ajcheckshow = false;
+									} else {
+										this.ajcheckshow = true;
+										var checked = this.griddata.ajcheck;
+										var ywbhs = [];
+										for(var i = 0; i < checked.length; i++) {
+											var obj = new Object();
+											obj.GLYWBH = checked[i].ASJBH;
+											obj.GLYWLXDM = '02';
+											ywbhs.push(obj);
+										}
+										var json = {
+											"data": {
+												"BO_EU_XSHB_GLYW": ywbhs
+											}
+										}
+										var url = 'com.awspaas.user.apps.clue.addSeriesBiz';
+									}
+								} else {
+									if(this.griddata.xscheck.length == 0) {
+										this.xscheckshow = false;
+									} else {
+										this.xscheckshow = true;
+										var checked = this.griddata.xscheck;
+										var ywbhs = [];
+										for(var i = 0; i < checked.length; i++) {
+											var obj = new Object();
+											obj.GLYWBH = checked[i].XSBH;
+											obj.GLYWLXDM = '01';
+											ywbhs.push(obj);
+										}
+										var json = {
+											"data": {
+												"BO_EU_XSHB_GLYW": ywbhs
+											}
+										}
+										var url = 'com.awspaas.user.apps.clue.addSeriesBiz';
+									}
+								}
+								axios({
+									url: './jd?',
+									method: 'post',
+									params: {
+										'sid': sid,
+										'json': json,
+										cmd: url
+									}
+								}).then(response => {
+									if(response.data.result == 'ok') {
+
+										var checkid = response.data.data.ID;
+										for(var i = 0; i < checkid.length; i++) {
+											_this.GLXSID.push(checkid[i])
+										}
+										var checkjson = {
+											data: {
+												"gl.ID": checkid.join()
+											},
+											"page": 1,
+											"rows": 5,
+										}
+										if(this.btn_name == 'aj') {
+											var url = 'com.awspaas.user.apps.clue.getSeriesCase';
+											this.searchData(checkjson, url, function(response) {
+												var data = response.data;
+												if(data.result == 'ok') {
+													_this.griddata.ajcheck = data.data.rows
+												}
+											})
+										} else {
+											var url = 'com.awspaas.user.apps.clue.getSeriesClue';
+											this.searchData(checkjson, url, function(response) {
+												var data = response.data;
+												if(data.result == 'ok') {
+													_this.griddata.xscheck = data.data.rows
+													console.log(data.data.rows);
+													console.log(_this.griddata.xscheck);
+												}
+											})
+										}
+										_this.hideLoadMask();
+									}
+								})
+							},
+							changeData(data) {
+								this.addaj.XXDJDW_GAJGMC = data;
+							},
+							searchAllcase() {
+								var json = this.addaj;
+								var url;
+								var _this = this;
+								var name = this.btn_name;
+								var newjson = new Object();
+								for(var key in json) {
+									if(json[key] != '' && json[key] != undefined) {
+										newjson[key] = json[key];
+									}
+								}
+								if(name == 'aj') {
+									newjson.ID = _this.GLXSID.join();
+									var transdata = {
+										data: newjson,
+										page: 1,
+										rows: this.pageSize
+									};
+									this.griddata.col = this.griddata.ajcol;
+									url = 'com.awspaas.user.apps.clue.getAllCase'
+								} else if(name == 'xs') {
+									newjson["ID~10"] = _this.GLXSID.join();
+									var transdata = {
+										data: newjson,
+										page: 1,
+										rows: this.pageSize
+									};
+									this.griddata.col = this.griddata.xscol;
+									url = 'com.awspaas.user.apps.clue.getAreaClue'
+								}
+								this.searchData(transdata, url, function(response) {
+									var data = response.data;
+									if(data.result == 'ok') {
+										_this.total = data.data.total;
+										_this.griddata.ajdata = data.data.rows;
+									}
+								})
+
+							},
+						},
+						created() {
+							//及时沟通
+							this.jsgt();
+							var url = "com.awspaas.user.apps.clue.getUnitOtherUser";
+							let _this = this;
+							axios({
+									url: "./jd?",
+									method: "post",
+									params: {
+										sid: sid,
+										json: {},
+										cmd: url
+									}
+								})
+								.then(response => {
+									var data = response.data.data;
+
+									for(let i = 0; i < data.length; i++) {
+										if(data.result != 'ok') return
+										var obj = new Object();
+										obj.label = data[i].USERNAME + "【" + data[i].USERID + "】";
+										obj.value = data[i].USERID;
+										_this.personList.push(obj);
+										var obj2 = new Object();
+										obj2.JSRY_XM = data[i].USERNAME;
+										obj2.JSRY_GMSFHM = data[i].USERID;
+										obj2.JSRY_LXDH = data[i].MOBILE;
+										obj2.JSDW_GAJGMC = data[i].DEPARTMENTNAME;
+										obj2.JSDW_GAJGJGDM = data[i].DEPARTMENTID;
+										_this.zpList.push(obj2);
+									}
+								})
+								.catch(error => {
+									console.log(error);
+								});
+							let jsonn = JSON.parse(json.rw);
+							let jsonGrid = JSON.parse(json.glxs).rows;
+							this.detailData = jsonn;
+							this.historyData = jsonGrid;
+							this.dataCount = JSON.parse(json.glxs).total;
+							this.tabs = fj;
+							// console.log(this.tabs);
+
+							this.handleListApproveHistory();
+							this.clickPhoto(this.communicationHead[0].value);
+
+						}
+					})
+				</script>
+
+	</body>
+
+</html>

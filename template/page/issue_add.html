@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>新建下发</title>
+    <link type="text/css" rel="stylesheet" href="../apps/com.awspaas.user.apps.clue/css/common.css"/>
+    <link type="text/css" rel="stylesheet" href="../apps/com.awspaas.user.apps.clue/css/iview.css"/>
+	<link rel="Bookmark" type="image/x-icon" href="../favicon.ico" />
+	<link rel="icon" type="image/x-icon" href="../favicon.ico" />
+	<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
+</head>
+<style>
+    .ivu-breadcrumb {
+        font-size: 18px;
+    }
+	.ivu-poptip-body-content-inner,.ivu-poptip-inner ,.ivu-poptip-content{
+		color:#fff;
+		background-color:rgba(70,76,91,.9)
+	}
+	.ivu-poptip-body-content-inner{
+		width:87%
+	}
+</style>
+<body class="bkg">
+    <div id="app" v-cloak>
+        <div class="Lowerhair newclue">
+            <Row class="w_bg">
+                <i-col span="24">
+                    <Breadcrumb separator=">">
+                        <breadcrumb-item>下发管理</breadcrumb-item>
+                        <breadcrumb-item>新建下发</breadcrumb-item>
+                    </Breadcrumb>
+                </i-col>
+            </Row>
+            <i-form
+                ref="issueInfo"
+                :model="issueInfo"
+                :rules="clueValidate"
+                :label-width="120">
+                <Row class="w_bg" id="title">
+                    <i-col span="20" class="title_name">
+                        <form-item label="标题名称" prop="RWMC">
+                            <i-input    class="title_input" v-model="issueInfo.RWMC" placeholder="请输入任务名称" @on-blur="valiName"></i-input>
+                        </form-item>
+                    </i-col>
+                </Row>
+                <Row class="w_bg" id="Inferiortype">
+                    <div class="info_title" style="margin-bottom: 15px;">下发信息</div>
+                    <i-col span="8">
+                        <form-item label="下发类型" prop="XFLXDM">
+                            <i-select v-model="issueInfo.XFLXDM" codeName="CODE_XSHB_XFLX">
+                                <i-option value="01">常规下发</i-option>
+                                <i-option value="02">贩枪下发</i-option>
+                                <i-option value="03">逃犯下发</i-option>
+                            </i-select>
+                        </form-item>
+                    </i-col>
+                    <i-col span="8">
+                        <form-item label="是否公开" prop="SFSMDM">
+                            <i-select @on-change="isPrivate" @on-open-change="getCodeSelect('CODE_XSHB_SFSM','com.awspaas.user.apps.clue.getCodeMap','issueSfsmSelect',$event)" v-model="issueInfo.SFSMDM" placeholder="请选择任务涉密程度">
+                                <i-option v-for="item in issueSfsmSelect" :value="item.CODE" :key="item.NAME" >{{ item.NAME }}</i-option>
+                            </i-select>
+                        </form-item>
+                    </i-col>
+                    <i-col span="8">
+                        <form-item label="紧急程度" prop="JJCDDM">
+                            <i-select v-model="issueInfo.JJCDDM" codeName="CODE_XSHB_JJCD">
+                                <i-option value="01">A</i-option>
+                                <i-option value="02">B</i-option>
+                                <i-option value="03">C</i-option>
+                                <i-option value="04">D</i-option>
+                            </i-select>
+                        </form-item>
+                    </i-col>
+                    <Poptip word-wrap placement="bottom" trigger="hover" class="caserank" content="A:限时2小时反馈 B:限时8小时反馈 C:限时24小时反馈 D:限时48小时反馈">
+                        <Icon type="ios-information-circle-outline" size="20"style="margin-top:20px;"></Icon>
+                    </Poptip>
+                    <i-col span="24">
+                        <form-item label="下发描述" prop="RWMS"> 
+                            <i-input type="textarea" v-model="issueInfo.RWMS" placeholder="最多输入1000字" :rows="8" :autosize="{minRows: 8,maxRows: 10}" />
+                        </form-item>
+                    </i-col>
+                    <i-col span="24">
+                        <form-item label="信息附件" style="margin-bottom: 0px">
+                            <Upload
+                                ref="upload"
+                                :show-upload-list="false"
+                                :default-file-list="defaultList"
+                                :on-success="handleSuccess"
+								:on-progress="handlerprogress"
+                                :max-size="102400"
+                                :on-format-error="handleFormatError"
+                                :on-exceeded-size="handleMaxSize"
+                                :before-upload="handleBeforeUpload"
+                                multiple
+                                type="drag"
+                                action="./uf?appId=com.awspaas.user.apps.clue&sid=<#sid>&groupValue=issue&fileValue=<#UUID>&repositoryName=sy"
+                                style="display: inline-block;width:58px;">
+                                <div style="width: 58px;height:58px;line-height: 58px;">
+                                    <Icon type="ios-add" size="20"></Icon>
+                                </div>
+                            </Upload>
+                            <div class="demo-upload-list" v-for="(item,index) in uploadList" :key="item.value">
+                                <div :title="item.name" v-if="matchType(item)==='xlsx'||matchType(item)==='xls'">
+                                    <Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" ></Icon>
+                                    <img src="../apps/com.awspaas.user.apps.clue/img/icon/excel.png">
+                                    <p>附件{{index + 1}}</p>
+                                </div>
+                                <div :title="item.name" v-if="matchType(item) === 'doc'||matchType(item)=== 'docx'">
+                                    <Icon type="md-remove-circle"  class="up_remove"  @click.native="handleRemove(item)" ></Icon>
+                                    <img src="../apps/com.awspaas.user.apps.clue/img/icon/word.png">
+                                    <p>附件{{index + 1}}</p>
+                                </div>
+                                <div :title="item.name" v-if="matchType(item) === 'pptx'">
+                                    <Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" ></Icon>
+                                    <img src="../apps/com.awspaas.user.apps.clue/img/icon/ppt.png">
+                                    <p>附件{{index + 1}}</p>
+                                </div>
+                                <div :title="item.name" v-if="matchType(item) === 'png'||matchType(item) === 'jpg'||matchType(item) === 'jpeg'||matchType(item) === 'gif'">
+                                    <Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" ></Icon>
+                                    <img src="../apps/com.awspaas.user.apps.clue/img/icon/image.png">
+                                    <p>附件{{index + 1}}</p>
+                                </div>
+                                <div :title="item.name" v-if="matchType(item) === 'mp4'">
+                                    <Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" ></Icon>
+                                    <img src="../apps/com.awspaas.user.apps.clue/img/icon/video.png">
+                                    <p>附件{{index + 1}}</p>
+                                </div>
+                                <div :title="item.name" v-if="matchType(item) === 'zip'||matchType(item) === 'rar'||matchType(item) === '7z'">
+                                    <Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" ></Icon>
+                                    <img src="../apps/com.awspaas.user.apps.clue/img/icon/zip.png">
+                                    <p>附件{{index + 1}}</p>
+                                </div>
+                                <div v-else :title="item.name">
+                                    <Icon type="md-remove-circle" class="up_remove" @click.native="handleRemove(item)" ></Icon>
+                                    <img src="../apps/com.awspaas.user.apps.clue/img/icon/unknown.png">
+                                    <p>附件{{index + 1}}</p>
+                                </div>
+                            </div>
+                            <Tooltip content="最多上传15个附件，每个附件最大100M" style="position: absolute;top:20px;left: -46px;">
+                                <Icon type="ios-information-circle-outline" size="20"/>
+                            </Tooltip>
+                        </form-item>
+                    </i-col>
+                </Row>
+                <Row class="w_bg" style="margin-top: 0px;">
+                    <i-col span="24">
+                        <form-item label="线索列表">
+                            <Row>
+                                <i-col span="8">
+                                    <i-button class="cluebtn" @click="callModal()">
+                                        <Icon type="ios-add" size="50" />
+                                    </i-button>
+                                </i-col>
+                                <i-col  span="8" v-for="item in griddata.xscheck" v-if="xscheckshow" :key="item.XSMC">
+                                    <!-- 展示上传的线索 -->
+                                    <div  class="blackgl":title="item.XSMC">
+                                        <div :class='returnColor(item.XSJBDM)'>
+                                            <div style="height:50px;margin-left:1.8em;margin-top:0.8em;color:#fff;">{{item.XSJBDM}}</div>
+                                        </div>
+                                        <div style="float:left; margin: 0.5em;">
+                                            {{item.XSMC}}</br><span style="color:#01a4fc">{{item.XSBH}}</span>
+                                        </div>
+                                        <Icon type="md-close" class="reclue_close" @click="deleteRelevanceClue(item.XSBH)" />
+                                    </div>
+                                </i-col>  
+                            </Row>
+                            <Modal v-model="addClueModal" title="串并线索"  width="70%" @on-ok="addClueTab()" @on-cancel="cancel" footer-hide :closable="false">
+                                <div slot="header" style="height: 35px;line-height: 35px;">
+                                    <label>串并线索</label>
+                                    <div style="float:right;">
+                                        <i-button @click="addClueModal=false">取消</i-button>
+                                        <i-button type="primary" @click="addClueTab()">确定</i-button>
+                                    </div>
+                                </div>
+                                <Row>
+                                    <i-form ref="addClue" v-model="addClue" v-bind:label-width="30">
+                                        <i-col span="5" label>
+                                            <form-item>
+                                                <i-input v-model="addClue.XSBH" placeholder="请输入线索编号"></i-input>
+                                            </form-item>
+                                        </i-col>
+                                        <i-col span="5" label>
+                                            <form-item prop="XSLXDM">
+                                                <i-select v-model="addClue.XSLXDM" codeName="CODE_XSHB_XSLX"  placeholder="请输入线索类型">
+                                                    <i-option v-for="item in optiondata.zllx" :value="item.value" :key="item.value">{{item.label}}</i-option>
+                                                </i-select>
+                                            </form-item>
+                                        </i-col>
+                                        <i-col span="5" label>
+                                            <form-item prop="XSJBDM">
+                                                <i-select v-model="addClue.XSJBDM" codeName="CODE_XSHB_JB" placeholder="请输入线索级别">
+                                                    <i-option v-for="item in optiondata.xsjb" :value="item.value" :key="item.value">{{item.label}}</i-option>
+                                                </i-select>
+                                            </form-item>
+                                        </i-col>
+                                        <i-col span="5" label>
+                                            <form-item>
+                                                <date-picker type="daterange" style="width:100%;" confirm v-model="addClue['DJSJ~11']" format="yyyy-MM-dd" placeholder="开始日期-截止日期"  @on-change="addClue['DJSJ~11']=$event"></date-picker>
+                                            </form-item>
+                                        </i-col>
+                                        <i-col span="4">
+                                            <form-item>
+                                                <i-button type="primary" @click="searchAllClue()">查询</i-button>
+                                                <i-button @click="resetForm('addClue')">清空</i-button>
+                                            </form-item>
+                                        </i-col>
+                                    </i-form>
+                                </Row>
+                                <sy-table
+                                    id-field="XSBH"
+                                    ref="seriesClue"
+                                    :url="seriesClue.url" 
+                                    :columns="seriesClue.columns" 
+                                    :query-params="seriesClue.params"
+                                    :pager-page-size="5" 
+                                    :pager-page-size-opts="[5, 10, 20, 30]">
+                                </sy-table>
+                            </Modal> 
+                        </form-item>
+                    </i-col>
+                </Row>
+                <Row class="w_bg">
+                    <div class="info_title" style="margin-bottom: 15px;">反馈要求</div>
+                    <i-col span="8">
+                        <form-item label="是否反馈" prop="SFFK_PDBZ">
+                            <radio-group v-model="issueInfo.SFFK_PDBZ" codeName="CODE_IF"  @on-change="isFeedback()">
+                                <Radio label="1">是</Radio>
+                                <Radio label="0">否</Radio>
+                            </radio-group>
+                        </form-item>
+                    </i-col>
+                    <i-col span="8">
+                        <form-item label="经营反馈" prop="SFJYFK_PDBZ" v-if="manageDisplay.xsyc">
+                            <radio-group v-model="issueInfo.SFJYFK_PDBZ" codeName="CODE_IF" @on-change="manageFeedback()">
+                                <Radio label="1">是</Radio>
+                                <Radio label="0">否</Radio>
+                            </radio-group>
+                        </form-item>
+                    </i-col>
+                    <i-col span="8" offset="8"></i-col>
+                    <i-col span="8">
+                        <form-item label="反馈期限" prop="FKQX" v-if='feedbackTerm.fk_show'>
+                            <date-picker
+                            type="datetime"
+                            :options="restrict"
+							:value="issueInfo.FKQX"
+							format="yyyy-MM-dd HH:mm:ss"
+                            style="width: 90%"
+                            @on-change="issueInfo['FKQX']=$event"
+                            ></date-picker>
+                        </form-item>
+                    </i-col>
+                    <i-col span="8">
+                        <form-item label="反馈频率" prop="FKPLDM" v-if='manageDisplay.fk_show'>
+                            <i-select v-model="issueInfo.FKPLDM">
+                                <i-option value="01">10天一次</i-option>
+                                <i-option value="02">20天一次</i-option>
+                                <i-option value="03">30天一次</i-option>
+                            </i-select>
+                        </form-item>
+                    </i-col>
+                </Row>
+            </i-form>
+			<i-form ref="Lowerhair" :model="Lowerhair" :rules="lValidate" :label-width="120">
+				<Row class="w_bg">
+					<div class="info_title" style="margin-bottom: 15px;">选择下级对象</div>
+					<i-col span="24">
+						<form-item label="接收类型" prop="JSLX">
+							<radio-group v-model="Lowerhair.JSLX" @on-change="showOtherform()">
+								<Radio label="02" :disabled="unitAvailable">单位接收</Radio>
+								<Radio label="01">个人接收</Radio>
+							</radio-group>
+						</form-item>
+					</i-col>
+					<i-col span="8">
+						<form-item label="选择单位" prop="unit">
+							<i-select v-model="Lowerhair.unit" @on-change="v=>{xlktz(v,'type')}" :label-in-value="true" filterable clearable :multiple="dwry">
+								<i-option v-for="item in cityList" :value="item.value" :key="item.value" :label="item.label"></i-option>
+							</i-select>
+						</form-item>
+					</i-col>
+					<i-col span="8" v-if="person_part.show">
+						<form-item label="选择个人" prop="personal">
+							<i-select id="qk" v-model="Lowerhair.personal" :label-in-value="true" filterable clearable @on-change="v=>{choosePer(v,'type')}">
+								<i-option v-for="item in grList" :value="item.value" :key="item.value" :label="item.label"></i-option>
+							</i-select>
+						</form-item>
+					</i-col>
+					<i-col span="8" offset="16"></i-col>
+					<!--单位接收-->
+					<i-col span="24" v-show="mode11hideShow">
+						<form-item label="对象名单">
+							<div class="Unitreception">
+								<!-- <div v-for="(item,index) in xzdwdxmd" :key="index"> -->
+								<!-- @on-close="RemoveUnit" -->
+								<tag v-for="(item,index) in xzdwdxmd" :key="index" closable style="float:left" :key="item" :name='item' @on-close="RemoveUnit">{{item}}</tag>
+								<!-- </div> -->
+							</div>
+						</form-item>
+					</i-col>
+					<!-- 个人接收  -->
+					<i-col span="16" v-show="person_part.p_show" v-for="(item,index) in company_name" :key="index">
+						<form-item label="对象名单">
+							<div class="Unitreception">
+								<div style="width:100%;background:rgb(241, 241, 241);">
+									<div style="margin: 1em;">{{item.name}}</div>
+                                </div>
+								<div v-for="(pitem,pindex) in p_list" :key="pindex">
+									<div v-show="pindex==item.code">
+										<tag v-for="(item,index) in pitem" :key="item" :name="item" style="float:left;margin-left: 1em;" closable @on-close="RemovePerson">{{item}}</tag>
+									</div>
+								</div>
+							</div>
+						</form-item>
+					</i-col>
+			    </Row>
+			</i-form>
+            <Row class="w_bg fixed_bar" style="width: calc(100%);">
+                <Modal
+                    title="下发成功"
+                    v-model="xsk"
+                    class-name="vertical-center-modal">
+                    <p>下发成功</p>
+                </Modal>
+                <i-button class="pull-right btn" type="primary" @click="submitData('issueInfo')">确定</i-button>
+                <i-button class="pull-right btn" @click="formCancel()">取消</i-button>
+            </Row>
+            
+            <Modal v-model="deleteModel" width="360">
+					<p slot="header" style="color: #f60; text-align: center;">
+						<Icon type="ios-information-circle"></Icon>
+						<span>删除提醒</span>
+					</p>
+					<div style="text-align: center;">
+							<h3>确定要删除此信息吗？</h3>
+					</div>
+					<div slot="footer">
+						<i-button size="large" type="error" @click="delDate()" style="width: 100%;">确定</i-button>
+					</div>
+				</Modal>
+            
+        </div>
+    </div>
+<script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/vue.min.js" ></script>
+<script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/iview.min.js"></script>
+<script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/zh-CN.js"></script>
+<script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/axios.min.js"></script>
+<script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/common.js"></script>
+<script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/sy-table.js"></script>
+</body>
+	<script>
+        var sid='<#sid>';
+        var rw='<#rw>';
+        var rwglxsId = '<#issusIds>';
+		var vm = new Vue({
+		    el:'#app',
+			data:{
+				//删除modal
+            	deleteModel:false,
+            	deleteRow:'',
+            	deleteRefs:'',
+            	deleteXxbh:'',
+                //反馈期限时间选择限制
+                restrict:{
+                    disabledDate (date) {
+                        return date && date.valueOf() < Date.now() - 86400000;
+                    }
+                },
+                issueSfsmSelect:[],//上报是否涉密
+                //下方选中的已经串并的案件
+                xscheckshow:false,
+                obj:{},
+                //反馈期限显示隐藏
+                feedbackTerm:{
+                    fk_show:false,
+                },
+                //经营反馈
+                manageDisplay:{
+                    fk_show:false,
+                    xsyc:false
+                },
+             
+				//下发信息
+                issueInfo:{
+                    //标题名称
+                    RWMC:'',
+                    //下发线索类型
+                    XFLXDM:'',
+                    //是否公开
+                    SFSMDM:'',
+                    //紧急程度
+                    JJCDDM:'',
+                    //任务描述
+                    RWMS:'',
+                    //是否反馈
+                    SFFK_PDBZ:'0',
+                    //经营反馈
+                    SFJYFK_PDBZ:'0',
+                    //反馈期限
+                    FKQX:'',
+                    //反馈频率
+                    FKPLDM:'',
+                },
+                superior:[],
+                allpersoninfo:[],
+                filePath:[],//附件路径
+                GLXSID:[],//关联线索ID
+                //线索弹框里面的数据
+                addClueModal:false,
+                griddata:{
+                    xscol:[
+                        { type: "selection", width: 60, align: "center" },
+                        {title:'线索编号',key:'XSBH',width:230,render:(h,params)=>{
+                                let joinStyle = {}, joinText='';
+                                if( params.row.GLXSS > 0){
+                                    joinStyle = {
+                                        color:'#fff',
+                                        display:'inline-block',
+                                        width: '20px',
+                                        height: '20px',
+                                        backgroundColor: 'rgba(45, 183, 245, 1)',
+                                        marginRight:'5px',
+                                        textAlign:'center',
+                                        borderRadius: '5px',
+                                        lineHeight:'20px'
+                                    };
+                                    joinText = '串'
+                                }else{
+                                }
+                                return h('div', [
+                                    h('span',{
+                                        style:joinStyle
+                                    },joinText),
+                                    h('a',{
+                                        attrs: {
+                                            href: './w?cmd=com.awspaas.user.apps.clue.router&classify=clue&action=detail&sid='+sid+'&extendParams={"XSBH":"'+params.row.XSBH+'"}',
+                                            target:'_blank'
+                                        }
+                                    }, params.row.XSBH)
+                                ]);
+                            },
+                        },
+                        { title: "线索名称", key: "XSMC",tooltip:"true" },
+                        { title: "线索类型", key: "XSLXDM" },
+                        { title: "线索级别", key: "XSJBDM" },
+                        { title: "登记时间", key: "DJSJ" },
+                        { title: "登记单位", key: "XXDJDW_GAJGMC",tooltip:true },
+                    ],
+                    xsdata: [],
+                    xscheck:[],
+                },
+                addClue:{
+                    XSBH: "",
+                    XSJBDM: "",
+                    XSLXDM: "",
+                    "DJSJ~11":""
+                },
+                dwry: "",
+                mode11hideShow: false,
+                Lowerhair: {
+                    JSLX: "02",
+                    unit:[],
+                    personal:'',
+                },
+                lValidate:{
+                    JSLX: [
+                        { required: true,message: "此项为必填项",trigger: "change"}
+                    ],
+                    unit: [
+                        { type: 'array',required: true,message: "此项为必填项",trigger: "change"}
+                    ],
+                    personal: [
+                        { required: true,message: "此项为必填项",trigger: "change"}
+                    ],
+                },
+                //选择单位
+                cityList: [],
+                //选择个人
+                grList: [],
+                xzdwdxmd: [],
+                //文件上传
+                defaultList: [],
+                imgName: "",
+                visible: false,
+                uploadList: [],
+                //验证
+                clueValidate: {
+                    RWMC: [
+                        { required: true,message: "此项为必填项",trigger: "change"},
+                        { type: 'string', max: 50,message: '最多输入50字',trigger: 'change'}
+                    ],
+                    SFFK_PDBZ:[
+                        { required: true,message: "此项为必填项",trigger: "change"}
+                    ],
+                    SFJYFK_PDBZ:[
+                        { required: true,message: "此项为必填项",trigger: "change"}
+                    ],
+                    XFLXDM: [
+                        { required: true,message: "此项为必填项",trigger: "change"}
+                    ],
+                    SFSMDM: [
+                        { required: true,message: "此项为必填项",trigger: "change"}
+                    ],
+                    JJCDDM: [
+                        { required: true,message: "此项为必填项",trigger: "change"}
+                    ],
+                    RWYQ_JYQK: [
+                        { required: true,message: "此项为必填项",trigger: "change"}
+                    ],
+                    FKPLDM: [
+                        {required: true,message: "此项为必填项",trigger: "change"}
+                    ],
+                    FKQX: [
+                        {required: true,message: "此项为必填项",trigger: "change"}
+                    ],
+                    RWMS:[
+                        { required: true,message: "此项为必填项",trigger: "change"},
+                        { type: 'string', max: 1000, message: '最多输入1000字', trigger: 'change' }
+                    ],
+                    JSLX:[
+                        { required: true,message: "此项为必填项",trigger: "change"}
+                    ],
+                },
+                person_part: {
+                    show: false,
+                    p_show: false
+                },
+                p_list: [],
+                company_name: [],
+                xsk:false,
+                //表格所有选中项
+                selection:[],
+                //串并线索
+                seriesClue:{
+                    url:'./jd?cmd=com.awspaas.user.apps.clue.getAreaClue&sid='+sid,
+                    params:{},
+                    columns:[
+                        {type: "selection",width: 60,align: "center"},
+                        {title:'线索编号',key:'XSBH',width:230,render:(h,params)=>{
+                                let joinStyle = {}, joinText='';
+                                if( params.row.GLXSS > 0){
+                                    joinStyle = {
+                                        color:'#fff',
+                                        display:'inline-block',
+                                        width: '20px',
+                                        height: '20px',
+                                        backgroundColor: 'rgba(45, 183, 245, 1)',
+                                        marginRight:'5px',
+                                        textAlign:'center',
+                                        borderRadius: '5px',
+                                        lineHeight:'20px'
+                                    };
+                                    joinText = '串'
+                                }else{
+                                }
+                                return h('div', [
+                                    h('span',{
+                                        style:joinStyle
+                                    },joinText),
+                                    h('a',{
+                                        attrs: {
+                                            href: './w?cmd=com.awspaas.user.apps.clue.router&classify=clue&action=detail&sid='+sid+'&extendParams={"XSBH":"'+params.row.XSBH+'"}',
+                                            target:'_blank'
+                                        }
+                                    }, params.row.XSBH)
+                                ]);
+                            },
+                        },
+                        {title: "线索名称",key: "XSMC",tooltip: "true"},
+                        {title: "线索类型",key: "XSLXDM"},
+                        {title: "线索级别",key: "XSJBDM"},
+                        {title: "登记时间",key: "DJSJ"},
+                        {title: "登记单位",key: "XXDJDW_GAJGMC",tooltip: "true"},
+                    ],
+                },
+                optiondata: {
+                    zllx: [
+                        {value: "01",label: "常规线索"},
+                        {value: "02",label: "贩枪线索"},
+                        {value: "03",label: "逃犯线索"},
+                    ],
+                    xsjb:[
+                        {value: "01",label: "A"},
+                        {value: "02",label: "B"},
+                        {value: "03",label: "C"},
+                        {value: "04",label: "D"}
+                    ],
+                },
+                unitAvailable:false,
+            },
+	        methods: {
+	        	del(row,xxbh,refs){
+            		this.deleteRow=row,
+            		this.deleteRefs=refs,
+            		this.deleteXxbh=xxbh,
+					this.deleteModel = true;
+				},
+				
+				delDate(){
+					vm.deleteSeriesBiz(vm.deleteRow,vm.deleteXxbh,function(response){
+                        setTimeout(() => {
+                        	vm.$refs[vm.deleteRefs].init();
+                            vm.$Message.info("删除成功");
+                            vm.deleteModel = false;
+                        }, 1);
+                    });
+				},
+                getCodeSelect(table, url, name, $event){//查询code
+                    let json={
+                        table:table
+                    };
+                    let param = new URLSearchParams();
+                    param.append("json",JSON.stringify(json));
+                    if($event){
+                        axios({
+                            url: "./jd?sid="+sid+"&cmd="+url,
+                            method: "post",
+                            data: param
+                        }).then(response => {
+                            this[name] = response.data.data;
+                        }).catch(error => {
+                            console.log(error);
+                        });
+                    }
+
+                },
+    	        searchData(json, url, callback) {
+    	        	let param = new URLSearchParams();
+    	        	param.append("json",JSON.stringify(json));
+    	        	axios({
+    	        		url: "./jd?sid="+sid+"&cmd="+url,
+    	        		method: "post",
+    	        		data: param
+    	        	}).then(response => {
+    	        		callback(response);
+    	        	}).catch(error => {
+    	        		console.log(error);
+    	        	});
+    	        },
+                //反馈显示隐藏
+                isFeedback(){
+                    if(this.issueInfo.SFFK_PDBZ==1){
+                        this.feedbackTerm.fk_show=true;
+                        this.manageDisplay.xsyc=true;
+                        if(this.issueInfo.SFJYFK_PDBZ==1){
+                            this.manageDisplay.fk_show=true;
+                        }else{
+                            this.issueInfo.SFJYFK_PDBZ='0';
+                            this.manageDisplay.fk_show=false;
+                        }
+                    }else{
+                        this.issueInfo.SFJYFK_PDBZ='';
+                        this.issueInfo.FKQX="";
+                        this.issueInfo.FKPLDM="";
+                        this.manageDisplay.fk_show=false;
+                        this.manageDisplay.xsyc=false;
+                        this.feedbackTerm.fk_show=false;
+                    }
+                },
+                returnColor(type){
+                    switch(type){
+                        case 'A':
+                        return 'red'
+                        break;
+                        case 'B':
+                        return 'blue'
+                        break;
+                        default:
+                        return 'red'
+                    }
+                },
+                //经营反馈
+                manageFeedback(){
+                    if(this.issueInfo.SFJYFK_PDBZ==1){
+                        this.manageDisplay.fk_show=true;
+                    }else{
+                        this.manageDisplay.fk_show=false;
+                        this.issueInfo.FKPLDM="";
+                    }
+                },
+                backgroundClass(XSJBDM){
+                    if(XJBDM=='A'){
+                        return red;
+                    }
+                },
+                showLoadMask() {
+		            this.$Spin.show({
+			            render: (h) => {
+				            return h('div', [
+                                h('Icon', {
+                                    'class': 'demo-spin-icon-load',
+                                    props: {
+                                        type: 'ios-loading',
+                                        size: 18
+                                    }
+                                }),h('div', '加载中')
+				            ])
+			            }
+		            });
+	            },
+                hideLoadMask() {
+                    setTimeout(() => {
+                        this.$Spin.hide();
+                    }, 100);
+                },
+                //提交
+                submitData(name) {
+                    var _this = this;
+					
+                    //验证必填项
+                    _this.$refs[name].validate(valid => {
+                        _this.$refs.Lowerhair.validate(valid2 => {
+                            if(valid&&valid2){
+								debugger;
+                                _this.showLoadMask();
+                                // 获取表单数据.   name=ref
+                                var json = this.$refs[name].model;
+                                var newjson = new Object();
+                                for (var key in json) {
+                                    if (json[key] != "" && json[key] != undefined) {
+                                        newjson[key] = json[key];
+                                    }
+                                    if(key == 'RWMS'){
+                                        newjson[key] = json_obj(newjson[key]);
+                                    }
+                                }
+                                var jsonn={
+                                    "data": {
+                                        "BO_EU_XSHB_RW_XF":newjson,
+                                        "BO_EU_XSHB_RW_LZ":this.superior
+                                    }
+                                };
+                                if(this.GLXSID.length > 0){
+                                    jsonn.data['BO_EU_XSHB_RW_GLXS'] = {
+                                        "ID": this.GLXSID.join()
+                                    }
+                                };
+                                if(this.filePath.length > 0){
+                                    jsonn.data['BO_EU_XSHB_FJ'] = {
+                                        "FJLJ": this.filePath.join()
+                                    }
+                                }
+                                var url = "com.awspaas.user.apps.clue.addIssueTask";
+                                this.searchData(jsonn, url, function(response) {
+                                    var data = response.data;
+                                    if(data.result=='ok'){
+										_this.hideLoadMask();
+                                        vm.$Modal.success({
+                                            title: '下发成功',
+                                            content: '点击确定后返回查询页面',
+                                            onOk: () => {
+                                                window.location.href = './w?sid=<#sid>&cmd=com.awspaas.user.apps.clue.router&classify=issue&action=search'
+                                            },
+                                        });  
+                                    }
+                                });
+                                
+                            }else {
+                                this.$Message.error("请检查填写内容!");
+                            }
+                        })
+                    });
+                },
+				
+				//取消方法
+				formCancel(){
+					((typeof rwglxsId == 'object') || (typeof rwglxsId == 'string')) ? (rwglxsId =rwglxsId):(rwglxsId =JSON.parse(rwglxsId));
+					//rwglxsId = JSON.parse(rwglxsId);
+					this.$Modal.confirm({
+						title: '取消任务创建',
+						//content: '<p>Content of dialog</p><p>Content of dialog</p>',
+						onOk: () => {
+							window.location.href='./w?cmd=com.awspaas.user.apps.clue.router&sid='+sid+'&classify=issue&action=search&rwglxsId='+rwglxsId.GLXSID+''; 
+						},
+						onCancel: () => {
+							//this.$Message.info('Clicked cancel');
+						}
+					});
+					
+				},
+                handleData(json) {
+                //接json非空项
+                    var obj = new Object();
+                    for (let i in json) {
+                        var xh = json[i];
+                        if (xh !== "") {
+                            obj[i] = json[i];
+                        }
+                    }
+                    var obja = {
+                        data: {
+                            BO_EU_XSHB_RW_XF: obj
+                        }
+                    };
+                    return obja;
+                },
+
+                valiName() {},
+                //文件上传
+                //上传附件
+                matchType(item) {
+                    //return item.FJLX;
+                    return item.name.substring(
+                    item.name.lastIndexOf(".") + 1,
+                    item.name.length
+                    );
+                },
+                //上传附件
+                handleRemove(file) {
+                    const fileList = this.$refs.upload.fileList;
+                    this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
+                    this.filePath.splice(fileList.indexOf(file), 1);
+                },
+                handleSuccess(res, file, fileList) {
+                    let msg = res.data.msg;
+                    let filePath = typeof msg == 'string' ? JSON.parse(res.data.msg).filePath : res.data.msg.filePath;
+                    this.filePath.push(filePath);
+					this.hideLoadMask();
+					this.hideLoadMask();
+                },
+				handlerprogress(event, file, fileList){
+					this.showLoadMask();
+				},
+                handleFormatError(file) {
+                    this.$Notice.warning({
+                        title: "错误的文件格式",
+                        desc:"文件 " +file.name +" 格式不正确"
+                    });
+                },
+                handleMaxSize(file) {
+                    this.$Notice.warning({
+                        title: "文件内容过大",
+                        desc: "文件  " + file.name + "超出100M."
+                    });
+                },
+                handleBeforeUpload() {
+					debugger;
+                    const check = this.uploadList.length <= 14;
+                    if (!check) {
+                        this.$Notice.warning({
+                        title: "最多上传15个附件！"
+                        });
+                    }
+                    return check;
+                },
+                //上传结束
+                //隐藏表单的显示隐藏
+                showOtherform() {
+                    this.superior=[];
+                    let status = this.Lowerhair.JSLX;
+                    //点击单位还是个人。
+                    switch (status) {
+                    //个人
+                        case "01":
+                            //个人列表下拉框展示
+                            this.person_part.show = true;
+                            //清空单位接收下方div
+                            this.mode11hideShow = false;
+                            //单位选中值清空
+                            this.Lowerhair.unit = "";
+                            //单位变成单选
+                            this.dwry = false;
+                            //单位验证必填
+                            this.lValidate.unit= [
+                                { required: true,message: "此项为必填项",trigger: "change"}
+                            ];
+                        break;
+                        //单位
+                        case "02":
+                            this.company_name=[];
+                            this.obj = {};this.p_list = [];
+                            this.person_part.show = false;
+                            this.Lowerhair.unit = "";
+                            this.Lowerhair.personal = '';
+                            this.person_part.p_show = false;
+                            this.dwry = true;
+                            this.lValidate.unit= [
+                                {type: 'array',required: true,message: "此项为必填项",trigger: "change"}
+                            ];
+                        break;
+                    }
+                },
+                //当单位下拉框值改变时
+                xlktz(value, type) {
+					debugger;
+                    var _this = this;
+                    let status = this.Lowerhair.JSLX;
+                    if (status == "02") {
+                        this.superior = [];
+                        //单位
+                        if (this.Lowerhair.unit.length == 0) {
+                        //就隐藏下方对象名单
+                            this.mode11hideShow = false;
+                        } else {
+                            this.mode11hideShow = true;
+                        }
+                        var names = [];
+                        //获取选中的value和label  
+                        for (let i = 0; i < value.length; i++) {
+                        //分割字符串
+                        //names.push(value[i].label.split("【")[0]);
+                            names.push(value[i].label);
+                            //拼接传给后台数据类型
+                            var obj=new Object();
+                            obj.JSDXLXDM="02";
+                            obj.JSDW_GAJGMC=value[i].label.split("【")[0];
+                            obj.JSDW_GAJGJGDM=value[i].value;
+                            this.superior.push(obj);
+                        }
+                        this.xzdwdxmd = names;
+                        } else {
+							this.company_name=[];
+                            this.Lowerhair.personal='';
+                            if(value==undefined){
+                                return;
+                            }
+                            //个人
+                            var this_name = value.label.split("【")[0];
+                            var gxs = {
+                                gxs: this.Lowerhair.unit
+                            };
+                            var url = "com.awspaas.user.apps.clue.getDepartmentUser";
+                            this.searchData(gxs, url, function(response) {
+                                // _this.showLoadMask();
+                                var data = response.data.data;
+                                var newData = [];
+                                for (let i = 0; i < data.length; i++) {
+                                    var obj = new Object();
+                                    obj.label = data[i].USERNAME + "【" + data[i].USERID + "】";
+                                    obj.value = data[i].USERID;
+                                    newData.push(obj);
+                                    var obj2=new Object();
+                                    obj2.JSDXLXDM="01";
+                                    obj2.JSRY_XM=data[i].USERNAME;
+                                    obj2.JSRY_GMSFHM=data[i].USERID;
+                                    obj2.JSRY_LXDH=data[i].MOBILE;
+                                    obj2.JSDW_GAJGJGDM=data[i].ID;
+                                    obj2.JSDW_GAJGMC=data[i].DEPARTMENTNAME;
+                                    _this.allpersoninfo.push(obj2);
+                                }
+                                for(var key in this.obj){
+                                    if(data.length==0){
+                                        this.obj.discard("key");
+                                    }
+                                };
+                                _this.grList = newData;
+                                //选中单位
+                                var len = _this.company_name.length;
+                                var obj = new Object();
+                            //如果单位是0的话
+                                if (len == 0) {
+                                    obj.name = this_name;
+                                    obj.code = _this.Lowerhair.unit;
+                                    _this.company_name.push(obj);  
+                                } else {
+                                    obj.name = this_name;
+                                    obj.code = _this.Lowerhair.unit;
+                                    _this.company_name.push(obj);
+                                    //循环单位名字
+                                    for(var i=0;i<len;i++){
+                                        if(this_name==_this.company_name[i].name){
+                                            //如果现在选中的单位存在于单位列表中。   就删除掉选中的最后一项，
+                                            _this.company_name.splice(len,1);
+                                            var key = _this.company_name[i].code;
+                                            //重新选择单位的时候，把之前单位选择人员添加到人员下拉框里
+                                            // for(var m=0;m<_this.obj[key].length;m++){
+                                            //     var checkvalue=_this.obj[key][m].split('【')[1].split('】')[0];
+                                            //     _this.Lowerhair.personal.push(checkvalue);
+                                            // }
+                                            _this.Lowerhair.personal = _this.obj[key][0].split('【')[1].split('】')[0]
+                                        }
+                                    }
+                                }
+                            _this.hideLoadMask();
+                        });
+                    }
+                },
+                IsContain(arr, value) {
+                    for (var i = 0; i < arr.length; i++) {
+                        if (arr[i] == value) return true;
+                    }
+                    return false;
+                },
+                //个人下拉框值改变时
+                choosePer(value, type) {
+					debugger;
+					this.superior=[];
+                    var grnames = [];
+                    var grnamesList = this.grList;
+                    for (var i = 0; i < grnamesList.length; i++) {
+                        grnames.push(grnamesList[i].label);
+                    }
+                    this.grnamesList = grnames;
+                    var valuea = [];
+                    // for (var i = 0; i < value.length; i++) {
+                    //     valuea.push(value[i].label);
+                    //     //获取所有选中人的信息。
+                    //     for(var m=0;m<this.allpersoninfo.length;m++){
+                    //     //从所有人员列表中获取我所有选中的人员信息
+                    //         if(this.allpersoninfo[m].JSRY_GMSFHM==value[i].value){
+                    //         //如果this.allpersoninfo[m]不在this.superior
+                    //             if(this.contains(this.allpersoninfo[m],this.superior)==false){
+                    //                 this.superior.push(this.allpersoninfo[m]);    
+                    //             }
+                    //         }
+                    //     }
+                    // }
+                    
+                    if(value != undefined){
+                        valuea.push(value.label);
+                        for(var m=0;m<this.allpersoninfo.length;m++){
+                         //从所有人员列表中获取我所有选中的人员信息
+                             if(this.allpersoninfo[m].JSRY_GMSFHM==value.value){
+                             //如果this.allpersoninfo[m]不在this.superior
+                                 if(this.contains(this.allpersoninfo[m],this.superior)==false){
+                                     this.superior.push(this.allpersoninfo[m]);    
+                                }
+                             }
+                        }
+                    }
+                    
+
+                    var obj2=new Object();
+                    obj2[this.Lowerhair.unit] = valuea;
+                    for(var key in obj2){
+                        if(obj2[key].length!=0){
+                            this.obj[key]=obj2[key];
+							this.p_list = this.obj;
+                        }else{
+							 this.p_list = '{}';
+						}
+                    };
+                    
+                    if (JSON.stringify(this.p_list) === '{}' == 0) {
+						vm.$set(this.person_part,'p_show',true);
+                        //this.person_part.p_show = true;
+                    } else {
+						vm.$set(this.person_part,'p_show',false);
+                        //this.person_part.p_show = false;
+                    }
+                },
+                contains (obj,arr) {  
+                    var i = arr.length;  
+                    while (i--) {  
+                        if (arr[i] === obj) {  
+                            return true;  
+                        }  
+                    }  
+                    return false;  
+                },
+                //关联线索方法
+                cancel(){},
+                callModal() {
+                    for(var key in this.addClue){
+                        this.addClue[key] = ''
+                    }
+                    this.addClueModal = true;
+                    this.seriesClue.params= {
+                        "ID~10": this.GLXSID.join()
+                    };
+                    setTimeout(() => {
+                        this.$refs['seriesClue'].init();  
+                    }, 1);  
+                },
+                searchAllClue() {
+                    var json = this.addClue;
+                    json["ID~10"] = this.GLXSID.join();
+                    this.seriesClue.params= json;
+                    setTimeout(() => {
+                        this.$refs['seriesClue'].init();
+                    }, 1);
+                },
+                //串并案件点击确定增加下方表格
+                addClueTab() {
+                    var _this = this;
+                    let idList = this.$refs.seriesClue.getSelectionsId();
+                    if(idList.length == 0){
+                    	this.$Message.warning('请选择关联线索！');
+                    	return;
+                    }
+                    let params = [];
+                    idList.forEach((item) => {
+                        params.push({
+                            XSBH : item
+                        });
+                    });
+                    axios({
+                        url:'./jd?cmd=com.awspaas.user.apps.clue.addTaskRelevanceClue&sid='+sid,
+                        method: 'post',
+                        params:{json:{data:{BO_EU_XSHB_RW_GLXS: params}}}
+                    }).then(response => {
+                        if(response.data.result == 'ok'){
+                            _this.addClueModal = false;
+                            _this.hideLoadMask();
+                            _this.GLXSID = _this.GLXSID.concat(response.data.data.ID);
+                            var url = 'com.awspaas.user.apps.clue.getTaskRelevanceClue';
+                            var json = {
+                                data: {
+                                    "gl.ID":  response.data.data.ID.join()
+                                },
+                                "page": 1,
+                                "rows": 100,
+                            }
+                            this.searchData(json, url, function(response) {
+                                var data = response.data;
+                                if(data.result=='ok'){
+                                    _this.xscheckshow = true;
+                                    for(var i=0;i<data.data.rows.length;i++){
+                                        _this.griddata.xscheck.push(data.data.rows[i]);
+                                    }
+                                    _this.hideLoadMask();
+                                }
+                            })
+                        }else{
+                            that.$Message.warning('系统异常，请联系工作站！');
+                        }
+                    })
+                },
+                //删除已经关联线索
+                deleteRelevanceClue(xsbh){
+                    vm.showLoadMask();
+                    axios({
+                        url:'./jd?cmd=com.awspaas.user.apps.clue.deleteTaskRelevanceClue&sid='+sid,
+                        method:'post',
+                        params:{json:{"data": { "BO_EU_XSHB_RW_GLXS": { "XSBH":xsbh } }}}
+                    }).then(response =>{
+                        let data = response.data;
+                        if(data.result == 'ok'){
+                            let checkData = vm.griddata.xscheck;
+                            let index = checkData.findIndex((element)=>(element['XSBH'] == xsbh));
+                            let deleteId = checkData[index].ID;
+                            let deleteIndex = vm.GLXSID.findIndex((element)=>(element == deleteId));
+                            vm.GLXSID.splice(deleteIndex,1);
+                            checkData.splice(index,1);
+                            vm.hideLoadMask();
+                        }
+                    })
+                },
+                isPrivate(value){
+                    if(value == '02'){
+                        this.Lowerhair.JSLX='01';
+                        this.unitAvailable = true;
+                        this.person_part.show = true;
+                        this.mode11hideShow = false;
+                        this.Lowerhair.unit = this.Lowerhair.unit !='' ? this.Lowerhair.unit:'';
+                        this.dwry = false;
+                        this.lValidate.unit= [
+                            { required: true,message: "此项为必填项",trigger: "change"}
+                        ];
+                    }else{
+                        this.Lowerhair.JSLX='02';
+                        this.unitAvailable = false
+                        this.company_name=[];
+                        this.obj = {};
+						this.p_list = [];
+                        this.person_part.show = false;
+                        this.Lowerhair.unit = "";
+                        this.Lowerhair.personal = '';
+                        this.person_part.p_show = false;
+                        this.dwry = true;
+                        this.lValidate.unit= [
+                            { type: 'array',required: true,message: "此项为必填项",trigger: "change"}
+                        ];
+                    }
+                },
+                RemovePerson(event,name){
+					debugger;
+                    let code = name.split("【")[1].split("】")[0];
+                    if(this.Lowerhair.personal == code){ this.Lowerhair.personal =''}
+                    for(let m=0;m<this.superior.length;m++){
+                        if(this.superior[m].JSRY_GMSFHM == code){
+                            this.superior.splice(m, 1);
+                        }
+                    }
+					if(this.Lowerhair.unit === '' || this.Lowerhair.unit == undefined){
+						for(let key in this.p_list){
+						    for(let i=0;i<this.p_list[key].length;i++){
+						        if(this.p_list[key][i] == name){
+						            for(let m=0;m<this.company_name.length;m++){
+						                if(this.company_name[m].code == key){
+						                    this.company_name.splice(m, 1)
+						                }
+						            }
+						        }
+						    }
+						}
+					}
+                },
+                RemoveUnit(event,name){
+                    let code = name.split("【")[1].split("】")[0];
+                    let index = this.Lowerhair.unit.indexOf(code);
+                    this.Lowerhair.unit.splice(index, 1);
+                    this.xzdwdxmd.splice(index, 1);
+                    for(let m=0;m<this.superior.length;m++){
+                        if(this.superior[m].JSDW_GAJGJGDM == code){
+                            this.superior.splice(m, 1);
+                        }
+                    }
+                },
+                resetForm(name){
+                    for(let key in this[name]){
+                        this[name][key] = '';
+                    }
+                },
+            },
+            mounted() {
+				this.uploadList = this.$refs.upload.fileList;
+                this.showLoadMask();
+                //选择下级对象
+                    var _this = this;
+                    var transdata;
+                    var url = "com.awspaas.user.apps.clue.getSubReceiveUnit";
+                    this.searchData(transdata, url, function(response) {
+                    var data = response.data.data;
+                    // code/name
+                    var newData = [];
+                    for (var i = 0; i < data.length; i++) {
+                        var obj = new Object();
+                        obj.label = data[i].NAME + "【" + data[i].CODE + "】";
+                        obj.value = data[i].CODE;
+                        newData.push(obj);
+                    }
+                    _this.cityList = newData;
+                    _this.hideLoadMask();
+                    });
+                    //选择下级对象
+                    var isEdit=getParameter('extendParams');
+                    if(isEdit!=undefined){
+                        if(rw != '<#'+'rw>'){
+                            rw=JSON.parse(rw);
+                            for(var key in this.issueInfo){
+								
+								if(rw[key] != undefined){
+									this.issueInfo[key]=rw[key];
+								}
+								if(key == 'SFFK_PDBZ'){//是否反馈
+									
+									this.issueInfo['SFFK_PDBZ'] == '1' ? (this.manageDisplay.xsyc = true) : (this.manageDisplay.xsyc = false);
+									this.issueInfo['SFFK_PDBZ'] == '1' ? (this.feedbackTerm.fk_show = true) : (this.feedbackTerm.fk_show = false);
+								}
+								if(key == 'FKQX' && rw[key] != undefined){
+									this.issueInfo[key] = this.issueInfo[key];
+									this.issueInfo[key] = formatTonomal(parseInt(rw[key]));
+								}
+								if(key == 'SFJYFK_PDBZ'){//是否经营反馈
+									this.issueInfo['SFJYFK_PDBZ'] == '1' ? (this.manageDisplay.fk_show = true) : (this.manageDisplay.fk_show = false);
+								}
+								if(key == 'XFLXDM'){
+									_this.isPrivate(this.issueInfo['XFLXDM']);
+								}
+                            }
+                        }
+                        rwglxsId = JSON.parse(rwglxsId);
+                        if(rwglxsId.GLXSID.length!=0){
+							this.GLXSID.push(rwglxsId.GLXSID);
+                            // this.GLXSID.concat(rwglxsId.GLXSID);
+                            var url = 'com.awspaas.user.apps.clue.getTaskRelevanceClue';
+                            var json = {
+                                data: {
+									"gl.ID": (typeof rwglxsId.GLXSID != 'object' ? rwglxsId.GLXSID : rwglxsId.GLXSID.join() )
+                                },
+                                "page": 1,
+                                "rows": 100,
+                            }
+                            this.searchData(json, url, function(response) {
+                                var data = response.data;
+                                if(data.result=='ok'){
+                                    _this.xscheckshow = true;
+                                    for(var i=0;i<data.data.rows.length;i++){
+                                        _this.griddata.xscheck.push(data.data.rows[i]);
+                                    }
+                                    _this.hideLoadMask();
+                                }
+                            })
+                        }
+                        if(rwglxsId.fjIDs.length != 0){
+                            let json = { ID:rwglxsId.fjIDs.join()};
+                            this.searchData(json, 'com.awspaas.user.apps.clue.getRelevanceAttachment', function(response) {
+                                let data = response.data;
+                                if(data.result == 'ok'){
+                                    let rows = data.data.rows;
+                                    for(let i=0;i<rows.length;i++){
+                                        vm.filePath.push(rows[i].FJLJ);
+                                        let msg = {
+                                            filePath:rows[i].FJLJ,
+                                            result:'ok',
+                                            id:':RO;'
+                                        } 
+                                        let checkFiles = {
+                                            name:rows[i].FJMC,
+                                            percentage: 100,
+                                            response:{
+                                                data:{msg:JSON.stringify(msg)},
+                                                files:{
+                                                    size:rows[i].FJDX,
+                                                    name:rows[i].FJMC,
+                                                    role: "app"
+                                                }
+                                            },
+                                            showProgress: false,
+                                            size: rows[i].FJDX,
+                                            status: "finished",
+                                            uid: 1551948821278
+                                        } 
+                                        vm.$refs.upload.fileList.push(checkFiles);
+                                    }
+                                }else{
+                                    console.log('error');
+                                }
+                            })
+                        }
+                    }
+                this.getCodeSelect('CODE_XSHB_SFSM','com.awspaas.user.apps.clue.getCodeMap','issueSfsmSelect','true');
+                },
+            }		
+        )
+	</script>
+</html>

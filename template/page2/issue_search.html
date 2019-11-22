@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>下发管理</title>
+        <link type="text/css" rel="stylesheet" href="../apps/com.awspaas.user.apps.clue/css/iview.css"/>
+        <link type="text/css" rel="stylesheet" href="../apps/com.awspaas.user.apps.clue/css/common.css"/>
+	    <style>
+            body{
+                background-color:rgb(242,242,242);
+                font-family: '微软雅黑' !important;
+            }
+            .wrapper{
+                background: #fff;
+	            padding: 10px 40px;
+	            margin-top: 15px;
+            }
+            .pull-right{
+                float: right;
+            }
+            .abs-btn{
+                position: absolute;
+                top: 8px;
+                left: calc(100% - 115px);
+                cursor: pointer;
+                z-index: 100;
+            }
+            .pd20{
+                padding: 0px 20px;
+            }
+            .ivu-form-item{
+                margin: 6.5px 0;
+            }
+            .ivu-form-item-label,.ivu-form-item [placeholder],.ivu-select-placeholder{
+                font-size: 14px !important;
+            }
+            .ivu-table-header{
+                height: 54px;
+                line-height: 54px;
+                background-color: rgba(242, 242, 242, 1) !important;
+            }
+            .ivu-table-header .ivu-table-cell>span{
+                font-size: 14px;
+            }
+            .ivu-poptip a{
+                display: block;
+            }
+        </style>
+	</head>
+	<body>
+		<div id="issue_search">
+			<Row class="wrapper">
+				<i-col span="24">
+					<Breadcrumb separator=">">
+				        <breadcrumb-item>线索模块</breadcrumb-item>
+				        <breadcrumb-item>下发管理</breadcrumb-item>
+				    </Breadcrumb>
+				</i-col>
+			</Row>
+			<i-form ref="issue_form" class="pd20" v-bind:model="searchParams" v-bind:label-width="120">
+				<Row class="wrapper">
+                    <Row>
+                        <i-col span="8">
+                            <form-item label="下发编号" prop="RWBH">
+                                <i-input v-model="searchParams.RWBH" placeholder="请输入下发编号"/>
+                            </form-item>
+                        </i-col>
+                        <i-col span="8">
+                            <form-item label="标题名称" prop="RWMC~9">
+                                <i-input v-model="searchParams['RWMC~9']" placeholder="请输入标题名称"/>
+                            </form-item>
+                        </i-col>
+                        <i-col span="8">
+                            <form-item label="创建时间" prop="XFSJ~11">
+                                <date-picker type="daterange" style="width:100%;" confirm v-model="searchParams['XFSJ~11']" format="yyyy-MM-dd" placeholder="开始日期-截止日期"  @on-change="searchParams['XFSJ~11']=$event"></date-picker>
+                            </form-item>
+                        </i-col>
+                    </Row>
+				    <Row>
+                        <i-col span="8">
+                            <form-item label="下发类型" prop="XFLXDM">
+                                <i-select v-model="searchParams.XFLXDM" codeName="CODE_XSHB_XFLX" placeholder="请选择下发类型">
+                                    <i-option>全部</i-option>
+                                    <i-option value="01">常规下发</i-option>
+                                    <i-option value="02">贩枪下发</i-option>
+                                    <i-option value="03">逃犯下发</i-option>
+                                </i-select>
+                            </form-item>
+                        </i-col>
+                        <i-col span="8">
+                            <form-item label="下发状态" prop="RWZTDM">
+                                <i-select v-model="searchParams.RWZTDM" codeName="CODE_XSHB_RWZT" placeholder="请选择下发状态">
+                                    <i-option>全部</i-option>
+                                    <i-option value="01">待签收</i-option>
+                                    <i-option value="02">回退</i-option>
+                                    <i-option value="03">驳回</i-option>
+                                    <i-option value="04">中止</i-option>
+                                    <i-option value="05">已签收</i-option>
+                                    <i-option value="06">沟通中</i-option>
+                                    <i-option value="07">转派中</i-option>
+                                    <i-option value="08">转派失败</i-option>
+                                    <i-option value="09">转派成功</i-option>
+                                    <i-option value="10">已完结</i-option>
+                                </i-select>
+                            </form-item>
+                        </i-col>
+                        <i-col span="8">
+                            <form-item label="创建单位" prop="XFDW_GAJGJGDM">
+                                <sy-tree tablename="CODE_GXS_BIZ" v-model="searchParams.XFDW_GAJGJGDM" @change="searchParams.XFDW_GAJGJGDM=$event" placeholder="请选择创建单位"></sy-tree>
+                            </form-item>
+                        </i-col>
+		            </Row>
+                    <Row>
+                        <i-col span="8">
+                            <form-item label="接收单位" prop="JSDW_GAJGJGDM">
+                                <sy-tree tablename="CODE_GXS_BIZ" v-model="searchParams.JSDW_GAJGJGDM" @change="searchParams.JSDW_GAJGJGDM=$event" placeholder="请选择接收单位"></sy-tree>
+                            </form-item>
+                        </i-col>
+                        <i-col span="8">
+                            <form-item label="接收人员" prop="JSRY_XM">
+                                <i-input v-model="searchParams.JSRY_XM" placeholder="请选择接收人员" />
+                            </form-item>
+                        </i-col>
+                    </Row>
+		            <Row>
+		            	<i-button class="pull-right" @click="handleReset('issue_form')">重置</i-button>
+						<i-button class="pull-right" @click="search()" type="primary" style="margin-right: 15px;">查询</i-button>
+		            </Row>
+		        </Row>
+			</i-form>
+			<Row class="pd20">
+				<Row class="wrapper">
+					<i-button type="primary" class="abs-btn" @click="pageToAddIssue" v-if="user.userGxsLev != 3">新建下发</i-button>
+					<Tabs @on-click="switchTab">
+                        <tab-pane label="我的下发" name="myIssue" v-if="user.userGxsLev != 3">
+                            <sy-table 
+                                ref="myIssue" 
+                                :url="myIssueTable.url"
+                                :columns="myIssueTable.columns" 
+                                :query-params="searchParams"
+                                :pager-page-size="10" 
+                                :pager-page-size-opts="[5, 10, 20, 30]">
+                            </sy-table>
+                            
+                            <!-- 表格点击更多出现的弹框 -->
+                            <div class="entry" v-if="calloption">
+                                <div class="right-entry-trangle"></div>
+                            </div>
+                        </tab-pane>
+
+                        <tab-pane label="上级下发" name="supIssue" v-if="user.userGxsLev != 1">
+				        	<sy-table 
+                                ref="supIssue"
+                                :url="supIssueTable.url" 
+                                :columns="supIssueTable.columns" 
+                                :query-params="searchParams"
+                                :pager-page-size="10" 
+                                :pager-page-size-opts="[5, 10, 20, 30]">
+                            </sy-table>
+
+                            <!-- 表格点击更多出现的弹框 -->
+							<div class="entry" v-if="calloption">
+								<div class="right-entry-trangle"></div>
+                            </div>
+                        </tab-pane>
+
+
+                        <tab-pane label="单位下发" name="unitIssue">
+				        	<sy-table 
+                                ref="unitIssue"
+                                :url="unitIssueTable.url" 
+                                :columns="unitIssueTable.columns" 
+                                :query-params="searchParams"
+                                :pager-page-size="10" 
+                                :pager-page-size-opts="[5, 10, 20, 30]">
+                            </sy-table>
+                        </tab-pane>
+                        
+				        <tab-pane label="辖区下发" name="areaIssue">
+				        	<sy-table 
+                                ref="areaIssue"
+                                :url="areaIssueTable.url" 
+                                :columns="areaIssueTable.columns" 
+                                :query-params="searchParams"
+                                :pager-page-size="10" 
+                                :pager-page-size-opts="[5, 10, 20, 30]">
+                            </sy-table>
+				        </tab-pane>
+                    </Tabs>
+				</Row>
+			</Row>
+		</div>
+	</body>
+	<script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/vue.min.js" ></script>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/iview.min.js"></script>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/zh-CN.js"></script>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/axios.min.js"></script>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/sy-table.js"></script>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/common.js"></script>
+	<script>
+        const sid='<#sid>';
+        const user = JSON.parse('<#user>');
+		new Vue({
+			el:'#issue_search',
+			data:{
+                searchParams:{
+                    'RWBH':'',
+                    'RWMC~9':'',
+                    'XFSJ~11':'',
+                    'XFLXDM':'',
+                    'RWZTDM':'',
+                    'XFDW_GAJGJGDM':'',
+                    'JSDW_GAJGJGDM':'',
+                    'JSRY_XM':''
+                },
+                activeTabName: 'myIssue',
+                //我的下发
+                myIssueTable:{
+                    url: './jd?cmd=com.awspaas.user.apps.clue.getMyIssueTask&sid='+sid,
+                    columns:[
+                        {title:'下发编号',key:'RWBH',width:230,
+                            render:(h,params)=>{
+                                return h('div', [
+                                    h('a',{
+                                        attrs: {
+                                            href: './w?cmd=com.awspaas.user.apps.clue.router&classify=issue&action=process&sid='+sid+'&extendParams={"RWBH":"'+params.row.RWBH+'"}',
+                                             target:'_blank'
+                                        }
+                                    }, params.row.RWBH)
+                                ]);
+                            },
+                        },
+                        {title:'标题名称',key:'RWMC',tooltip:true},
+                        {title:'下发类型',key:'XFLXDM',tooltip:true},
+                        {title:'创建单位',key:'XFDW_GAJGMC',tooltip:true},
+                        {title:'创建时间',key:'XFSJ',sortable:true,tooltip:true},
+                        {title:'接收单位',key:'JSDW_GAJGMC',tooltip:true},
+                        {title:'接收人',key:'JSRY_XM',width:150,tooltip:true},
+                        {title:'任务状态',key:'RWZTDM',tooltip:true,
+                        	render: (h, params) => {
+                        		let statusColor;
+                        		if(params.row.RWZTDM=='待签收'){
+                        			statusColor='#09f'
+                        		}else if(params.row.RWZTDM=='回退'){
+                        			statusColor='#f56c6c'
+                        		}else if(params.row.RWZTDM=='驳回'){
+                        			statusColor='#f56c6c'
+                        		}else if(params.row.RWZTDM=='中止'){
+                        			statusColor='#cccccc'
+                        		}else if(params.row.RWZTDM=='沟通中'){
+                        			statusColor='#e6a23c'
+                        		}else if(params.row.RWZTDM=='转派中'){
+                        			statusColor='#67c23a'
+                        		}else if(params.row.RWZTDM=='转派成功'){
+                        			statusColor='#0099ff'
+                        		}else if(params.row.RWZTDM=='转派失败'){
+                        			statusColor='#cccccc'
+                        		}else if(params.row.RWZTDM=='关闭'){
+                        			statusColor='#cccccc'
+                        		}else if(params.row.RWZTDM=='已签收'){
+                        			statusColor='#67c23a'
+                        		};
+	                            return h('Poptip',[
+	                            	h('span', {
+                                        style:{
+                                            width: '9px',
+	                                        height: '9px',
+	                                        borderRadius:'25px',
+	                                        position:'relative',
+	                                        backgroundColor:statusColor,
+	                                        display:'inline-block'
+                                        },
+                                    }),
+	                                h('span', {
+	                                    style:{
+	                                        marginLeft:'5px',
+	                                    },
+	                                },params.row.RWZTDM),
+	                            ])
+                        }},
+                        {type: 'option',title:'操作',width: 100,
+                            render: (h, params) => {
+                                return h('Poptip',{
+                                    props: {
+                                        trigger: 'click',
+                                        placement: 'left'
+                                    },
+                                },[
+                                    h('span', {
+                                        style:{
+                                            color:'#0099FF',
+                                            fontSize:'12px',
+                                            cursor:'pointer'
+                                        },
+                                    },'更多'),
+                                    h('div', {
+                                        slot: 'content',
+                                        style:{
+                                            textAlign:'center',
+                                            lineHeight:'25px',
+                                            fontSize:'14px'
+                                        }
+                                    }, [
+                                        h('a',{attrs: {
+                                            href: './w?cmd=com.awspaas.user.apps.clue.router&classify=issue&action=process&sid='+sid+'&extendParams={"RWBH":"'+params.row.RWBH+'"}',
+                                            },},'操作'),
+                                        h('a',{attrs: {
+                                            href: './w?cmd=com.awspaas.user.apps.clue.router&classify=issue&action=add&sid='+sid+'&extendParams={"RWBH":"'+params.row.RWBH+'"}',
+                                            },},'新建')
+                                    ])
+                                ])
+                            }
+                        }
+                    ]
+                },
+                //上级下发
+                supIssueTable: {
+                    url: './jd?cmd=com.awspaas.user.apps.clue.getSupIssueTask&sid='+sid,
+                    columns:[
+                        {title:'下发编号',key:'RWBH',width:220,
+                            render:(h,params)=>{
+                                return h('div', [
+                                    h('a',{
+                                        attrs: {
+                                            href: './w?cmd=com.awspaas.user.apps.clue.router&classify=issue&action=process&sid='+sid+'&extendParams={"RWBH":"'+params.row.RWBH+'"}',
+                                             target:'_blank'
+                                        }
+                                    }, params.row.RWBH)
+                                ]);
+                            },
+                        },
+                        {title:'标题名称',key:'RWMC',tooltip:true},
+                        {title:'下发类型',key:'XFLXDM',tooltip:true},
+                        {title:'创建单位',key:'XFDW_GAJGMC',tooltip:true},
+                        {title:'创建时间',key:'XFSJ',sortable:true,tooltip:true},
+                        {title:'接收单位',key:'JSDW_GAJGMC',tooltip:true},
+                        {title:'接收人',key:'JSRY_XM',tooltip:true},
+                        {title:'任务状态',key:'RWZTDM',tooltip:true,
+                        	render: (h, params) => {
+                        		let statusColor;
+                        		if(params.row.RWZTDM=='待签收'){
+                        			statusColor='#09f'
+                        		}else if(params.row.RWZTDM=='回退'){
+                        			statusColor='#f56c6c'
+                        		}else if(params.row.RWZTDM=='驳回'){
+                        			statusColor='#f56c6c'
+                        		}else if(params.row.RWZTDM=='中止'){
+                        			statusColor='#cccccc'
+                        		}else if(params.row.RWZTDM=='沟通中'){
+                        			statusColor='#e6a23c'
+                        		}else if(params.row.RWZTDM=='转派中'){
+                        			statusColor='#67c23a'
+                        		}else if(params.row.RWZTDM=='转派成功'){
+                        			statusColor='#0099ff'
+                        		}else if(params.row.RWZTDM=='转派失败'){
+                        			statusColor='#cccccc'
+                        		}else if(params.row.RWZTDM=='关闭'){
+                        			statusColor='#cccccc'
+                        		}else if(params.row.RWZTDM=='已签收'){
+                        			statusColor='#67c23a'
+                        		};
+                                return h('Poptip',[
+                                	h('span', {
+                                        style:{
+                                            width: '9px',
+                                            height: '9px',
+                                            borderRadius:'25px',
+                                            position:'relative',
+                                            backgroundColor:statusColor,
+                                            display:'inline-block'
+                                        },
+                                    }),
+                                    h('span', {
+                                        style:{
+                                            marginLeft:'5px',
+                                        },
+                                    },params.row.RWZTDM),
+                                ])
+                        }},
+                        {type: 'option',title:'操作',width: 100,
+                            render: (h, params) => {
+                                let isDisplay = 'block';
+                                if(user.userGxsLev == 3){
+                                    isDisplay = 'none'
+                                }
+                                return h('Poptip',{
+                                    props: {
+                                        trigger: 'click',
+                                        placement: 'left'
+                                    },
+                                },[
+                                    h('span', {
+                                        style:{
+                                            color:'#0099FF',
+                                            fontSize:'12px',
+                                            cursor:'pointer'
+                                        },
+                                    },'更多'),
+                                    h('div', {
+                                        slot: 'content',
+                                        style:{
+                                            textAlign:'center',
+                                            lineHeight:'25px',
+                                            fontSize:'14px'
+                                        }
+                                    }, [
+                                        h('a',{attrs: {
+                                            href: './w?cmd=com.awspaas.user.apps.clue.router&classify=issue&action=process&sid='+sid+'&extendParams={"RWBH":"'+params.row.RWBH+'"}',
+                                        },},'操作'),
+                                        h('a',{attrs: {
+                                            href: './w?cmd=com.awspaas.user.apps.clue.router&classify=issue&action=add&sid='+sid+'&extendParams={"RWBH":"'+params.row.RWBH+'"}',
+                                        },style: {
+                                            display: isDisplay
+                                        },},'新建')
+                                    ])
+                                ])
+                            }
+                        }
+                    ]
+                },
+                //单位下发
+                unitIssueTable: {
+                    url: './jd?cmd=com.awspaas.user.apps.clue.getUnitIssueTask&sid='+sid,
+                    columns:[
+                        {title:'下发编号',key:'RWBH',width:220,
+                            render:(h,params)=>{
+                                return h('div', [
+                                    h('a',{
+                                        attrs: {
+                                            href: './w?cmd=com.awspaas.user.apps.clue.router&classify=issue&action=process&sid='+sid+'&extendParams={"RWBH":"'+params.row.RWBH+'"}',
+                                             target:'_blank'
+                                        }
+                                    }, params.row.RWBH)
+                                ]);
+                            },
+                        },
+                        {title:'标题名称',key:'RWMC',tooltip:true},
+                        {title:'下发类型',key:'XFLXDM',tooltip:true},
+                        {title:'创建人',key:'XFRY_XM',tooltip:true},
+                        {title:'创建时间',key:'XFSJ',sortable:true,tooltip:true},
+                        {title:'接收单位',key:'JSDW_GAJGMC',tooltip:true},
+                        {title:'接收人',key:'JSRY_XM',tooltip:true},
+                        {title:'任务状态',key:'RWZTDM',tooltip:true,
+                        	render: (h, params) => {
+                        		let statusColor;
+                        		if(params.row.RWZTDM=='待签收'){
+                        			statusColor='#09f'
+                        		}else if(params.row.RWZTDM=='回退'){
+                        			statusColor='#f56c6c'
+                        		}else if(params.row.RWZTDM=='驳回'){
+                        			statusColor='#f56c6c'
+                        		}else if(params.row.RWZTDM=='中止'){
+                        			statusColor='#cccccc'
+                        		}else if(params.row.RWZTDM=='沟通中'){
+                        			statusColor='#e6a23c'
+                        		}else if(params.row.RWZTDM=='转派中'){
+                        			statusColor='#67c23a'
+                        		}else if(params.row.RWZTDM=='转派成功'){
+                        			statusColor='#0099ff'
+                        		}else if(params.row.RWZTDM=='转派失败'){
+                        			statusColor='#cccccc'
+                        		}else if(params.row.RWZTDM=='关闭'){
+                        			statusColor='#cccccc'
+                        		}else if(params.row.RWZTDM=='已签收'){
+                        			statusColor='#67c23a'
+                        		};
+                                return h('Poptip',[
+                                	h('span', {
+                                        style:{
+                                            width: '9px',
+                                            height: '9px',
+                                            borderRadius:'25px',
+                                            position:'relative',
+                                            backgroundColor:statusColor,
+                                            display:'inline-block'
+                                        },
+                                    }),
+                                    h('span', {
+                                        style:{
+                                            marginLeft:'5px',
+                                        },
+                                    },params.row.RWZTDM),
+                                ])
+                        }},
+                    ],
+                },
+                //辖区下发
+                areaIssueTable: {
+                    url: './jd?cmd=com.awspaas.user.apps.clue.getAreaIssueTask&sid='+sid,
+                    columns:[
+                        {title:'下发编号',key:'RWBH',width:220,
+                            render:(h,params)=>{
+                                return h('div', [
+                                    h('a',{
+                                        attrs: {
+                                            href: './w?cmd=com.awspaas.user.apps.clue.router&classify=issue&action=process&sid='+sid+'&extendParams={"RWBH":"'+params.row.RWBH+'"}',
+                                             target:'_blank'
+                                        }
+                                    }, params.row.RWBH)
+                                ]);
+                            },
+                        },
+                        {title:'标题名称',key:'RWMC',tooltip:true},
+                        {title:'下发类型',key:'XFLXDM',tooltip:true},
+                        {title:'创建单位',key:'XFDW_GAJGMC',tooltip:true},
+                        {title:'创建时间',key:'XFSJ',sortable:true,tooltip:true},
+                        {title:'接收单位',key:'JSDW_GAJGMC',tooltip:true},
+                        {title:'接收人',key:'JSRY_XM',tooltip:true},
+                        {title:'任务状态',key:'RWZTDM',tooltip:true,
+                        	render: (h, params) => {
+                        		let statusColor;
+                        		if(params.row.RWZTDM=='待签收'){
+                        			statusColor='#09f'
+                        		}else if(params.row.RWZTDM=='回退'){
+                        			statusColor='#f56c6c'
+                        		}else if(params.row.RWZTDM=='驳回'){
+                        			statusColor='#f56c6c'
+                        		}else if(params.row.RWZTDM=='中止'){
+                        			statusColor='#cccccc'
+                        		}else if(params.row.RWZTDM=='沟通中'){
+                        			statusColor='#e6a23c'
+                        		}else if(params.row.RWZTDM=='转派中'){
+                        			statusColor='#67c23a'
+                        		}else if(params.row.RWZTDM=='转派成功'){
+                        			statusColor='#0099ff'
+                        		}else if(params.row.RWZTDM=='转派失败'){
+                        			statusColor='#cccccc'
+                        		}else if(params.row.RWZTDM=='关闭'){
+                        			statusColor='#cccccc'
+                        		}else if(params.row.RWZTDM=='已签收'){
+                        			statusColor='#67c23a'
+                        		};
+                                return h('Poptip',[
+                                	h('span', {
+                                        style:{
+                                            width: '9px',
+                                            height: '9px',
+                                            borderRadius:'25px',
+                                            position:'relative',
+                                            backgroundColor:statusColor,
+                                            display:'inline-block'
+                                        },
+                                    }),
+                                    h('span', {
+                                        style:{
+                                            marginLeft:'5px',
+                                        },
+                                    },params.row.RWZTDM),
+                                ])
+                        }},
+                    ]
+                },
+                calloption:false,
+                userLevel:0,
+                maxLevelHide:true,//当user是最高级别时，上级下发签是否展示
+                minLevelHide:true,//当user是最低级别时，我的下发签是否展示、不可以再下发
+			},
+			methods:{
+				switchTab(name){
+                    this.activeTabName = name;
+                    this.search();
+                },
+                search(){
+                    this.$refs[this.activeTabName].init();
+                },
+                handleReset (name) {
+		            this.$refs[name].resetFields();
+                },
+                pageToAddIssue(){
+                    window.location.href = './w?cmd=com.awspaas.user.apps.clue.router&classify=issue&action=add&sid='+sid;
+                }
+		    },
+		    mounted(){
+                if(user.userGxsLev == '3'){
+                    this.activeTabName = 'supIssue';
+                }
+                this.search();
+		    }
+		})
+	</script>
+</html>

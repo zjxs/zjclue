@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+        <title>线索档案</title>
+        <link type="text/css" rel="stylesheet" href="../apps/com.awspaas.user.apps.clue/css/iview.css"/>
+        <link type="text/css" rel="stylesheet" href="../apps/com.awspaas.user.apps.clue/css/style.css"/>
+	</head>
+	<body>
+        <div id="clue_detail">
+            <div class="header">
+                <div class="gap"></div>
+                <Row>
+                    <i-col offset="2" span="22">
+                        <Tag color="error" class="square-lev" :style="getSquareBackgroundColor(refillData.xs.XSJBDM)">{{refillData.xs.XSJBDM}}</Tag>
+                        <label class="title">{{refillData.xs.XSMC}}</label>
+                    </i-col>
+                </Row>
+                <Row>
+                    <i-col offset="2" span="22"><label class="sub-title">{{refillData.xs.XSBH}}</label></i-col>
+                </Row>
+
+                <Row>
+                    <i-col span="2">&nbsp;</i-col>
+                    <i-col span="15">
+                        <Row>
+                            <i-col span="12"><dl><dt>线索类型：</dt><dd>{{refillData.xs.XSLXDM}}</dd></dl></i-col>
+                            <i-col span="12"><dl><dt>线索公开：</dt><dd>{{refillData.xs.SFSMDM}}</dd></dl></i-col>
+                        </Row>
+                        <Row>
+                            <i-col span="24">&nbsp;</i-col>
+                        </Row>
+                        <Row>
+                            <i-col span="23"><dl><dt>线索描述：</dt><dd class="long"><div>{{refillData.xs.XSMS}}</div></dd></dl></i-col>
+                        </Row>
+                    </i-col>
+                    <i-col span="1" class="vertical-divider">&nbsp;</i-col>
+                    <i-col span="4">
+                        <Row>
+                            <i-col span="24"><dl><dt>创建时间：</dt><dd>{{refillData.xs.DJSJ}}</dd></dl></i-col>
+                        </Row>
+                        <Row>
+                            <i-col span="24">&nbsp;</i-col>
+                        </Row>
+                        <Row>
+                            <i-col span="24"><dl><dt>创建单位：</dt><dd>{{refillData.xs.XXDJDW_GAJGMC}}</dd></dl></i-col>
+                        </Row>
+                        <Row>
+                            <i-col span="24">&nbsp;</i-col>
+                        </Row>
+                        <Row>
+                            <i-col span="24"><dl><dt>创建人员：</dt><dd>{{refillData.xs.XXDJRY_XM}}</dd></dl></i-col>
+                        </Row>
+                    </i-col>
+                </Row>
+            </div>
+
+            <div class="content">
+                <Collapse v-model="collapse">
+                    <Panel name="1" v-if="refillData.fj.length > 0">
+                                                关联附件
+                        <div slot="content">
+                            <Row>                            
+                                <i-col span="6" v-for="(item,index) in refillData.fj" :key="index">
+                                    <div style="padding:15px">
+                                        <span style="display:inline-block"  v-if="item.FJLX==='xlsx'||item.FJLX==='xls'">
+                                            <img src="../apps/com.awspaas.user.apps.clue/img/icon/excel.png" class="file-icon">
+                                        </span>
+                                        <span style="display:inline-block"  v-else-if="item.FJLX==='doc'||item.FJLX==='docx'">
+                                            <img src="../apps/com.awspaas.user.apps.clue/img/icon/word.png" class="file-icon">
+                                        </span>
+                                        <span style="display:inline-block"  v-else-if="item.FJLX === 'pptx'">
+                                            <img src="../apps/com.awspaas.user.apps.clue/img/icon/ppt.png" class="file-icon">
+                                        </span>
+                                        <span style="display:inline-block"  v-else-if="item.FJLX === 'png'||item.FJLX === 'jpg'||item.FJLX === 'jpeg'||item.FJLX === 'gif'">
+                                            <img src="../apps/com.awspaas.user.apps.clue/img/icon/image.png" class="file-icon">
+                                        </span>
+                                        
+                                        <span style="display:inline-block"  v-else-if="item.FJLX === 'mp4'">
+                                            <img src="../apps/com.awspaas.user.apps.clue/img/icon/video.png" class="file-icon">
+                                        </span>
+                                        <span style="display:inline-block"  v-else-if="item.FJLX === 'zip'||item.FJLX === 'rar'||item.FJLX === '7z'">
+                                            <img src="../apps/com.awspaas.user.apps.clue/img/icon/zip.png" class="file-icon">
+                                        </span>
+                                        <span style="display:inline-block"  v-else>
+                                            <img src="../apps/com.awspaas.user.apps.clue/img/icon/unknown.png" class="file-icon">
+                                        </span>
+                                        <span class="file-name" :title="item.FJMC">{{item.FJMC}}</span>
+                                        <span class="file-download" @click="downLoadFile(item.FJMC,item.GLYWBH)">下载</span>
+                                    </div>
+                                </i-col>
+                            </Row>
+                        </div>
+                    </Panel>
+                    <Panel name="2" v-if="relevanceLogisticsTable.showPanel">
+                                                关联物流
+                        <div slot="content">
+                            <sy-table 
+                                ref="relevanceLogistics"
+                                :url="relevanceLogisticsTable.url" 
+                                :columns="relevanceLogisticsTable.columns"
+                                :query-params="relevanceLogisticsTable.searchParams"
+                                :on-load-success="relevanceLogisticsTable.onLoadSuccess"
+                                :pager-page-size="5" 
+                                :pager-page-size-opts="[5, 10, 20, 30]">
+                            </sy-table>
+                        </div>
+                    </Panel>
+                    
+                    <Panel name="3" v-if="relevanceEscapeeTable.showPanel">
+                                                关联逃犯
+                        <div slot="content">
+                            <sy-table 
+                                ref="relevanceEscapee"
+                                :url="relevanceEscapeeTable.url" 
+                                :columns="relevanceEscapeeTable.columns"
+                                :query-params="relevanceEscapeeTable.searchParams"
+                                :on-load-success="relevanceEscapeeTable.onLoadSuccess"
+                                :pager-page-size="5" 
+                                :pager-page-size-opts="[5, 10, 20, 30]">
+                            </sy-table>
+                        </div>
+                    </Panel>
+
+                    <Panel name="4"  v-if="seriesCaseTable.showPanel">
+                                                串并案件
+                        <div slot="content">
+                            <sy-table 
+                                ref="seriesCase"
+                                :url="seriesCaseTable.url" 
+                                :columns="seriesCaseTable.columns"
+                                :query-params="seriesCaseTable.searchParams"
+                                :on-load-success="seriesCaseTable.onLoadSuccess"
+                                :pager-page-size="5" 
+                                :pager-page-size-opts="[5, 10, 20, 30]">
+                            </sy-table>
+                        </div>
+                    </Panel>
+
+                    <Panel name="5"  v-if="seriesClueTable.showPanel">
+                                                 串并线索
+                        <div slot="content">
+                            <sy-table 
+                                ref="seriesClue"
+                                :url="seriesClueTable.url" 
+                                :columns="seriesClueTable.columns"
+                                :query-params="seriesClueTable.searchParams"
+                                :on-load-success="seriesClueTable.onLoadSuccess"
+                                :pager-page-size="5" 
+                                :pager-page-size-opts="[5, 10, 20, 30]">
+                            </sy-table>
+                        </div>
+                    </Panel>
+
+                    <Panel name="6" v-if="relevanceTaskTable.showPanel">
+                                                关联任务
+                        <div slot="content">
+                            <sy-table 
+                                ref="relevanceTask"
+                                :url="relevanceTaskTable.url" 
+                                :columns="relevanceTaskTable.columns"
+                                :query-params="relevanceTaskTable.searchParams"
+                                :on-load-success="relevanceTaskTable.onLoadSuccess"
+                                :pager-page-size="5" 
+                                :pager-page-size-opts="[5, 10, 20, 30]">
+                            </sy-table>
+                        </div>
+                    </Panel>
+
+                    <Panel name="7"  v-if="seriesPersonTable.showPanel">
+                                                 串并人员
+                        <div slot="content">
+                            <sy-table 
+                                ref="seriesPerson"
+                                :url="seriesPersonTable.url" 
+                                :columns="seriesPersonTable.columns"
+                                :query-params="seriesPersonTable.searchParams"
+                                :on-load-success="seriesPersonTable.onLoadSuccess"
+                                :pager-page-size="5" 
+                                :pager-page-size-opts="[5, 10, 20, 30]">
+                            </sy-table>
+                        </div>
+                    </Panel>
+
+                    <Panel name="7" v-if="seriesGoodsTable.showPanel">
+                                                 串并物品
+                        <div slot="content">
+                            <sy-table 
+                                ref="seriesGoods"
+                                :url="seriesGoodsTable.url" 
+                                :columns="seriesGoodsTable.columns"
+                                :query-params="seriesGoodsTable.searchParams"
+                                :on-load-success="seriesGoodsTable.onLoadSuccess"
+                                :pager-page-size="5" 
+                                :pager-page-size-opts="[5, 10, 20, 30]">
+                            </sy-table>
+                        </div>
+                    </Panel>
+                </Collapse>
+            </div>
+        </div>
+	</body>
+	<script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/vue.min.js" ></script>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/iview.min.js"></script>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/axios.min.js"></script>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/sy-table.js"></script>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/common.js"></script>
+	<script>
+		var sid='<#sid>';
+        var user =  JSON.parse('<#user>');
+        var refillData = {
+            xs: JSON.parse('<#xs>'),
+            fj: '<#fj>' == '' ? [] : JSON.parse('<#fj>')
+        };
+        var vm = new Vue({
+            el:'#clue_detail',
+            data:{
+                collapse: [1,2,3,4,5,6,7,8],  //要默认展开的折叠面板的序号
+                seriesCaseTable: {
+                    url: './jd?cmd=com.awspaas.user.apps.clue.getSeriesCase&sid='+sid,
+                    searchParams : {'YWBH' : refillData.xs.XSBH},
+                    showPanel: true,
+                    columns:[
+                    { title: '案件编号',key:'ASJBH',tooltip: true },
+                    { title: '案件名称',key:'AJMC',tooltip: true },
+                    { title: '案件类别',key:'AJLBDM',tooltip: true },
+                    { title: '小类案别',key:'ZATZ_JYQK',tooltip: true },
+                    { title: '案发时间',key:'SLSJ',tooltip: true },
+                    { title: '立案单位',key:'LADW_GAJGMC',tooltip: true }
+                    ],
+                    onLoadSuccess: function(){
+                        let total = vm.$refs.seriesCase.getData().total;
+                        if(total == 0){
+                            vm.seriesCaseTable.showPanel = false;
+                        }
+                    }
+                },
+                //串并线索
+                seriesClueTable: {
+                    url: './jd?cmd=com.awspaas.user.apps.clue.getSeriesClue&sid='+sid,
+                    searchParams : {'YWBH' : refillData.xs.XSBH},
+                    showPanel: true,
+                    columns:[
+                            { title: '线索编号',key:'XSBH',tooltip: true },
+                            { title: '线索名称',key:'XSMC',tooltip: true },
+                            { title: '线索类型',key:'XSLXDM',tooltip: true },
+                            { title: '线索级别',key:'XSJBDM',tooltip: true },
+                            { title: '登记时间',key:'DJSJ',tooltip: true },
+                            { title: '线索描述',key:'XSMS',tooltip: true }
+                    ],
+                    onLoadSuccess: function(){
+                            let total = vm.$refs.seriesClue.getData().total;
+                            if(total == 0){
+                                vm.seriesClueTable.showPanel = false;
+                            }
+                    }
+                },
+                //串并人员
+                seriesPersonTable:{
+                    url: './jd?cmd=com.awspaas.user.apps.clue.getSeriesPerson&sid='+sid,
+                    searchParams : {'YWBH' : refillData.xs.XSBH},
+                    showPanel: true,
+                    columns:[
+                        {title: "人员编号",key: "ASJXGRYBH"},
+                        {title: "证件号码",key: "CYZJ_ZJHM"},
+                        {title: "姓名",key: "XM"},
+                        {title: "涉案人员",key: "XM"},
+                        {title: "登记时间",key: "DJSJ"},
+                        {title: "户籍地址",key: "HJDZ_XZQHDM",tooltip: "true"},
+                    ],
+                    onLoadSuccess: function(){
+                        let total = vm.$refs.seriesPerson.getData().total;
+                        if(total == 0){
+                            vm.seriesPersonTable.showPanel = false;
+                        }
+                    }
+                },
+                //串并物品
+                seriesGoodsTable:{
+                    url: './jd?cmd=com.awspaas.user.apps.clue.getSeriesGoods&sid='+sid,
+                    searchParams : {'YWBH' : refillData.xs.XSBH},
+                    showPanel: true,
+                    columns:[
+                        {title: "物品编号",key: "WPBH",tooltip: true},
+                        {title: "物品名称",key: "WPMC",tooltip: "true"},
+                        {title: "物品类别",key: "SAWP_SAWPDM",tooltip:"true"},
+                        {title: "登记时间",key: "DJSJ",tooltip: true},
+                        {title: "登记单位",key:"XXDJDW_GAJGMC",tooltip: true},
+                        {title: "特征描述",key:"WPTZMS",tooltip: true},
+                    ],
+                    onLoadSuccess: function(){
+                        let total = vm.$refs.seriesGoods.getData().total;
+                        if(total == 0){
+                            vm.seriesGoodsTable.showPanel = false;
+                        }
+                    }
+                },
+                //关联任务
+                relevanceTaskTable: {
+                    url: './jd?cmd=com.awspaas.user.apps.clue.getClueRelevanceTask&sid='+sid,
+                    searchParams : {'XSBH' : refillData.xs.XSBH},
+                    showPanel: true,
+                    columns:[
+                        { title: '任务编号',key:'RWBH',tooltip: true },
+                        { title: '任务名称',key:'RWMC',tooltip: true },
+                        { title: '任务类型',key:'RWLX',tooltip: true },
+                        { title: '任务状态',key:'RWZTDM',tooltip: true },
+                        { title: '登记时间',key:'DJSJ',tooltip: true },
+                        { title: '任务描述',key:'RWMS',tooltip: true }
+                    ],
+                    onLoadSuccess: function(){
+                            let total = vm.$refs.relevanceTask.getData().total;
+                            if(total == 0){
+                                vm.relevanceTaskTable.showPanel = false;
+                            }
+                    }
+                },
+                //关联物流
+                relevanceLogisticsTable: {
+                    url: './jd?cmd=com.awspaas.user.apps.clue.getClueRelevanceLogistics&sid='+sid,
+                    searchParams : {'XSBH' : refillData.xs.XSBH},
+                    showPanel: true,
+                    columns:[
+                        { title: '任务编号',key:'RWBH',tooltip: true },
+                        { title: '任务名称',key:'RWMC',tooltip: true },
+                        { title: '任务类型',key:'RWLX',tooltip: true },
+                        { title: '任务状态',key:'RWZTDM',tooltip: true },
+                        { title: '登记时间',key:'DJSJ',tooltip: true },
+                        { title: '任务描述',key:'RWMS',tooltip: true }
+                    ],
+                    onLoadSuccess: function(){
+                        let total = vm.$refs.relevanceLogistics.getData().total;
+                        console.log(total);
+                        if(total == 0){
+                            vm.relevanceLogisticsTable.showPanel = false;
+                        }
+                    }
+                },
+                //关联逃犯
+                relevanceEscapeeTable: {
+                    url: './jd?cmd=com.awspaas.user.apps.clue.getClueRelevanceEscapee&sid='+sid,
+                    searchParams : {'XSBH' : refillData.xs.XSBH},
+                    showPanel: true,
+                    columns:[
+                        {title: "在逃编号",key: "ZTRYBH"}, 
+                        {title: "姓名",key: "XM"},
+                        {title: "联系方式",key: "SHDH"},
+                        {title: "银行卡号",key: "YHZH"},
+                        {title: "收件地区",key: "SHDQDM"},
+                        {title: "收件地址",key: "SHDZ"}
+                    ],
+                    onLoadSuccess: function(){
+                        let total = vm.$refs.relevanceEscapee.getData().total;
+                        if(total == 0){
+                            vm.relevanceEscapeeTable.showPanel = false;
+                        }
+                    }
+                },
+                downLoadFile(fjmc,glywbh){
+                    let that = this;
+                    this.showLoadMask();
+                    axios({
+                        url: './jd?cmd=com.awspaas.user.apps.clue.getAttachmentDownloadURL&sid='+sid,
+                        method: 'post',
+                        params: {
+                            json: {
+                                data : {
+                                    "FJMC": fjmc,
+                                    "GLYWBH": glywbh
+                                }
+                            }
+                        }
+                    }).then(response => {
+                        if(response.data.result=='ok'){
+                            that.hideLoadMask();
+                            window.open(response.data.data);
+                        }
+                    }).catch(error => {
+                        console.log(error);
+                    });
+                },
+                getSquareBackgroundColor(code){
+                    switch(code){
+                    case 'A':
+                        return 'background-color:red';
+                        break;
+                    case 'B':
+                        return 'background-color:#0099FF';
+                        break;
+                    case 'C':
+                        return 'background-color:orange';
+                        break;
+                    case 'D':
+                        return 'background-color:green';
+                        break;
+                    }
+                },
+                showLoadMask(){  
+                    Vue.prototype.$Spin.show({
+                        render: (h) => {
+                            return h('div', [
+                                h('Icon', {
+                                    'class': 'demo-spin-icon-load',
+                                    props: {
+                                        type: 'ios-loading',
+                                        size: 18
+                                    }
+                                }),
+                                h('div', '加载中')
+                            ])
+                        }
+                    });
+                },
+                hideLoadMask() {
+                    Vue.prototype.$Spin.hide();
+                }
+            },
+            mounted(){
+                for(var key in refillData.xs){
+                    if(refillData.xs[key] == '') refillData.xs[key] == '--'
+                }
+                this.$refs.seriesCase.init();
+                this.$refs.seriesClue.init();
+                this.$refs.seriesGoods.init();
+                this.$refs.seriesPerson.init();
+                this.$refs.relevanceTask.init();
+                this.$refs.relevanceLogistics.init();
+                this.$refs.relevanceEscapee.init();
+            }
+		});
+	</script>
+</html>

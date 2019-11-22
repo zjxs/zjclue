@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<app xmlns="http://www.actionsoft.com.cn/app">  
+  <name>线索</name>  
+  <version>1.0</version>  
+  <buildNo>70</buildNo>  
+  <developer id="00000000000000000000000000000000" tablePrefix="EU" url="http://www.awspaas.com">AWSPaaS-EndUser</developer>  
+  <categoryVisible>true</categoryVisible>  
+  <description><![CDATA[]]></description>  
+  <details><![CDATA[]]></details>  
+  <installListener/>  
+  <pluginListener>com.siyue.plugin.Plugins</pluginListener>  
+  <startListener>com.siyue.app.StartEvent</startListener>  
+  <stopListener/>  
+  <upgradeListener/>  
+  <uninstallListener/>  
+  <reloadable>true</reloadable>  
+  <requires/>  
+  <properties/>  
+  <allowStartup>true</allowStartup>  
+  <allowUpgradeByStore>true</allowUpgradeByStore>  
+  <depend versions="6.2" env="">_bpm.portal</depend>  
+  <modelAdministrator/>  
+  <installDate>2018-11-27 17:37:28</installDate>  
+  <productId/> 
+</app>

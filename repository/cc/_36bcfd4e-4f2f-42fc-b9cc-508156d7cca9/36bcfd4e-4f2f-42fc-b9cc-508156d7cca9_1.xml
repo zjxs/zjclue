@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ccModel>
+    <id>36bcfd4e-4f2f-42fc-b9cc-508156d7cca9</id>
+    <createUser>admin</createUser>
+    <createTime>2019-09-02 15:10:29</createTime>
+    <updateUser>admin</updateUser>
+    <updateTime>2019-09-02 15:11:38</updateTime>
+    <signature>tGOmxiTgjT/77UoYpSlq8Vc+hHPRoJWHdZexXc7zEpYuMNdhvSICeJnlc/RzRHGrLWERLBtjSUkyy2Kudtn39pQN3auSS+skdkEh+306ljQcc6kARRuOKnBLdgGjI9CO</signature>
+    <managed>false</managed>
+    <name>获取系统级sid</name>
+    <type>http</type>
+    <group></group>
+    <log>false</log>
+    <properties>{"user":"","password":"2","httpUrl":"http://192.168.0.178:8081/portal/r/jd?cmd=CONSOLE_ADMIN_LOGIN&amp;userid=admin&amp;pwd=2&amp;lang=cn","method":"GET","encoding":"UTF-8","group":"","desc":"","diyData":"","params":[],"idcheck":false}</properties>
+    <desc></desc>
+</ccModel>

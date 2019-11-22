@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ccModel>
+    <id>52dc0352-c665-44f1-80ca-cc3fe3f3aacb</id>
+    <createUser>admin</createUser>
+    <createTime>2019-08-30 16:02:31</createTime>
+    <updateUser>admin</updateUser>
+    <updateTime>2019-08-30 16:49:36</updateTime>
+    <signature>tGOmxiTgjT/77UoYpSlq8Vc+hHPRoJWHdZexXc7zEpYuMNdhvSICeJnlc/RzRHGra9A1Ac3ABAdnaRhWsDrXeTF81Cz6iI+HkmnA7g+p+2n3R+zXyQ3OBh5jWiJ3to5l</signature>
+    <managed>false</managed>
+    <name>123</name>
+    <type>jdbc</type>
+    <group></group>
+    <log>false</log>
+    <properties>{"user":"root","password":"2j3T0yMOUasgJtlAlylQAg==","driver":"com.mysql.jdbc.Driver","url":"jdbc:mysql://192.168.0.178:3306/mysql","poolInit":"10","poolMax":"100","group":"","desc":"22222","diyData":[]}</properties>
+    <desc>22222</desc>
+</ccModel>

@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+
+    <!-- 查询线索信息 -->
+    <entry key="select_xs">
+        <value>
+            <![CDATA[
+        	select xs.*,
+        	(select count(0) from BO_EU_XSHB_GLYW g where xs.XSBH = g.GLYWBH and g.GLYWLXDM = '01' and g.XXSC_PDBZ='0') as GLXSS,
+        	(select count(0) from BO_EU_XSHB_RW_GLXS g where xs.XSBH = g.XSBH and g.XXSC_PDBZ = '0') as GLRWS,
+            (select listagg(g.ID,',') within group(order by g.ID) from BO_EU_XSHB_GLYW g where xs.XSBH = g.GLYWBH and g.XXSC_PDBZ = '0' ) as GLYWID
+        	from BO_EU_XSHB_XS xs where XXSC_PDBZ = '0'
+        ]]></value>
+    </entry>
+
+    <!-- 辖区线索 -->
+    <entry key="select_xqxs">
+        <value>
+            <![CDATA[
+        	select xs.XSBH,xs.XSMC,xs.XSLXDM,xs.XSJBDM,xs.SFSMDM,xs.DJSJ,
+        	(select count(0) from BO_EU_XSHB_GLYW g where xs.XSBH = g.GLYWBH and g.GLYWLXDM = '01' and g.XXSC_PDBZ='0') as GLXSS,
+        	(select count(0) from BO_EU_XSHB_RW_GLXS g where xs.XSBH = g.XSBH and g.XXSC_PDBZ = '0') as GLRWS
+        	from BO_EU_XSHB_XS xs where xs.XSBH in (
+				select XSBH from BO_EU_XSHB_XS where XXDJRY_GMSFHM = ? and XXSC_PDBZ = '0' #{queryParams}
+				union all
+				select XSBH from BO_EU_XSHB_XS where SFSMDM = '01' AND XXDJRY_GMSFHM <> ? AND XXSC_PDBZ = '0' AND XXDJDW_GAJGJGDM IN (select CODE from CODE_GXS where #{queryCode}) #{queryParams}
+			)
+        ]]></value>
+    </entry>
+
+    <!-- 我的上报  -->
+    <entry key="select_wdsb">
+        <value>
+            <![CDATA[
+        	select sb.* from BO_EU_XSHB_RW_SB sb where sb.XXSC_PDBZ = '0' and sb.XXDJRY_GMSFHM = ?
+        ]]></value>
+    </entry>
+
+    <!-- 查询已串并案事件 -->
+    <entry key="select_ycbasj">
+        <value>
+            <![CDATA[
+			select a.ASJBH,a.AJMC,a.AJLBDM,a.SLSJ,a.ZATZ_JYQK,a.LARQ,a.ASJFSSJFX_ASJFSKSSJ,a.LADW_GAJGMC,gl.ID
+			from TB_ST_ASJ a ,BO_EU_XSHB_GLYW gl
+			where a.ASJBH=gl.GLYWBH and a.XXSC_PDBZ ='0' and gl.XXSC_PDBZ = '0' and gl.GLYWLXDM = '02'
+		]]></value>
+    </entry>
+
+    <!-- 查询已串并人员 -->
+    <entry key="select_ycbry">
+        <value>
+            <![CDATA[
+			select ry.ASJXGRYBH,ry.XM,ry.CYZJ_ZJHM,ry.HJDZ_XZQHDM,ry.XXDJDW_GAJGJGDM,ry.DJSJ,gl.id from tb_st_ry ry ,BO_EU_XSHB_GLYW gl
+			where ry.ASJXGRYBH=gl.GLYWBH and ry.XXSC_PDBZ = '0' and gl.XXSC_PDBZ = '0' AND gl.GLYWLXDM = '04'
+		]]></value>
+    </entry>
+
+    <!-- 查询已串并物品 -->
+    <entry key="select_ycbwp">
+        <value>
+            <![CDATA[
+			select a.*,gl.ID
+			from TB_ST_WP a ,BO_EU_XSHB_GLYW gl
+			where a.SAWPBH=gl.GLYWBH and a.XXSC_PDBZ ='0' and gl.XXSC_PDBZ = '0' and gl.GLYWLXDM = '03'
+		]]></value>
+    </entry>
+
+    <!-- 查询已串并线索 -->
+    <entry key="select_ycbxs">
+        <value>
+            <![CDATA[
+			select xs.XSBH,xs.XSMC,xs.XSLXDM,xs.XSJBDM,xs.SFSMDM,xs.XSMS,gl.DJSJ,gl.ID from BO_EU_XSHB_XS xs ,BO_EU_XSHB_GLYW gl
+			where xs.XSBH=gl.GLYWBH and xs.XXSC_PDBZ = '0' and gl.XXSC_PDBZ = '0' AND gl.GLYWLXDM = '01'
+		]]></value>
+    </entry>
+
+    <!-- 查询所有人员 -->
+    <entry key="select_ry">
+        <value>
+            <![CDATA[
+			     SELECT ry.ASJXGRYBH,ry.XM,ry.CYZJ_ZJHM,ry.HJDZ_XZQHDM,ry.XXDJDW_GAJGJGDM,ry.DJSJ FROM TB_ST_RY ry
+			     WHERE ry.XXSC_PDBZ = '0' AND ry.ASJXGRYBH not in (SELECT GLYWBH FROM BO_EU_XSHB_GLYW WHERE GLYWLXDM = '04' #{id})
+		]]></value>
+    </entry>
+
+    <!-- 查询所有案事件 -->
+    <entry key="select_asj">
+        <value>
+            <![CDATA[
+        	SELECT a.ASJBH,a.AJMC,a.AJLBDM,a.SLSJ,a.ZATZ_JYQK,a.LARQ,a.ASJFSSJFX_ASJFSKSSJ,a.LADW_GAJGMC
+        	FROM TB_ST_ASJ a WHERE XXSC_PDBZ = '0' AND a.ASJBH not in (SELECT GLYWBH FROM BO_EU_XSHB_GLYW WHERE GLYWLXDM = '02' #{id})
+        ]]></value>
+    </entry>
+
+    <!-- 查询所有物品 -->
+    <entry key="select_wp">
+        <value>
+            <![CDATA[
+        	SELECT a.*
+        	FROM TB_ST_WP a WHERE XXSC_PDBZ = '0' AND a.SAWPBH not in (SELECT GLYWBH FROM BO_EU_XSHB_GLYW WHERE GLYWLXDM = '03' #{id})
+        ]]></value>
+    </entry>
+
+    <!-- 已关联线索 -->
+    <entry key="select_yglxs">
+        <value>
+            <![CDATA[
+        	select xs.XSBH,xs.XSMC,xs.XSLXDM,xs.XSJBDM,xs.SFSMDM,xs.DJSJ,gl.ID
+        	from BO_EU_XSHB_XS xs ,BO_EU_XSHB_RW_GLXS gl WHERE xs.XSBH = gl.XSBH and xs.XXSC_PDBZ = '0' and gl.XXSC_PDBZ = '0' and gl.RWBH = ?
+        ]]></value>
+    </entry>
+
+    <!-- 当前单位其他用户 -->
+    <entry key="select_bdwyh">
+        <value>
+            <![CDATA[
+        	SELECT U.*,D.DEPARTMENTNAME
+        	FROM ORGUSER U INNER JOIN ORGDEPARTMENT D ON U.DEPARTMENTID = D.ID
+        	WHERE U.CLOSED = 0 AND U.USERID <> ? and u.DEPARTMENTID = ?
+        ]]></value>
+    </entry>
+
+    <!--查询附件信息-->
+    <entry key="select_fjxx">
+        <value>
+            <![CDATA[
+			select * from BO_EU_XSHB_FJ where XXSC_PDBZ='0'
+		]]></value>
+    </entry>
+
+    <!--查询在逃人员信息-->
+    <entry key="select_ztryxx">
+        <value>
+            <![CDATA[
+			select * from tb_yw_ztry where xxsc_pdbz = '0'
+		]]></value>
+    </entry>
+
+    <!--查询线索关联任务-->
+    <entry key="select_xsglrw">
+        <value>
+            <![CDATA[
+				select RWBH,RWMC,'上报' as RWLX,RWZTDM,SBSJ as DJSJ,RWMS,RWJBDM from BO_EU_XSHB_RW_SB where RWBH in(select RWBH from bo_eu_xshb_rw_glxs where XSBH=?)
+				union all
+				select RWBH,RWMC,'下发' as RWLX,RWZTDM,XFSJ as DJSJ,RWMS,JJCDDM as RWJBDM from BO_EU_XSHB_RW_XF where RWBH in(select RWBH from bo_eu_xshb_rw_glxs where XSBH=?)
+		]]></value>
+    </entry>
+
+    <!-- 任务关联线索 -->
+    <entry key="select_rwglxs">
+        <value>
+            <![CDATA[
+				select xs.* from BO_EU_XSHB_XS xs,BO_EU_XSHB_RW_GLXS gl
+				where xs.XSBH = gl.XSBH and xs.XXSC_PDBZ = '0' and gl.XXSC_PDBZ = '0'
+		]]></value>
+    </entry>
+
+    <!-- 上报任务 -->
+    <entry key="select_sbrw">
+        <value>
+            <![CDATA[
+			select sb.*,
+			(select listagg(lz.JSDW_GAJGMC,',') within group(order by lz.JSDW_GAJGMC) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = sb.RWBH and lz.SFZZLZ_PDBZ='1') as JSDW_GAJGMC,
+			(select listagg(lz.JSRY_XM,',') within group(order by lz.JSRY_XM) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = sb.RWBH and lz.SFZZLZ_PDBZ='1') as JSRY_XM,
+			(select listagg(lz.JSDXLXDM,',') within group(order by lz.JSDXLXDM) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = sb.RWBH and lz.SFZZLZ_PDBZ='1') as JSDXLXDM,
+			(select listagg(lz.JSDW_GAJGJGDM,',') within group(order by lz.JSDW_GAJGJGDM) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = sb.RWBH and lz.SFZZLZ_PDBZ='1') as JSDW_GAJGJGDM,
+			(select listagg(lz.JSRY_GMSFHM,',') within group(order by lz.JSRY_GMSFHM) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = sb.RWBH and lz.SFZZLZ_PDBZ='1') as JSRY_GMSFHM
+				from BO_EU_XSHB_RW_SB sb where XXSC_PDBZ = '0'
+		]]></value>
+    </entry>
+
+    <!-- 辖区上报任务 -->
+    <entry key="select_xqsbrw">
+        <value>
+            <![CDATA[
+				select sb.*,
+				(select listagg(lz.JSDW_GAJGMC,',') within group(order by lz.JSDW_GAJGMC) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = sb.RWBH and lz.SFZZLZ_PDBZ='1') as JSDW_GAJGMC,
+				(select listagg(lz.JSRY_XM,',') within group(order by lz.JSRY_XM) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = sb.RWBH and lz.SFZZLZ_PDBZ='1') as JSRY_XM,
+				(select listagg(lz.JSDW_GAJGJGDM,',') within group(order by lz.JSDW_GAJGJGDM) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = sb.RWBH and lz.SFZZLZ_PDBZ='1') as JSDW_GAJGJGDM
+				from BO_EU_XSHB_RW_SB sb where sb.RWBH in (
+					select RWBH from BO_EU_XSHB_RW_SB where SBRY_GMSFHM = ? and XXSC_PDBZ = '0'
+					union all
+					select RWBH from BO_EU_XSHB_RW_SB where SFSMDM = '01' AND SBRY_GMSFHM <> ? AND XXSC_PDBZ = '0' AND SBDW_GAJGJGDM IN (select CODE from CODE_GXS_BIZ where #{queryCode})
+				)
+		]]></value>
+    </entry>
+
+    <!-- 下发任务 -->
+    <entry key="select_xfrw">
+        <value>
+            <![CDATA[
+			select xf.*,
+			(select listagg(lz.JSDW_GAJGMC,',') within group(order by lz.JSDW_GAJGMC) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = xf.RWBH and lz.SFZZLZ_PDBZ='1') as JSDW_GAJGMC,
+			(select listagg(lz.JSRY_XM,',') within group(order by lz.JSRY_XM) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = xf.RWBH and lz.SFZZLZ_PDBZ='1') as JSRY_XM,
+			(select listagg(lz.JSDW_GAJGJGDM,',') within group(order by lz.JSDW_GAJGJGDM) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = xf.RWBH and lz.SFZZLZ_PDBZ='1') as JSDW_GAJGJGDM
+			from BO_EU_XSHB_RW_XF xf where XXSC_PDBZ = '0'
+		]]></value>
+    </entry>
+
+    <!-- 上级下发任务 -->
+    <entry key="select_sjxfrw">
+        <value>
+            <![CDATA[
+			select a.* from (select xf.*,
+				(select listagg(lz.JSDW_GAJGMC,',') within group(order by lz.JSDW_GAJGMC) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = xf.RWBH and lz.SFZZLZ_PDBZ='1') as JSDW_GAJGMC,
+				(select listagg(lz.JSRY_XM,',') within group(order by lz.JSRY_XM) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = xf.RWBH and lz.SFZZLZ_PDBZ='1') as JSRY_XM,
+				(select listagg(lz.JSDXLXDM,',') within group(order by lz.JSDXLXDM) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = xf.RWBH and lz.SFZZLZ_PDBZ='1') as JSDXLXDM,
+				(select listagg(lz.JSDW_GAJGJGDM,',') within group(order by lz.JSDW_GAJGJGDM) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = xf.RWBH and lz.SFZZLZ_PDBZ='1') as JSDW_GAJGJGDM,
+				(select listagg(lz.JSRY_GMSFHM,',') within group(order by lz.JSRY_GMSFHM) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = xf.RWBH and lz.SFZZLZ_PDBZ='1') as JSRY_GMSFHM
+			from BO_EU_XSHB_RW_XF xf where XXSC_PDBZ = '0'
+			and RWBH in (select RWBH from BO_EU_XSHB_RW_LZ lz where lz.XXSC_PDBZ = '0' and (lz.JSRY_GMSFHM = ? or (lz.JSDXLXDM = '02' and lz.JSDW_GAJGJGDM = ?))) ) a
+			where a.RWBH not in (select DISTINCT lz.RWBH from BO_EU_XSHB_RW_XF xf, bo_eu_xshb_rw_lz lz where xf.RWBH=lz.RWBH and lz.SFHT_PDBZ='1' and lz.HTSPSFTG_PDBZ='1' and (lz.HTRY_GMSFHM = ? or (lz.JSDXLXDM = '02' and lz.HTDW_GAJGJGDM = ?)))
+]]></value>
+    </entry>
+
+    <!-- 辖区下发任务 -->
+    <entry key="select_xqxfrw">
+        <value>
+            <![CDATA[
+				select xf.*,
+				(select listagg(lz.JSDW_GAJGMC,',') within group(order by lz.JSDW_GAJGMC) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = xf.RWBH and lz.SFZZLZ_PDBZ='1') as JSDW_GAJGMC,
+				(select listagg(lz.JSRY_XM,',') within group(order by lz.JSRY_XM) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = xf.RWBH and lz.SFZZLZ_PDBZ='1') as JSRY_XM,
+				(select listagg(lz.JSDW_GAJGJGDM,',') within group(order by lz.JSDW_GAJGJGDM) from BO_EU_XSHB_RW_LZ lz where lz.RWBH = xf.RWBH and lz.SFZZLZ_PDBZ='1') as JSDW_GAJGJGDM
+				 from BO_EU_XSHB_RW_XF xf where xf.RWBH in (
+					select RWBH from BO_EU_XSHB_RW_XF where XFRY_GMSFHM = ? and XXSC_PDBZ = '0'
+					union all
+					select RWBH from BO_EU_XSHB_RW_XF where SFSMDM = '01' AND XFRY_GMSFHM <> ? AND XXSC_PDBZ = '0' AND XFDW_GAJGJGDM IN (select CODE from CODE_GXS where #{queryCode})
+				)
+		]]></value>
+    </entry>
+    <!--查询流转接收人信息-->
+    <entry key="select_rw_lz_receive">
+        <value>
+            <![CDATA[
+				with lz as (
+					select v.* from (
+						select lz.ID,lz.BINDID,lz.PROCESSDEFID,lz.RWBH,lz.RWLZBH,lz.LZZTDM
+						from BO_EU_XSHB_RW_LZ lz
+						where 1=1 and (JSRY_GMSFHM = ? or (JSDXLXDM = '02' and JSDW_GAJGJGDM = ?) or XXDJRY_GMSFHM=?) and lz.RWBH = ? order by GXSJ desc
+					) v where rownum = 1
+				)
+				select lz.*,SBRY_XM as BLRY_XM,SBRY_GMSFHM as BLRY_GMSFHM,SBDW_GAJGMC as BLDW_GAJGMC,SBDW_GAJGJGDM as BLDW_GAJGJGDM
+				from lz,BO_EU_XSHB_RW_SB rw where lz.RWBH = rw.RWBH
+				union all
+				select lz.*,XFRY_XM as BLRY_XM,XFRY_GMSFHM as BLRY_GMSFHM,XFDW_GAJGMC as BLDW_GAJGMC,XFDW_GAJGJGDM as BLDW_GAJGJGDM
+				from lz,BO_EU_XSHB_RW_XF rw where lz.RWBH = rw.RWBH
+		]]></value>
+    </entry>
+    <!--查询流转发送人信息-->
+    <entry key="select_rw_lz_send">
+        <value>
+            <![CDATA[
+				select t.* from (
+				select v.*,rank() over(partition by v.ID order by v.ID) as row_number from (
+					select lz.ID,lz.BINDID,lz.PROCESSDEFID,lz.RWBH,lz.RWLZBH,lz.LZZTDM,
+					QSRY_XM as BLRY_XM,QSRY_GMSFHM as BLRY_GMSFHM,QSDW_GAJGMC as BLDW_GAJGMC,QSDW_GAJGJGDM as BLDW_GAJGJGDM
+					from BO_EU_XSHB_RW_LZ lz where lz.SFQS_PDBZ ='1' and SFZZLZ_PDBZ='1' and lz.RWBH = ?
+					union all
+					select lz.ID,lz.BINDID,lz.PROCESSDEFID,lz.RWBH,lz.RWLZBH,lz.LZZTDM,
+					HTRY_XM as BLRY_XM,HTRY_GMSFHM as BLRY_GMSFHM,HTDW_GAJGMC as BLDW_GAJGMC,HTDW_GAJGJGDM as BLDW_GAJGJGDM
+					from BO_EU_XSHB_RW_LZ lz where lz.SFHT_PDBZ = '1' and SFZZLZ_PDBZ='1' and lz.RWBH = ?
+				) v ) t where t.row_number = 1
+		]]></value>
+    </entry>
+    <!--查询用户信息-->
+    <entry key="select_user">
+        <value>
+            <![CDATA[
+				select a.USERNAME,a.USERID,a.MOBILE,b.ID,b.DEPARTMENTNAME from  orguser a,orgdepartment b
+				where a.DEPARTMENTID= b.ID AND a.DEPARTMENTID=?
+		]]></value>
+    </entry>
+    <!--查询单位信息-->
+    <entry key="select_dwxx">
+        <value>
+            <![CDATA[
+				select * from code_gxs_biz where 1=1
+		]]></value>
+    </entry>
+
+    <!--查询管辖所信息-->
+    <entry key="select_gxsxx">
+        <value>
+            <![CDATA[
+				select * from code_gxs where 1=1
+		]]></value>
+    </entry>
+
+    <!--查询任务是否需要反馈-->
+    <entry key="select_rw_sffk">
+        <value>
+            <![CDATA[
+				SELECT SFFK_PDBZ FROM BO_EU_XSHB_RW_XF WHERE RWBH =(SELECT RWBH FROM BO_EU_XSHB_RW_LZ WHERE ID=?)
+		]]></value>
+    </entry>
+
+    <!--查询权限ID-->
+    <entry key="select_qxid">
+        <value>
+            <![CDATA[
+				SELECT ID FROM ORGROLE WHERE ROLENAME=?
+		]]></value>
+    </entry>
+
+    <!--查询某单位中特定权限用户-->
+    <entry key="select_uidlistbyqxid">
+        <value>
+            <![CDATA[
+				SELECT listagg(USERID||'' , ',') within group(order by USERID) FROM ORGUSER WHERE DEPARTMENTID=? AND ROLEID =?
+		]]></value>
+    </entry>
+
+    <entry key="select_rw_lz">
+        <value>
+            <![CDATA[
+				select * from BO_EU_XSHB_RW_LZ where XXSC_PDBZ = '0'
+		]]></value>
+    </entry>
+
+    <!--查询流程记录-->
+    <entry key="select_lcjl">
+        <value>
+            <![CDATA[
+				with r as (
+					select * from BO_EU_XSHB_RW_LZ lz start with lz.RWLZBH = ? connect by prior lz.RWLZBH= lz.PID
+				)
+				select v.* from (
+					select jl.*,0 as ROW_NUMBER from r,BO_EU_XSHB_LCJL jl where r.RWLZBH = jl.RWLZBH and jl.DJSJ <=(select GXSJ from BO_EU_XSHB_RW_LZ where RWLZBH=?) order by jl.DJSJ
+				) v
+				union all
+				select v.* from (
+					select jl.*,rank() over(PARTITION by jl.RWLZBH order by jl.DJSJ) as ROW_NUMBER from r,BO_EU_XSHB_LCJL jl where r.RWLZBH = jl.RWLZBH and r.PID = ?
+				) v where ROW_NUMBER = 1
+		]]></value>
+    </entry>
+
+
+    <!--查询任务状态-->
+    <entry key="select_rwzt">
+        <value>
+            <![CDATA[
+				select RWZTDM from BO_EU_XSHB_RW_SB where rwbh=?
+				union ALL
+				select RWZTDM from BO_EU_XSHB_RW_XF where rwbh=?
+		]]></value>
+    </entry>
+
+    <!-- 任务中我的角色 -->
+    <entry key="select_rw_wdjs">
+        <value>
+            <![CDATA[
+			SELECT case count(0) when 0 then 'receive' else 'send' end as ROLE from (
+                SELECT rwbh,SBRY_GMSFHM as djry from BO_EU_XSHB_RW_SB union all SELECT rwbh,XFRY_GMSFHM as djry from BO_EU_XSHB_RW_xf
+            ) v  WHERE v.rwbh=? and v.djry = ?
+       ]]></value>
+    </entry>
+
+    <!-- 任务登记人 -->
+    <entry key="select_rw_djry">
+        <value>
+            <![CDATA[
+			SELECT djry from (SELECT rwbh,SBRY_GMSFHM as djry from BO_EU_XSHB_RW_SB union all SELECT rwbh,XFRY_GMSFHM as djry from BO_EU_XSHB_RW_xf) r where r.rwbh=?
+       ]]></value>
+    </entry>
+
+    <!-- 查询任务流转信息 -->
+    <entry key="select_rw_lzxx">
+        <value>
+            <![CDATA[
+				select * from BO_EU_XSHB_RW_LZ
+				where (qsry_gmsfhm=? or htry_gmsfhm=?) and rwbh=(select rwbh from BO_EU_XSHB_RW_LZ where rwlzbh=?) order by SFZZLZ_PDBZ DESC
+		]]></value>
+    </entry>
+
+    <!-- 查询WFC任务信息 -->
+    <entry key="select_wfc_task">
+        <value>
+            <![CDATA[
+				select ID as TASKID,ACTIVITYDEFID as ACTIVITYID, processInstId ,processDefId from WFC_TASK where 1=1
+		]]></value>
+    </entry>
+
+    <!--查询关联逃犯信息-->
+    <entry key="select_xsgltf">
+        <value>
+            <![CDATA[
+				select rank() over(partition by GJ.SFZH order by GJ.DJSJ DESC) as row_number,
+				GL.ID,GJ.YHZH,GJ.SHDQDM,GJ.SHDZ,GJ.SHDH,GJ.XM,GJ.ZTRYBH,GJ.JYSJ from TB_YW_ZTRY ZT left join TB_YW_ZTRY_GJ GJ on ZT.zjhm=GJ.sfzh
+				inner join BO_EU_XSHB_GLTF GL on GL.ZTRYBH = ZT.ZTRYBH where 1=1
+		]]></value>
+    </entry>
+    <!--查询关联逃犯信息-->
+    <entry key="select_xsgltf2">
+        <value>
+            <![CDATA[
+			select GJ.YHZH,GJ.SHDQDM,GJ.SHDZ,GJ.SHDH,GJ.XM,GJ.ZTRYBH,GJ.JYSJ from TB_YW_ZTRY_GJ GJ where 1=1
+		]]></value>
+    </entry>
+    <!--查询关联物流信息-->
+    <entry key="select_xsglwl">
+        <value>
+            <![CDATA[
+				select * from BO_EU_XSHB_GLWL where XXSC_PDBZ = '0'
+		]]></value>
+    </entry>
+
+    <!--查询逃犯轨迹信息-->
+    <entry key="select_tfgjxx">
+        <value>
+            <![CDATA[
+				select * from TB_YW_ZTRY_GJ where 1=1
+		]]></value>
+    </entry>
+
+    <!-- 查询所有在逃人员 -->
+    <entry key="select_ztry">
+        <value>
+            <![CDATA[
+			     select ry.ZTRYBH,ry.XM,ry.ZJHM,ry.HJDZ_XZQHDM,ry.DJSJ,ry.XXDJDW_GAJGMC from TB_YW_ZTRY ry
+			     where ry.XXSC_PDBZ = '0' and ry.ZTRYBH not in (select ZTRYBH from BO_EU_XSHB_GLTF where ID =?)
+		]]></value>
+    </entry>
+    <!--查询线索关联逃犯信息-->
+    <entry key="select_xsgltfxx">
+        <value>
+            <![CDATA[
+			     select xs.XSBH,xs.XSMC from BO_EU_XSHB_GLTF tf,BO_EU_XSHB_XS xs where tf.XSBH=xs.XSBH
+		]]></value>
+    </entry>
+
+    <!-- 查询同一逃犯线索的所有任务编号 -->
+    <entry key="select_escapeeRwbh">
+        <value>
+            <![CDATA[
+			     SELECT listagg(rwbh,',') within group(order by rwbh) from BO_EU_XSHB_RW_GLXS where xsbh=(SELECT XSBH FROM BO_EU_XSHB_RW_GLXS WHERE RWBH =?) AND rwbh !=?
+		]]></value>
+    </entry>
+    <!-- 查询任务关联的任务流转编号  -->
+    <entry key="select_escapeeRwlzbh">
+        <value>
+            <![CDATA[
+			     SELECT listagg(bindid,',') within group(order by bindid) from BO_EU_XSHB_RW_LZ WHERE rwbh  in(?)
+		]]></value>
+    </entry>
+
+</root>

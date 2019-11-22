@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />		
+        <link type="text/css" rel="stylesheet" href="../apps/com.awspaas.user.apps.clue/css/iview.css"/>
+        <link type="text/css" rel="stylesheet" href="../apps/com.awspaas.user.apps.clue/css/common.css"/>
+	    <link type="text/css" rel="stylesheet" href="../apps/com.awspaas.user.apps.clue/css/sbxs.css"/>	    
+    </head>
+	<body style="background: rgb(242,242,242)">
+		<div id="sbxs" class="sbxs">
+			<Row class="part">
+				<i-col span="24">
+					<Breadcrumb separator=">">
+				        <breadcrumb-item>线索管理</breadcrumb-item>
+				        <breadcrumb-item>线索上报</breadcrumb-item>
+				    </Breadcrumb>
+				</i-col>
+			</Row>
+			<Row class="part">
+				<i-col span="18" style="line-height: 50px;font-size: 25px;">
+					标题名称：<Input v-model="fromData.XSBT" required="required" placeholder="请输入标题名称" class="title_input" @on-blur="valiName"/>
+				</i-col>
+				<i-col span="6">
+					<p>上报编号</p>
+					<p>R300000000002018051422</p>
+				</i-col>
+			</Row>
+			<Row class="part">
+				<div class="info_title">上报信息</div>
+				<i-form ref="fromData" v-bind:model="fromData" v-bind:rules="ruleValidate" v-bind:label-width="128">
+					<row>
+			            <i-col span="24">
+			                <form-item label="信息名称：" prop="XXMC">
+			                    <i-input v-model="fromData.XXMC"  icon="ios-search-outline"></i-input>
+			                </form-item>
+			            </i-col>
+			        </row>
+			        <Row>
+			        	<i-col span="8">
+			                <form-item label="线索来源：" prop="XSLYDM">
+			                	<i-select v-model="fromData.XSLYDM">
+			                   		<i-option v-for="item in select.xsly" :value="item.value">{{item.label}}</i-option>
+			                  	</i-select>
+			                </form-item>
+			            </i-col>
+			        	<i-col span="8">
+			                <form-item label="信息级别：" prop="XXJBDM">
+			                    <i-select v-model="fromData.XXJBDM">
+			                    	<i-option v-for="item in select.xxjb" :value="item.value">{{item.label}}</i-option>
+			                    </i-select>
+			                </form-item>
+			            </i-col>
+			            <i-col span="8">
+			                <form-item label="作案时段：" prop="ZARSDDM">
+			                    <i-select v-model="fromData.ZARSDDM">
+			                    	<i-option v-for="item in select.zasd" :value="item.value">{{item.label}}</i-option>
+			                    </i-select>
+			                </form-item>
+			            </i-col>
+			        </Row>
+			        <Row>
+			        	<i-col span="8">
+			                <form-item label="案件类别：" prop="AJLBDM">
+			                	<i-input v-model="fromData.AJLBDM"></i-input>
+			                </form-item>
+			            </i-col>
+			        	<i-col span="8">
+			                <form-item label="小类案别：" prop="ZATZ_JYQK">
+			                    <i-input v-model="fromData.ZATZ_JYQK"></i-input>
+			                </form-item>
+			            </i-col>
+			            <i-col span="8">
+			                <form-item label="跨区域范围：" prop="KJFWDM">
+			                    <i-input v-model="fromData.KJFWDM"></i-input>
+			                </form-item>
+			            </i-col>
+			        </Row>
+			        <Row>
+			        	<i-col span="8">
+			        		<form-item label="是否涉密：" prop="SFSM_PDBZ">
+				        		<radio-group v-model="fromData.SFSM_PDBZ">
+							        <radio label="1">是</radio>
+							        <radio label="0">否</radio>
+							    </radio-group>
+							</form-item>
+			        	</i-col>
+			        	<i-col span="24">
+			        		<form-item label="信息描述：" prop="XSMS">
+				        		<i-input type="textarea" v-model="fromData.XSMS" maxlength=500></i-input>
+							</form-item>
+			        	</i-col>
+			        	<i-col span="8">
+			        		<!--???-->
+			        		<form-item label="信息附件：" prop="XXFJ">
+				        		<Upload
+							        multiple
+							        type="drag"
+							        action="//jsonplaceholder.typicode.com/posts/">
+							        <div style="padding: 5px 0">
+							            <Icon type="ios-add" size="30" style="color: #3399ff"></Icon>
+							        </div>
+							    </Upload>
+							</form-item>
+			        	</i-col>
+			        </Row>
+			        <Row>
+			        	<i-col offset="22" span="2">
+			        		 <i-switch v-model="select.show" @on-change="showOtherform" />
+			        	</i-col>
+			        </Row>
+			        
+			        <div v-if="select.ohterel">
+			        	<row>
+				            <i-col span="24">
+				                <form-item label="特征描述：" prop="CBAJ_ZATZ_JYQK" class="title">
+				                    <i-input v-model="fromData.CBAJ_ZATZ_JYQK"></i-input>
+				                </form-item>
+				            </i-col>
+				        </row>
+				        <row>
+				            <i-col span="18">
+				                <form-item label="涉案场所类别：" prop="SACSLBDM" label-position="left" class="title">
+				                    <i-input v-model="select.SACSLBDM2" :value="fromData.SACSLBDM" tablename="sacslb" @on-click="openDialog('SACSLBDM')" icon="ios-clock-outline"></i-input>
+				                </form-item>
+				            </i-col>
+				            <i-col span="6">
+				                <form-item label="补充描述：" prop="SACSLB_DMBCMS" label-position="left" class="title">
+				                     <i-input v-model="fromData.SACSLB_DMBCMS"></i-input>
+				                </form-item>
+				            </i-col>
+				        </row>
+				        <row>
+				            <i-col span="18">
+				                <form-item label="作案准备手段：" prop="ZAZBSDDM" label-position="left" class="title">
+				                    <i-select v-model="fromData.ZAZBSDDM" tablename="code_xxjb" codeName="CODE_ZAZBSD ">
+				                       <i-option v-for="item in optiondata.ZAZBSDDM" :value="item.value">{{item.label}}</i-option>
+				                    </i-select>
+				                </form-item>
+				            </i-col>
+				            <i-col span="6">
+				                <form-item label="补充描述：" prop="ZAZBSD_DMBCMS" label-position="left" class="title">
+				                     <i-input v-model="fromData.ZAZBSD_DMBCMS"></i-input>
+				                </form-item>
+				            </i-col>
+				        </row>
+				        <row>
+				            <i-col span="18">
+				                <form-item label="接近手段：" prop="jjsddm" label-position="left" class="title">
+				                    <i-select v-model="fromData.jjsddm" tablename="code_xxjb" codeName="CODE_JJSD">
+				                       <i-option v-for="item in optiondata.jjsddm" :value="item.value">{{item.label}}</i-option>
+				                    </i-select>
+				                </form-item>
+				            </i-col>
+				            <i-col span="6">
+				                <form-item label="补充描述：" prop="JJSD_DMBCMS" label-position="left" class="title">
+				                     <i-input v-model="fromData.JJSD_DMBCMS"></i-input>
+				                </form-item>
+				            </i-col>
+				        </row>
+				        <row>
+				            <i-col span="18">
+				                <form-item label="冒充冒用手段：" prop="MCMYSDDM" label-position="left" class="title">
+				                    <i-select v-model="fromData.MCMYSDDM" tablename="code_xxjb" codeName="CODE_MCMYSD">
+				                       <i-option v-for="item in optiondata.MCMYSDDM" :value="item.value">{{item.label}}</i-option>
+				                    </i-select>
+				                </form-item>
+				            </i-col>
+				            <i-col span="6">
+				                <form-item label="补充描述：" prop="MCMYSD_DMBCMS" label-position="left" class="title">
+				                     <i-input v-model="fromData.MCMYSD_DMBCMS"></i-input>
+				                </form-item>
+				            </i-col>
+				        </row>
+				        <row>
+				            <i-col span="18">
+				                <form-item label="诈骗手段：" prop="ZPSDDM" label-position="left" class="title">
+				                    <i-select v-model="fromData.ZPSDDM" tablename="code_xxjb" codeName="CODE_ZPSD">
+				                       <i-option v-for="item in optiondata.ZPSDDM" :value="item.value">{{item.label}}</i-option>
+				                    </i-select>
+				                </form-item>
+				            </i-col>
+				            <i-col span="6">
+				                <form-item label="补充描述：" prop="ZPSD_DMBCMS" label-position="left" class="title">
+				                     <i-input v-model="fromData.ZPSD_DMBCMS"></i-input>
+				                </form-item>
+				            </i-col>
+				        </row>
+				        <row>
+				            <i-col span="18">
+				                <form-item label="进入建筑空间手段：" prop="JRJZKJFSJSD" label-position="left" class="title">
+				                    <i-input v-model="fromData.JRJZKJFSJSD"></i-input>
+				                </form-item>
+				            </i-col>
+				            <i-col span="6">
+				                <form-item label="补充描述：" prop="JRJZKJFSJSD_DMBCMS" label-position="left" class="title">
+				                     <i-input v-model="fromData.JRJZKJFSJSD_DMBCMS"></i-input>
+				                </form-item>
+				            </i-col>
+				        </row>
+				        <row>
+				            <i-col span="18">
+				                <form-item label="离开建筑空间方式：" prop="LKJZKJFSDM" label-position="left" class="title">
+				                    <i-input v-model="fromData.LKJZKJFSDM"></i-input>
+				                </form-item>
+				            </i-col>
+				            <i-col span="6">
+				                <form-item label="补充描述：" prop="LKJZKJFS_DMBCMS" label-position="left" class="title">
+				                     <i-input v-model="fromData.LKJZKJFS_DMBCMS"></i-input>
+				                </form-item>
+				            </i-col>
+				        </row>
+				        <row>
+				            <i-col span="18">
+				                <form-item label="解锁手段：" prop="JSSDDM" label-position="left" class="title">
+				                    <i-input v-model="fromData.JSSDDM"></i-input>
+				                </form-item>
+				            </i-col>
+				            <i-col span="6">
+				                <form-item label="补充描述：" prop="JSSD_DMBCMS" label-position="left" class="title">
+				                     <i-input v-model="fromData.JSSD_DMBCMS"></i-input>
+				                </form-item>
+				            </i-col>
+				        </row>
+				        <row>
+				            <i-col span="18">
+				                <form-item label="窃取手段：" prop="QQSDDM" label-position="left" class="title">
+				                    <i-input v-model="fromData.QQSDDM"></i-input>
+				                </form-item>
+				            </i-col>
+				            <i-col span="6">
+				                <form-item label="补充描述：" prop="QQSD_DMBCMS" label-position="left" class="title">
+				                     <i-input v-model="fromData.QQSD_DMBCMS"></i-input>
+				                </form-item>
+				            </i-col>
+				        </row>
+				        <row>
+				            <i-col span="18">
+				                <form-item label="胁迫手段：" prop="XPSDDM" label-position="left" class="title">
+				                    <i-input v-model="fromData.XPSDDM"></i-input>
+				                </form-item>
+				            </i-col>
+				            <i-col span="6">
+				                <form-item label="补充描述：" prop="XPSD_DMBCMS" label-position="left" class="title">
+				                     <i-input v-model="fromData.XPSD_DMBCMS"></i-input>
+				                </form-item>
+				            </i-col>
+				        </row>
+				        <row>
+				            <i-col span="18">
+				                <form-item label="干扰侦查手段：" prop="GRZCSDDM" label-position="left" class="title">
+				                    <i-input v-model="fromData.GRZCSDDM"></i-input>
+				                </form-item>
+				            </i-col>
+				            <i-col span="6">
+				                <form-item label="补充描述：" prop="GRZCSD_DMBCMS" label-position="left" class="title">
+				                     <i-input v-model="fromData.GRZCSD_DMBCMS"></i-input>
+				                </form-item>
+				            </i-col>
+				        </row>
+				        <row>
+				            <i-col span="18">
+				                <form-item label="箱体空间突破手段：" prop="XTKJTPSDDM" label-position="left" class="title">
+				                    <i-select v-model="fromData.XTKJTPSDDM" tablename="code_xxjb" codeName="CODE_XTKJTPSD">
+				                       <i-option v-for="item in optiondata.XTKJTPSDDM" :value="item.value">{{item.label}}</i-option>
+				                    </i-select>
+				                </form-item>
+				            </i-col>
+				            <i-col span="6">
+				                <form-item label="补充描述：" prop="XTKJTPSD_DMBCMS" label-position="left" class="title">
+				                     <i-input v-model="fromData.XTKJTPSD_DMBCMS"></i-input>
+				                </form-item>
+				            </i-col>
+				        </row>
+				        <row>
+				            <i-col span="18">
+				                <form-item label="作案工具：" prop="ZAGJ_SAWPDM" label-position="left" class="title">
+				                    <i-input v-model="fromData.ZAGJ_SAWPDM"></i-input>
+				                </form-item>
+				            </i-col>
+				            <i-col span="6">
+				                <form-item label="补充描述：" prop="ZAGJ_DMBCMS" label-position="left" class="title">
+				                     <i-input v-model="fromData.ZAGJ_DMBCMS"></i-input>
+				                </form-item>
+				            </i-col>
+				        </row>
+				        <row>
+				            <i-col span="18">
+				                <form-item label="作案人数：" prop="ZARFX_RSXX" label-position="left" class="title">
+				                    <i-input v-model="fromData.ZARFX_RSXX"></i-input>
+				                </form-item>
+				            </i-col>
+				        </row>
+			        </div>
+			        	
+			        
+			        <i-button type="primary" @click="submitData('fromData')">保存</i-button>
+				</i-form>
+				
+				
+				
+				<row>
+					<div class="gl_title">
+						<span>关联案件</span>
+						<i-button type="primary" class="pull-right" @click="add">新增</i-button>
+					</div>
+				
+					<i-table :columns="griddata.glajColumns" :data="griddata.glajData"></i-table>
+					<Page :total="griddata.dataCount" :page-size="griddata.pageSize" show-total class="paging" @on-change="changepage"
+					@on-page-size-change="pages" show-sizer show-elevator show-total></Page>
+					
+				</row>
+				
+				<row>
+					<div class="gl_title">
+						<span>关联人员</span>
+						<i-button type="primary" class="pull-right">新增</i-button>
+					</div>
+				
+					<i-table :columns="griddata.glryColumns" :data="griddata.glryData"></i-table>
+					<Page :total="griddata.dataCount2" :page-size="griddata.pageSize2" show-total class="paging" @on-change="changepage"
+					@on-page-size-change="pages" show-sizer show-elevator show-total></Page>
+					
+				</row>
+				
+			</Row>
+			<!--弹框表格-->
+			<Modal v-model="griddata.addAj" title="新增关联案件" width="70%" @on-ok="ok" @on-cancel="cancel">
+			    <i-table :columns="griddata.glajColumns" :data="griddata.glajData1"></i-table>
+				<Page :total="griddata.dataCount1" :page-size="griddata.pageSize1" show-total class="paging" @on-change="changepage"
+				@on-page-size-change="pages" show-sizer show-elevator show-total></Page>
+		    </Modal>
+		    <!--弹框树-->
+		    <Modal
+		        v-model="select.modaltree"
+		        title="数据"
+		        @on-ok="okTree"
+		        @on-cancel="cancelTree">
+		        <Tree ref="tree" :data="tree" show-checkbox></Tree>
+		    </Modal>
+		</div>
+		<script type="text/javascript">
+			var sid = '<#sid>';
+		</script>
+			    <script type="text/javascript" src="../commons/js/jquery/scripts/jquery.js" ></script>
+		<script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/vue.min.js" ></script>
+	    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/iview.min.js"></script>
+	    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/axios.min.js"></script>
+		<script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/sbxs.js" ></script>
+	</body>
+</html>

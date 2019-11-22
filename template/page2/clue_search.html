@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>线索管理</title>
+        <link type="text/css" rel="stylesheet" href="../apps/com.awspaas.user.apps.clue/css/iview.css"/>
+        <link type="text/css" rel="stylesheet" href="../apps/com.awspaas.user.apps.clue/css/common.css"/>
+	    <style>
+            body{
+                background-color:rgb(242,242,242);
+            }
+            .wrapper{
+                background: #fff;
+	            padding: 10px 40px;
+	            margin-top: 15px;
+            }
+            .pull-right{
+                float: right;
+            }
+            .abs-btn{
+                position: absolute;
+                top: 8px;
+                left: calc(100% - 115px);
+                cursor: pointer;
+                z-index: 100;
+            }
+            .pd20{
+                padding: 0px 20px;
+            }
+            .ivu-form-item{
+                margin: 6.5px 0;
+            }
+            .ivu-form-item-label,.ivu-form-item [placeholder],.ivu-select-placeholder{
+                font-size: 14px !important;
+            }
+            .ivu-table-header{
+                height: 54px;
+                line-height: 54px;
+                background-color: rgba(242, 242, 242, 1) !important;
+            }
+            .ivu-table-header .ivu-table-cell>span{
+                font-size: 14px;
+            }
+            .ivu-poptip a{
+                display: block;
+            }
+        </style>
+	</head>
+	<body>
+		<div id="clue_search">
+			<Row class="wrapper">
+				<i-col span="24">
+					<Breadcrumb separator=">">
+				        <breadcrumb-item>线索模块</breadcrumb-item>
+				        <breadcrumb-item>线索管理</breadcrumb-item>
+				    </Breadcrumb>
+				</i-col>
+			</Row>
+			<i-form ref="clue_form" class="pd20" v-bind:model="searchParams" v-bind:label-width="120">
+				<Row class="wrapper">
+                    <Row>
+                        <i-col span="8">
+                            <form-item label="线索编号" prop="XSBH">
+                                <i-input v-model="searchParams.XSBH" placeholder="请输入线索编号"/>
+                            </form-item>
+                        </i-col>
+                        <i-col span="8">
+                            <form-item label="标题名称" prop="XSMC~9">
+                                <i-input v-model="searchParams['XSMC~9']" placeholder="请输入线索名称"/> 
+                            </form-item>
+                        </i-col>
+                        <i-col span="8">
+                            <form-item label="创建时间" prop="DJSJ~11">
+                                <date-picker type="daterange" style="width:100%;" confirm v-model="searchParams['DJSJ~11']" format="yyyy-MM-dd" placeholder="开始日期-截止日期"  @on-change="searchParams['DJSJ~11']=$event"></date-picker>
+                            </form-item>
+                        </i-col>
+                    </Row>
+                    <Row>
+                        <i-col span="8">
+                            <form-item label="线索类型" prop="XSLXDM">
+                                <i-select v-model="searchParams.XSLXDM" codeName="CODE_XSHB_XSLX" placeholder="请选择线索类型">
+                                    <i-option value="">全部</i-option>
+                                    <i-option value="01">常规线索</i-option>
+                                    <i-option value="02">贩枪线索</i-option>
+                                    <i-option value="03">逃犯线索</i-option>
+                                </i-select>
+                            </form-item>
+                        </i-col>
+                        <i-col span="8">
+                            <form-item label="线索级别" prop="XSJBDM">
+                                <i-select v-model="searchParams.XSJBDM" codeName="CODE_XSHB_JB" placeholder="请选择线索级别">
+                                    <i-option value="">全部</i-option>
+                                    <i-option value="01">A级</i-option>
+                                    <i-option value="02">B级</i-option>
+                                    <i-option value="03">C级</i-option>
+                                    <i-option value="04">D级</i-option>
+                                </i-select>
+                            </form-item>
+                        </i-col>
+                        <i-col span="8">
+                            <form-item label="创建单位" prop="XXDJDW_GAJGJGDM">
+                                <sy-tree ref="text" tablename="CODE_GXS_BIZ" v-model="searchParams.XXDJDW_GAJGJGDM" @change="searchParams.XXDJDW_GAJGJGDM=$event" placeholder="请选择创建单位"></sy-tree>
+                            </form-item>
+                        </i-col>
+                    </Row>
+                    <Row>
+                        <i-col span="8">
+                            <form-item label="线索公开" prop="SFSMDM">
+                                <i-select v-model="searchParams.SFSMDM" codeName="CODE_XSHB_SFSM" placeholder="请选择线索公开">
+                                    <i-option value="">全部</i-option>
+                                    <i-option value="01">公开</i-option>
+                                    <i-option value="02">私密</i-option>
+                                </i-select>
+                            </form-item>
+                        </i-col>
+                        <i-col span="8">
+                            <form-item label="线索来源" prop="XSLYDM">
+                                <i-select v-model="searchParams.XSLYDM" codeName="CODE_XSHB_XSLY" placeholder="请选择线索来源">
+                                    <i-option value="">全部</i-option>
+                                    <i-option value="01">群众检举</i-option>
+                                    <i-option value="02">新闻反映</i-option>
+                                    <i-option value="03">领导或上级批办</i-option>
+                                    <i-option value="04">有关部门移交</i-option>
+                                    <i-option value="05">纪检监察部门检查发现</i-option>
+                                    <i-option value="06">坦白交待</i-option>
+                                    <i-option value="07">其他</i-option>
+                                </i-select>
+                            </form-item>
+                        </i-col>
+                        <i-col span="8">
+                            <form-item label="创建人员" prop="XXDJRY_XM">
+                                <i-input v-model="searchParams.XXDJRY_XM"  placeholder="请选择创建人员" />
+                            </form-item>
+                        </i-col>
+                    </Row>
+		            <Row>
+		            	<i-button class="pull-right" @click="handleReset('clue_form')">重置</i-button>
+						<i-button class="pull-right" @click="search()" type="primary" style="margin-right: 15px;">查询</i-button>
+		            </Row>
+		        </Row>
+			</i-form>
+			<Row class="pd20">
+				<Row class="wrapper">
+					<i-button type="primary" class="abs-btn" to="./w?cmd=com.awspaas.user.apps.clue.router&classify=clue&action=add&sid=<#sid>">新建线索</i-button>
+					<Tabs @on-click="switchTab">
+				        <tab-pane label="我的线索" name="myClue" id="myClue">
+                            <sy-table 
+                                ref="myClue" 
+                                :url="myClueTable.url"
+                                :columns="myClueTable.columns" 
+                                :query-params="searchParams"
+                                :pager-page-size="10" 
+                                :pager-page-size-opts="[5, 10, 20, 30]">
+                            </sy-table>
+				        	
+							<!-- 表格点击更多出现的弹框 -->
+							<div class="entry" v-if="calloption">
+								<div class="right-entry-trangle"></div>
+								123456
+							</div>
+				        	
+				        </tab-pane>
+				        <tab-pane label="辖区线索" name="areaClue" id="areaClue">
+				        	<sy-table 
+                                ref="areaClue"
+                                :url="areaClueTable.url" 
+                                :columns="areaClueTable.columns"
+                                :query-params="searchParams"
+                                :pager-page-size="10" 
+                                :pager-page-size-opts="[5, 10, 20, 30]">
+                            </sy-table>
+				        </tab-pane>
+                    </Tabs>
+				</Row>
+			</Row>
+		</div>
+	</body>
+	<script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/vue.min.js" ></script>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/iview.min.js"></script>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/axios.min.js"></script>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/sy-table.js"></script>
+    <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/common.js"></script>
+	<script>
+        const sid='<#sid>';
+        const user = JSON.parse('<#user>');
+		var vm = new Vue({
+			el:'#clue_search',
+			data:{
+                searchParams:{
+                    'XSBH': '',
+                    'XSMC~9': '',
+                    'DJSJ~11': '',
+                    'XSLXDM': '',
+                    'XSJBDM': '',
+                    'SFSMDM': '',
+                    'XXDJDW_GAJGJGDM': '',
+                    'XXDJRY_XM': ''
+                },
+                activeTabName: 'myClue',
+                //我的线索
+                myClueTable:{
+                    url: './jd?cmd=com.awspaas.user.apps.clue.getMyClue&sid='+sid,
+                    queryParams : this.searchParams,
+                    columns:[
+                        {title:'线索编号',key:'XSBH',width:260,render:(h,params)=>{
+                                let joinStyle = {}, joinText='';
+                                if( params.row.GLXSS > 0){
+                                    joinStyle = {
+                                        color:'#fff',
+                                        display:'inline-block',
+                                        width: '20px',
+                                        height: '20px',
+                                        backgroundColor: 'rgba(45, 183, 245, 1)',
+                                        marginRight:'5px',
+                                        textAlign:'center',
+                                        borderRadius: '5px',
+                                        lineHeight:'20px'
+                                    };
+                                    joinText = '串'
+                                }else{
+                                    joinStyle = {
+                                        marginRight:'25px',
+                                    };
+                                }
+                                return h('div', [
+                                    h('span',{
+                                        style:joinStyle
+                                    },joinText),
+                                    h('a',{
+                                        attrs: {
+                                            href: './w?cmd=com.awspaas.user.apps.clue.router&classify=clue&action=detail&sid='+sid+'&extendParams={"XSBH":"'+params.row.XSBH+'"}',
+                                            target:'_blank'
+                                        }
+                                    }, params.row.XSBH)
+                                ]);
+                            },
+                        },
+                        {title:'线索名称',key:'XSMC',width:250,tooltip:true},
+                        {title:'线索类型',key:'XSLXDM',tooltip: true},
+                        {title:'线索级别',key:'XSJBDM',tooltip: true},
+                        {title:'线索公开',key:'SFSMDM',tooltip: true},
+                        {title:'创建时间',key:'DJSJ',sortable: true,tooltip: true},
+                        {
+                            type: 'option',
+                            title:'操作',
+                            width: 100,
+                            render: (h, params) => {
+                                console.log(params.row);
+                                let glrws = params.row.GLRWS;
+                                let contentList = [
+                                    h('a',{attrs: {
+                                        href: './w?cmd=com.awspaas.user.apps.clue.router&classify=report&action=add&sid='+sid+'&extendParams={"XSBH":"'+params.row.XSBH+'","XSLXDM":"'+params.row.XSLXDM__CODE+'"}',
+                                    },},'上报'),
+                                    h('a',{attrs: {
+                                        href: './w?cmd=com.awspaas.user.apps.clue.router&classify=issue&action=add&sid='+sid+'&extendParams={"XSBH":"'+params.row.XSBH+'","XSLXDM":"'+params.row.XSLXDM__CODE+'"}',
+                                    },},'下发'),
+                                    h('a',{attrs: {
+                                        href: './w?cmd=com.awspaas.user.apps.clue.router&classify=clue&action=add&sid='+sid+'&extendParams={"XSBH":"'+params.row.XSBH+'","XSLXDM":"'+params.row.XSLXDM__CODE+'"}',
+                                    },},'新建')
+                                ];
+                                if(glrws == 0){
+                                    contentList.push(
+                                        h('a',{attrs: {
+                                            href: './w?cmd=com.awspaas.user.apps.clue.router&classify=clue&action=update&sid='+sid+'&extendParams={"XSBH":"'+params.row.XSBH+'","XSLXDM":"'+params.row.XSLXDM__CODE+'"}',
+                                            },
+                                        },'编辑'),
+                                        //作废是一个ajax
+                                        h('a',{on:{
+                                            click:()=>{
+                                                let that = this;
+                                                that.showLoadMask();
+                                                axios({
+                                                    url: './jd?cmd=com.awspaas.user.apps.clue.deleteClue&sid='+sid,
+                                                    method: 'post',
+                                                    params: {
+                                                        json: {
+                                                            data : {
+                                                                'BO_EU_XSHB_XS':{
+                                                                    'XSBH' : params.row.XSBH
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }).then(response => {
+                                                    that.hideLoadMask();
+                                                    if(response.data.result == 'ok'){
+                                                        vm.$refs[vm.activeTabName].init();
+                                                        vm.$Modal.success({
+                                                            title: response.data.msg
+                                                        }); 
+                                                    }
+                                                }).catch(error => {
+                                                    console.log(error);
+                                                });
+                                            }
+                                        }},'作废'),
+                                    );
+                                }
+                                return h('Poptip',{
+                                    props: {
+                                        trigger: 'click',
+                                        placement: 'left'
+                                    },
+                                },[
+                                    h('span', {
+                                        style:{
+                                            color:'#0099FF',
+                                            fontSize:'12px',
+                                            cursor:'pointer'
+                                        },
+                                    },'更多'),
+                                    h('div', {
+                                        slot: 'content',
+                                        style:{
+                                            textAlign:'center',
+                                            lineHeight:'25px',
+                                            fontSize:'14px'
+                                        }
+                                    }, contentList)
+                                ])
+                            }
+                        }
+                    ]
+                },
+                //辖区线索
+                areaClueTable: {
+                    url: './jd?cmd=com.awspaas.user.apps.clue.getAreaClue&sid='+sid,
+                    queryParams : this.searchParams,
+                    columns:[
+                        {title:'线索编号',key:'XSBH',width:260,render:(h,params)=>{
+                                let joinStyle = {}, joinText='';
+                                if( params.row.GLXSS > 0){
+                                    joinStyle = {
+                                        color:'#fff',
+                                        display:'inline-block',
+                                        width: '20px',
+                                        height: '20px',
+                                        backgroundColor: 'rgba(45, 183, 245, 1)',
+                                        marginRight:'5px',
+                                        textAlign:'center',
+                                        borderRadius: '5px',
+                                        lineHeight:'20px'
+                                    };
+                                    joinText = '串'
+                                }else{
+                                    joinStyle = {
+                                        marginRight:'25px',
+                                    };
+                                }
+                                return h('div', [
+                                    h('span',{
+                                        style:joinStyle
+                                    },joinText),
+                                    h('a',{
+                                        attrs: {
+                                            href: './w?cmd=com.awspaas.user.apps.clue.router&classify=clue&action=detail&sid='+sid+'&extendParams={"XSBH":"'+params.row.XSBH+'"}',
+                                            target:'_blank'
+                                        }
+                                    }, params.row.XSBH)
+                                ]);
+                            },
+                        },
+                        {title:'线索名称',key:'XSMC',width:250,tooltip:true},
+                        {title:'线索类型',key:'XSLXDM',tooltip: true},
+                        {title:'线索级别',key:'XSJBDM',tooltip: true},
+                        {title:'创建时间',key:'DJSJ',sortable: true,tooltip: true},
+                        {title:'创建单位',key:'XXDJDW_GAJGMC',tooltip: true},
+                        {title:'创建人',key:'XXDJRY_XM',tooltip: true}
+                    ]
+                },
+                calloption:false,
+			},
+			methods:{
+				switchTab(name){
+                    this.activeTabName = name;
+                    this.search();
+                },
+                search(){
+                    this.$refs[this.activeTabName].init();
+                },
+                handleReset (name) {
+                    this.$refs[name].resetFields();
+                    this.$refs.text.inputText='';
+                },
+                pageToAddClue(){
+                    window.location.href = './w?cmd=com.awspaas.user.apps.clue.router&classify=clue&action=add&sid='+sid;
+                }
+		    },
+		    mounted(){
+		    	this.search();
+		    }
+		})
+	</script>
+</html>

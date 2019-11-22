@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<awsScheduleModel>
+    <id>2dd204fa-2799-44aa-8631-50e33e4148a5</id>
+    <createUser>admin</createUser>
+    <createTime>2019-03-01 09:29:21</createTime>
+    <updateUser></updateUser>
+    <updateTime>2019-05-16 15:30:31</updateTime>
+    <signature>tGOmxiTgjT/77UoYpSlq8Vc+hHPRoJWHdZexXc7zEpYuMNdhvSICeJnlc/RzRHGryNIjM+PI4LXfm8Rjoj0yLF73GLFowC7BoVoiRBFF9soD7y2Q7jntIyDCNo54F3Tv</signature>
+    <managed>false</managed>
+    <name>逃犯线索</name>
+    <group>DEFAULT</group>
+    <desc>逃犯线索</desc>
+    <disabled>false</disabled>
+    <system>false</system>
+    <classz>com.siyue.job.EscapeeJob</classz>
+    <createDate>2019-03-01T09:29:21+08:00</createDate>
+    <triggerRule>6:1:1</triggerRule>
+    <userParam></userParam>
+    <lastToken></lastToken>
+    <concurrent>false</concurrent>
+    <categoryName>未分类</categoryName>
+    <stateful>false</stateful>
+</awsScheduleModel>

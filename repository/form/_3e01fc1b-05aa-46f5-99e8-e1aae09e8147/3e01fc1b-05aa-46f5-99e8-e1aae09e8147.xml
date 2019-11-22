@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<formModel>
+    <id>3e01fc1b-05aa-46f5-99e8-e1aae09e8147</id>
+    <createUser>admin</createUser>
+    <createTime>2018-12-04 14:22:42</createTime>
+    <updateUser></updateUser>
+    <updateTime>2018-12-21 09:13:04</updateTime>
+    <signature>tGOmxiTgjT/77UoYpSlq8Vc+hHPRoJWHdZexXc7zEpYuMNdhvSICeJnlc/RzRHGrWcAHaJjac3r66SPD18VZAqMOtway7LoSrpb83I6zn+wLZC1bX8HWQbIVKcvkTm75</signature>
+    <managed>false</managed>
+    <title>上报表单</title>
+    <deleted>false</deleted>
+    <categoryName>流程模型</categoryName>
+    <administrator>admin</administrator>
+    <defaultLanguage></defaultLanguage>
+    <url>{"pc":"http://www.baidu.com","mobile":""}</url>
+    <urlHeight>{"pc":"100%","mobile":"400"}</urlHeight>
+    <formItems>
+        <formItem>
+            <id>576d7310-5a24-4986-b710-66f78a57a6d4</id>
+            <title>上报表单</title>
+            <templateFile>{"pc":"流程模型-上报表单.htm","mobile":"","tablet":""}</templateFile>
+            <grid>false</grid>
+            <gridSetting></gridSetting>
+            <orderBy></orderBy>
+            <pageLimit>0</pageLimit>
+            <boModelId></boModelId>
+            <dictionaryFileName></dictionaryFileName>
+            <hiddenHead>false</hiddenHead>
+            <theme>{"pc":"_bpm.platform"}</theme>
+            <itemDisplays/>
+            <scheme>{"pc":"scheme_aws.css"}</scheme>
+            <calcFormula></calcFormula>
+            <conditionControl></conditionControl>
+            <validate></validate>
+            <icon></icon>
+            <gridControl></gridControl>
+            <summaryControl></summaryControl>
+            <ruleControl></ruleControl>
+            <hiddenFields></hiddenFields>
+            <hiddenAddBtn>false</hiddenAddBtn>
+        </formItem>
+    </formItems>
+</formModel>

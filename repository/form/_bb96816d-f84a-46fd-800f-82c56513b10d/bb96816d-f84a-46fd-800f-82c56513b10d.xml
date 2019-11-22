@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<formModel>
+    <id>bb96816d-f84a-46fd-800f-82c56513b10d</id>
+    <createUser>admin</createUser>
+    <createTime>2018-12-04 14:26:02</createTime>
+    <updateUser></updateUser>
+    <updateTime>2019-02-13 17:42:24</updateTime>
+    <signature>tGOmxiTgjT/77UoYpSlq8Vc+hHPRoJWHdZexXc7zEpYuMNdhvSICeJnlc/RzRHGraolDx9H3+SeAjHtnix/Tr4q1fa0sp6Lm0DRtfpo/VJvslHAGd48qyV6ZiACLigAW</signature>
+    <managed>false</managed>
+    <title>上报表单</title>
+    <deleted>false</deleted>
+    <categoryName>表单模型</categoryName>
+    <administrator>admin</administrator>
+    <defaultLanguage></defaultLanguage>
+    <url>{"pc":"https://www.csdn.net/@sqlValue(select '12312312313q')","mobile":""}</url>
+    <urlHeight>{"pc":"100%","mobile":"400"}</urlHeight>
+    <formItems>
+        <formItem>
+            <id>cf6a30e7-eb1b-4fe5-a3ea-b24699b6b279</id>
+            <title>上报表单</title>
+            <templateFile>{"pc":"表单模型-上报表单.htm","mobile":"","tablet":""}</templateFile>
+            <grid>false</grid>
+            <gridSetting></gridSetting>
+            <orderBy></orderBy>
+            <pageLimit>0</pageLimit>
+            <boModelId></boModelId>
+            <dictionaryFileName></dictionaryFileName>
+            <hiddenHead>false</hiddenHead>
+            <theme>{"pc":"_bpm.platform"}</theme>
+            <itemDisplays/>
+            <scheme>{"pc":"scheme_aws.css"}</scheme>
+            <calcFormula></calcFormula>
+            <conditionControl></conditionControl>
+            <validate></validate>
+            <icon></icon>
+            <gridControl></gridControl>
+            <summaryControl></summaryControl>
+            <ruleControl></ruleControl>
+            <hiddenFields></hiddenFields>
+            <hiddenAddBtn>false</hiddenAddBtn>
+        </formItem>
+    </formItems>
+</formModel>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ccModel>
+    <id>29c316f6-36ff-4b70-b0de-c8ef877b2087</id>
+    <createUser>admin</createUser>
+    <createTime>2019-08-30 16:58:40</createTime>
+    <updateUser>admin</updateUser>
+    <updateTime>2019-08-30 16:59:56</updateTime>
+    <signature>tGOmxiTgjT/77UoYpSlq8Vc+hHPRoJWHdZexXc7zEpYuMNdhvSICeJnlc/RzRHGrHNkLIEA3IhCZVzuS0W6aBBqSn6MaU4jea6KzMCNc2MB9QvtT8UkAEZePqFIaUrW8</signature>
+    <managed>false</managed>
+    <name>测试连接驱动</name>
+    <type>jdbc</type>
+    <group></group>
+    <log>false</log>
+    <properties>{"user":"postgres","password":"I/uFh7ax/lHaqqdufXVqjw==","driver":"com.mysql.jdbc.Driver","url":"jdbc:postgresql://127.0.0.1:5432/sy_db","poolInit":"10","poolMax":"100","group":"","desc":"","diyData":[]}</properties>
+    <desc></desc>
+</ccModel>
