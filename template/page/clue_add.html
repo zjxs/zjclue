@@ -49,8 +49,8 @@
                             <form-item label="标题名称" prop="XSMC" class="btmc">
                                 <i-input v-model="newClue.XSMC" placeholder="请输入标题名称" class="title_input"></i-input>
                             </form-item>
-                        </i-col> 
-					</Row> 
+                        </i-col>
+					</Row>
 					<Row class="w_bg">
 						<i-col span="8">
 							<form-item label="线索类型" prop="XSLXDM">
@@ -263,15 +263,15 @@
                             <Row v-if="logisticsTab" style="margin-left: 60px">
                             <sy-table
                                 ref="logisticsInfo"
-                                :url="logisticsInfo.url" 
-                                :columns="logisticsInfo.columns" 
+                                :url="logisticsInfo.url"
+                                :columns="logisticsInfo.columns"
                                 :query-params="logisticsInfo.params"
                                 :on-load-success="logisticsInfo.onLoadSuccess"
-                                :pager-page-size="5" 
+                                :pager-page-size="5"
                                 :pager-page-size-opts="[5, 10, 20, 30]" style="width:calc(100% - 60px);">
                             </sy-table>
                             </Row>
-                            
+
                         </i-col>
                         <i-col span="24" v-show="tfupload">
                             <form-item label="逃犯信息">
@@ -298,7 +298,7 @@
                                                     <i-input v-model="escapeeSearch.YWSTBH" placeholder="请输入人员编号或证件号"/>
                                                 </form-item>
                                             </i-col>
-                                            
+
 	                                        <i-col span="5">
 												<form-item prop="ZTRYLX">
 													<i-select v-model="escapeeSearch.ZTRYLXDM" placeholder="请选择人员角色">
@@ -306,7 +306,7 @@
 													</i-select>
 												</form-item>
 											</i-col>
-                                            
+
                                             <i-col span="5">
                                                 <form-item prop="HJDZ_DZMC">
                                                     <sy-tree tablename="CODE_XZQH" ref="gltfhjdz" title="请选择户籍地区划" v-model="escapeeSearch.HJDZ_DZMC" @change="escapeeSearch.HJDZ_DZMC=$event" placeholder="请选择户籍地址"></sy-tree>
@@ -323,25 +323,25 @@
                                             </i-col>
                                         </row>
                                     </i-form>
-                                    <sy-table 
+                                    <sy-table
                                         ref="EscapeeTab"
                                         id-field="ZTRYBH"
                                         show-selection
                                         :url="EscapeeTab.url"
                                         :columns="EscapeeTab.columns"
                                         :query-params="escapeeSearch"
-                                        :pager-page-size="5" 
+                                        :pager-page-size="5"
                                         :pager-page-size-opts="[5, 10, 20, 30]">
                                     </sy-table>
                                 </Modal>
                             </form-item>
-                            <sy-table 
+                            <sy-table
                                 v-if="escapeeCheckTable"
                                 ref="relevanceEscapeeTable"
                                 :url="relevanceEscapeeTable.url"
                                 :columns="relevanceEscapeeTable.columns"
                                 :query-params="relevanceEscapeeTable.params"
-                                :pager-page-size="5" 
+                                :pager-page-size="5"
                                 :pager-page-size-opts="[5, 10, 20, 30]"
                                 @on-selection-change="getSelection"
                                 style="width:calc(100% - 60px);margin-left: 60px">
@@ -445,12 +445,12 @@
                                 <sy-table
                                     id-field="ASJBH"
                                     ref="seriesCase"
-                                    :url="seriesCase.url" 
-                                    :columns="seriesCase.columns" 
+                                    :url="seriesCase.url"
+                                    :columns="seriesCase.columns"
                                     :query-params="seriesCaseParams"
-                                    :pager-page-size="5" 
+                                    :pager-page-size="5"
                                     :pager-page-size-opts="[5, 10, 20, 30]">
-                                </sy-table>  
+                                </sy-table>
                             </Modal>
 							<i-button @click="callGoodsModal" class="related_btn">
                                 <Icon type="ios-add" style="color: #000"></Icon>串并物品
@@ -505,19 +505,19 @@
                                                 <i-button @click="resetForm('addGoods')">清空</i-button>
                                             </form-item>
                                         </i-col>
-                                    </i-form> 
+                                    </i-form>
                                 </Row>
                                 <sy-table
                                     id-field="SAWPBH"
                                     ref="seriesGoods"
-                                    :url="seriesGoods.url" 
-                                    :columns="seriesGoods.columns" 
+                                    :url="seriesGoods.url"
+                                    :columns="seriesGoods.columns"
                                     :query-params="seriesCaseParams"
-                                    :pager-page-size="5" 
+                                    :pager-page-size="5"
                                     :pager-page-size-opts="[5, 10, 20, 30]">
-                                </sy-table> 
+                                </sy-table>
                                 </Modal>
-							</i-button>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+							</i-button>
 							<i-button @click="callPersonModal" class="related_btn">
                                 <Icon type="ios-add" style="color: #000"></Icon>串并人员
                                 <Modal v-model="addPersonModal" width="70%" footer-hide :closable="false">
@@ -559,10 +559,10 @@
                                     <sy-table
                                         id-field="ASJXGRYBH"
                                         ref="seriesPerson"
-                                        :url="seriesPerson.url" 
-                                        :columns="seriesPerson.columns" 
+                                        :url="seriesPerson.url"
+                                        :columns="seriesPerson.columns"
                                         :query-params="seriesCaseParams"
-                                        :pager-page-size="5" 
+                                        :pager-page-size="5"
                                         :pager-page-size-opts="[5, 10, 20, 30]">
                                     </sy-table>
                                 </Modal>
@@ -574,7 +574,7 @@
                                     <label>串并线索</label>
                                     <div style="float:right;">
                                         <i-button @click="addClueModal=false">取消</i-button>
-                                        <i-button type="primary" @click="addClueTab()">确定</i-button>
+                                        <i-button type="primary" @click="cbxsModal">确定</i-button>
 										<i-button type="success" @click="pickUp()">提取</i-button>
                                     </div>
                                 </div>
@@ -615,13 +615,13 @@
                                 <sy-table
                                 id-field="XSBH"
                                 ref="seriesClue"
-                                :url="seriesClue.url" 
-                                :columns="seriesClue.columns" 
+                                :url="seriesClue.url"
+                                :columns="seriesClue.columns"
                                 :query-params="seriesCaseParams"
-                                :pager-page-size="5" 
+                                :pager-page-size="5"
                                 :pager-page-size-opts="[5, 10, 20, 30]">
                                 ></sy-table>
-                            </Modal> 
+                            </Modal>
 							</i-button>
 
 						<Modal
@@ -680,11 +680,11 @@
 						</div>
                         <sy-table
                         ref="seriesCheckCase"
-                        :url="seriesCheckCase.url" 
-                        :columns="seriesCheckCase.columns" 
+                        :url="seriesCheckCase.url"
+                        :columns="seriesCheckCase.columns"
                         :query-params="seriesCheckCaseParams"
                         :on-load-success="seriesCheckCase.onLoadSuccess"
-                        :pager-page-size="5" 
+                        :pager-page-size="5"
                         :pager-page-size-opts="[5, 10, 20, 30]">
                         ></sy-table>
 					</Row>
@@ -697,11 +697,11 @@
 						</div>
 						<sy-table
                         ref="seriesCheckClue"
-                        :url="seriesCheckClue.url" 
-                        :columns="seriesCheckClue.columns" 
+                        :url="seriesCheckClue.url"
+                        :columns="seriesCheckClue.columns"
                         :query-params="seriesCheckCaseParams"
                         :on-load-success="seriesCheckClue.onLoadSuccess"
-                        :pager-page-size="5" 
+                        :pager-page-size="5"
                         :pager-page-size-opts="[5, 10, 20, 30]">
                         ></sy-table>
 					</Row>
@@ -714,11 +714,11 @@
 						</div>
 						<sy-table
                         ref="seriesCheckPerson"
-                        :url="seriesCheckPerson.url" 
-                        :columns="seriesCheckPerson.columns" 
+                        :url="seriesCheckPerson.url"
+                        :columns="seriesCheckPerson.columns"
                         :query-params="seriesCheckCaseParams"
                         :on-load-success="seriesCheckPerson.onLoadSuccess"
-                        :pager-page-size="5" 
+                        :pager-page-size="5"
                         :pager-page-size-opts="[5, 10, 20, 30]">
                         </sy-table>
 					</Row>
@@ -731,13 +731,13 @@
 							<span>串并物品</span>
 						</div>
                         <sy-table
-                        id-field="SAWPBH" 
+                        id-field="SAWPBH"
                         ref="seriesCheckGoods"
-                        :url="seriesCheckGoods.url" 
-                        :columns="seriesCheckGoods.columns" 
+                        :url="seriesCheckGoods.url"
+                        :columns="seriesCheckGoods.columns"
                         :query-params="seriesCheckCaseParams"
                         :on-load-success="seriesCheckGoods.onLoadSuccess"
-                        :pager-page-size="5" 
+                        :pager-page-size="5"
                         :pager-page-size-opts="[5, 10, 20, 30]">
                         ></sy-table>
 					</Row>
@@ -892,7 +892,7 @@
                         </Row>
                     </i-form>
                 </Modal>
-            
+
 				<Modal v-model="deleteModel" width="360">
 					<p slot="header" style="color: #f60; text-align: center;">
 						<Icon type="ios-information-circle"></Icon>
@@ -908,14 +908,14 @@
 			</div>
 
 		</div>
-	
+
 	<script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/vue.min.js" ></script>
     <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/iview.min.js"></script>
     <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/zh-CN.js"></script>
     <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/axios.min.js"></script>
     <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/common.js"></script>
     <script type="text/javascript" src="../apps/com.awspaas.user.apps.clue/js/sy-table.js"></script>
-    
+
 	<script>
         var sid = '<#sid>';
         var xs = '<#xs>';
@@ -933,7 +933,7 @@
                         if(json[key]!=''){
                             arr.push(json[key]);
                         }
-                    } 
+                    }
                     var nary=arr.sort(); //用到了排序
                     var flag = 0;
                     for(var i=0;i<arr.length;i++){
@@ -971,7 +971,7 @@
                              callback();
                         }
                     }
-                 };            
+                 };
             return {
 				//线索类型代码数据
 				xslxDatas:[],
@@ -984,7 +984,7 @@
 				clueTypeSelect:[],//线索类型
 				clueYwzldmSelect: [],//线索关联业务类型
             	//
-            	offset: user.userGxsLev == 1 ? 18:0, 
+            	offset: user.userGxsLev == 1 ? 18:0,
 				//当前用户lev
 				userGxsLev : user.userGxsLev,
 				//案件详情url
@@ -1042,11 +1042,11 @@
 						required: true,
 						message: "此项为必填项",
 						trigger: "change"
-					},{ 
-                        type: 'string', 
+					},{
+                        type: 'string',
                         max: 50,
                         message: '最多输入50字',
-                        trigger: 'change' 
+                        trigger: 'change'
                     }],
 					XSLXDM: [{
 						required: true,
@@ -1067,17 +1067,17 @@
 						required: true,
 						message: "此项为必填项",
                         trigger: "change",
-                    },{ 
-                        type: 'string', 
-                        max: 1000, 
-                        message: '最多输入1000字', 
-                        trigger: 'change' 
+                    },{
+                        type: 'string',
+                        max: 1000,
+                        message: '最多输入1000字',
+                        trigger: 'change'
                     }]
                 },
                 cbaj:false,
                 cbxs:true,
                 seriesCaseParams:{},
-				
+
                 seriesCase:{
                     url:'./jd?cmd=com.awspaas.user.apps.clue.getAllCase&sid='+sid,
                     params:this.seriesCaseParams,
@@ -1093,7 +1093,7 @@
                                         }
                                     }, params.row.ASJBH)
                                 ]);
-                            }	
+                            }
                         },
                         {title: "案件名称",key: "AJMC",tooltip: "true"},
                         {title: "案件类别",key: "AJLBDM"},
@@ -1239,7 +1239,7 @@
            //                              }
            //                          }, params.row.SAWPBH)
            //                      ]);
-           //                  }	
+           //                  }
                         },
                         {title: "物品名称",key: "WPMC",tooltip: "true"},
                         {title: "涉案物品",key: ""},
@@ -1502,7 +1502,7 @@
                     SAWP_SAWPDM:"",
                     "DJSJ~11": ""
                 },
-                addClueModal:false, 
+                addClueModal:false,
                 addGoodsModal:false,
                 addPersonModal:false,
 				addEscapee: false,
@@ -1567,8 +1567,8 @@
                     select: []
                 },
 				tempValidate: {
-                    WLDH: [{required: true, validator: validateRepeat2,trigger:'change'}],          
-                    WLGS: [{validator: validateRepeat, trigger: 'change' }],  
+                    WLDH: [{required: true, validator: validateRepeat2,trigger:'change'}],
+                    WLGS: [{validator: validateRepeat, trigger: 'change' }],
                     SJWLD: [{required: true,validator: validateRepeat2, trigger: 'change' }],
                     SJR_XM: [{required: true,validator: validateRepeat2, trigger: 'change' }],
                     SJR_LXDH: [{required: true,validator: validateRepeat2, trigger: 'change' }],
@@ -1637,7 +1637,7 @@
                                                 sessionStorage.setItem('uploadPCH',params.row.PCH);
                                                 for(var key in vm.tempEdit){
                                                     vm.tempEdit[key] = params.row[key];
-                                                }   
+                                                }
                                                 vm.logisticsDetailModal = true;
                                             }
                                         }
@@ -1726,7 +1726,7 @@
                         },
                         {title: "户籍地址",key: "HJDZ_DZMC",tooltip: "true"},
                         {title: "立逃单位",key: "XXDJDW_GAJGMC",tooltip: "true"},
-                        {title: "立逃时间",key: "DJSJ"} 
+                        {title: "立逃时间",key: "DJSJ"}
                      ]
                 },
                 escapeeCheck:[],//在所有表中的选中的人员
@@ -1742,7 +1742,7 @@
                         }
                     },
                     columns:[
-                        {title: "在逃编号",key: "ZTRYBH",}, 
+                        {title: "在逃编号",key: "ZTRYBH",},
                         {title: "姓名",key: "XM"},
                         {title: "证件号码",key: "ZJHM",},
                         {title: "户籍地址",key: "HJDZ_DZMC"},
@@ -1786,7 +1786,7 @@
                                                         vm.TFID.splice(vm.TFID.indexOf(params.row.ID), 1);
                                                         setTimeout(function(){
                                                             vm.$refs['relevanceEscapeeTable'].init();
-                                                        }, 1); 
+                                                        }, 1);
                                                         vm.$Message.success(data.msg);
                                                         vm.hideLoadMask();
                                                     }
@@ -1824,10 +1824,30 @@
 					}else{
 						this.newClue.XSLXDM = newValue;
 					}
-					
+
 				}
 			},
 			methods: {
+				cbxsModal () {
+					this.$Modal.confirm({
+						title: '合并线索',
+						content: '<p>是否要合并线索？</p>',
+						okText: '确定',
+						cancelText: '取消',
+						onOk: () => {
+							this.qxhbClue();
+						},
+						onCancel: () => {
+							this.addClueTab();
+						}
+					});
+
+				},
+				//取消合并线索
+				qxhbClue(){
+					alert("已经取消合并线索！！！")
+					vm.addClueModal = false;
+				},
 				loadCascaderData(item, callback){
 					item.loading = true;
 					let json={
@@ -1928,10 +1948,10 @@
 	                axios({
 	                    url: "./jd?",
 	                    method: "post",
-	                    params: { 
-	                    	sid: sid, 
+	                    params: {
+	                    	sid: sid,
 	                    	json: json,
-	                    	cmd: "com.awspaas.user.apps.clue.handAdd" 
+	                    	cmd: "com.awspaas.user.apps.clue.handAdd"
 	                    	}
 	                }).then(response => {
 	                	this.$Modal.success({
@@ -1947,19 +1967,19 @@
 	                });
 	            },
 	            handAddPerson_Cancel () {
-	                
+
 	            },
-	            
+
 	            /* 手动添加物品 */
 	            handAddWp_Ok () {
 					var json = this.getIframeData("handAddWp");
 	                axios({
 	                    url: "./jd?",
 	                    method: "post",
-	                    params: { 
-	                    	sid: sid, 
+	                    params: {
+	                    	sid: sid,
 	                    	json: json,
-	                    	cmd: "com.awspaas.user.apps.clue.handAdd" 
+	                    	cmd: "com.awspaas.user.apps.clue.handAdd"
 	                    	}
 	                }).then(response => {
 	                	this.$Modal.success({
@@ -1975,19 +1995,19 @@
 	                });
 	            },
 	            handAddWp_Cancel () {
-	                
+
 	            },
-	            
+
 	            /* 手动录入逃犯 */
 	            handAddEscapee_Ok () {
 					var json = this.getIframeData("handAddEscapee");
 	                axios({
 	                    url: "./jd?",
 	                    method: "post",
-	                    params: { 
-	                    	sid: sid, 
+	                    params: {
+	                    	sid: sid,
 	                    	json: json,
-	                    	cmd: "com.awspaas.user.apps.clue.handAdd" 
+	                    	cmd: "com.awspaas.user.apps.clue.handAdd"
 	                    	}
 	                }).then(response => {
 	                	this.$Modal.success({
@@ -2003,7 +2023,7 @@
 	                });
 	            },
 	            handAddEscapee_Cancel () {
-	                
+
 	            },
 	            /* 获取远程表单数据 */
 	            getIframeData(id){
@@ -2032,7 +2052,7 @@
 					jsonData.DATA = jsonArr
 	            	return jsonData;
 	            },
-	            
+
 				searchData(json, url, callback) {
 					let param = new URLSearchParams();
 					param.append("json",JSON.stringify(json));
@@ -2102,7 +2122,7 @@
                                 if(key == 'XSMS'){
                                     newjson[key] = json_obj(newjson[key]);
                                 }
-								
+
 								if(typeof xs == "object"){
 									newjson.YSXSBH = xs.XSBH;
 								}
@@ -2158,13 +2178,13 @@
 						title: '取消线索创建',
 						//content: '<p>Content of dialog</p><p>Content of dialog</p>',
 						onOk: () => {//判断如果没有线索名称XSMC则删除当前线索
-							window.location.href='./w?cmd=com.awspaas.user.apps.clue.router&sid='+sid+'&classify=clue&action=search'; 
+							window.location.href='./w?cmd=com.awspaas.user.apps.clue.router&sid='+sid+'&classify=clue&action=search';
 						},
 						onCancel: () => {
 							//this.$Message.info('Clicked cancel');
 						}
 					});
-					
+
 				},
 				//添加串并案件串并
 				callModal() {
@@ -2242,7 +2262,7 @@
                         if(response.data.result == 'ok'){
                             that.GLXSID = that.GLXSID.concat(response.data.data.ID);
                             that.seriesCheckCaseParams['gl.ID']=that.GLXSID.join();
-                            callback(response);                            
+                            callback(response);
                         }else{
                             that.$Message.warning('系统异常，请联系工作站！');
                         }
@@ -2258,7 +2278,7 @@
 						this.$Message.warning('请选择串并案件！');
 					}else{
 						this.addSeriesBiz(idList,'02',function(){
-						    vm.addAjmodal = false; 
+						    vm.addAjmodal = false;
 						    vm.ajcheckshow = true;
 						    setTimeout(() => {
 						        vm.$refs['seriesCheckCase'].init();
@@ -2279,7 +2299,7 @@
 								}, 1);
 							});
 					}
-                    
+
                 },
                 addGoodsTab(){
                     let idList = this.$refs.seriesGoods.getSelectionsId();
@@ -2294,7 +2314,7 @@
 						    }, 1);
 						});
 					}
-                    
+
                 },
                 addPersonTab(){
                     let idList = this.$refs.seriesPerson.getSelectionsId();
@@ -2305,12 +2325,12 @@
 						    vm.addPersonModal = false;
 						    vm.rycheckshow = true;
 						    setTimeout(() => {
-						    	
+
 						        vm.$refs['seriesCheckPerson'].init();
 						    }, 1);
 						});
 					}
-                    
+
                 },
 				//串并线索弹框
 				callClueModal() {
@@ -2455,7 +2475,7 @@
                                     _this.logisticsInfo.params.PCH = data.data.PCH;
                                     setTimeout(function(){
                                         _this.$refs['logisticsInfo'].init();
-                                    }, 1);    
+                                    }, 1);
 									this.$refs.temp.resetFields();
 								}
                             })
@@ -2464,7 +2484,7 @@
 							this.$Message.error("请填写必填内容!");
 						}
 					});
-					
+
                 },
                 searchAllRelate(formname,tablename){
                     var json = this[formname];
@@ -2569,8 +2589,8 @@
                     let idList = this.$refs.EscapeeTab.getSelectionsId();
                     if (idList.length == 0){
                         this.$Message.warning('请选择关联逃犯！');
-                        return;                        
-                    } 
+                        return;
+                    }
                     let params = [];
                     idList.forEach((item) => {
                         params.push({
@@ -2593,11 +2613,11 @@
                             _this.TFID = _this.TFID.concat(data.data.ID);
                             let glId = [];
                             _this.addEscapee = false;
-                            _this.escapeeCheckTable = true; 
+                            _this.escapeeCheckTable = true;
                             _this.relevanceEscapeeTable.params = {"gl.ID":_this.TFID.join()};
                             setTimeout(function(){
                                 _this.$refs['relevanceEscapeeTable'].init();
-                            }, 1);  
+                            }, 1);
                         }
                     }).catch((error)=>{
                         console.log(error);
@@ -2634,7 +2654,7 @@
                         if(data.result == 'ok'){
                             setTimeout(function(){
                                 _this.$refs['logisticsInfo'].init();
-                            }, 1); 
+                            }, 1);
                         }
                     })
                 },
@@ -2725,16 +2745,16 @@
                         this.logisticsInfo.params.PCH = clueIds.glwlID;
                         setTimeout(function(){
                             vm.$refs.logisticsInfo.init();
-                        }, 1);    
+                        }, 1);
                     }else if(clueType == '03'){
                          //逃犯
                         this.tfupload = true;
                         this.TFID = clueIds.gltfIDs;
-                        this.escapeeCheckTable = true; 
+                        this.escapeeCheckTable = true;
                         this.relevanceEscapeeTable.params = {"gl.ID":this.TFID.join()};
                         setTimeout(function(){
                             vm.$refs['relevanceEscapeeTable'].init();
-                        }, 1); 
+                        }, 1);
                     };
                     if(clueIds.fjIDs.length != 0){
                         let json = { ID:clueIds.fjIDs.join()};
@@ -2748,7 +2768,7 @@
                                         filePath:rows[i].FJLJ,
                                         result:'ok',
                                         id:':RO;'
-                                    } 
+                                    }
                                     let checkFiles = {
                                         name:rows[i].FJMC,
                                         percentage: 100,
@@ -2764,7 +2784,7 @@
                                         size: rows[i].FJDX,
                                         status: "finished",
                                         uid: 1551948821278
-                                    } 
+                                    }
                                     vm.$refs.upload.fileList.push(checkFiles);
                                 }
                             }else{
@@ -2775,7 +2795,7 @@
                 }
                 this.uploadList = this.$refs.upload.fileList;
 				this.getCascaderDataAll('code_xshb_xslx_new',true);
-				
+
 				setTimeout(() => {
 					if(typeof xs == 'object'){
 						this.$refs['clueType'].value=[xs.XSLXDM.substring(0,2),xs.XSLXDM];
