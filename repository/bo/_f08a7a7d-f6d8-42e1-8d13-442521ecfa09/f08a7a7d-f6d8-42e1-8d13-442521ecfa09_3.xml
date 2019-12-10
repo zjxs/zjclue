@@ -4,7 +4,7 @@
     <createUser>admin</createUser>
     <createTime>2018-12-28 15:42:19</createTime>
     <updateUser></updateUser>
-    <updateTime>2019-11-12 14:25:56</updateTime>
+    <updateTime>2019-11-13 09:34:37</updateTime>
     <signature>tGOmxiTgjT/77UoYpSlq8Vc+hHPRoJWHdZexXc7zEpYuMNdhvSICeJnlc/RzRHGrkTNffXlxtxDEJoDLuLGxPFzWhPtBWY0DRpLmVpVBSOxOxMcclvd9/Yid02T3ASPv</signature>
     <managed>false</managed>
     <title>线索</title>
@@ -234,7 +234,7 @@
             <name>YSXSBH</name>
             <title>原始线索编号</title>
             <columnType>TEXT</columnType>
-            <length>23</length>
+            <length>4000</length>
             <nullable>true</nullable>
             <defaultValue></defaultValue>
             <columnWidth>60</columnWidth>

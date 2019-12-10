@@ -3,13 +3,10 @@ package com.siyue.service;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.actionsoft.coe.system.util.StringUtil;
+import com.siyue.util.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.curator.shaded.com.google.common.collect.Lists;
 import org.apache.curator.shaded.com.google.common.collect.Maps;
@@ -25,10 +22,6 @@ import com.actionsoft.bpms.util.DBSql;
 import com.actionsoft.sdk.local.SDK;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ImmutableMap;
-import com.siyue.util.HttpClientUtils;
-import com.siyue.util.ResourceUtils;
-import com.siyue.util.SQLUtils;
-import com.siyue.util.StringUtils;
 
 public class CommonService extends BaseService {
 
@@ -176,19 +169,46 @@ public class CommonService extends BaseService {
 	 */
 	public int[] addSeriesBiz(UserContext userContext, Map<String, Object> paramsMap, Map<String, Object> returnMap) {
 		List<Map<String, Object>> cbParamsList = (List<Map<String, Object>>) paramsMap.get("BO_EU_XSHB_GLYW");
-		List<BO> recordDatas = Lists.newArrayList();
+		List<BO> xsgljlDatas = Lists.newArrayList();
 		List<String> idList = Lists.newArrayList();
+		String lsxsbh = StringUtils.isNotEmpty((String)paramsMap.get("mergeXsbh")) ? (String)paramsMap.remove("mergeXsbh"):SequenceUtils.getSequenceVal("SEQ_BO_EU_XSHB_XS", "L", userContext.getUserModel().getDepartmentId(), "yyyymm", 23);
+		//TODO 线索合并
+		if(paramsMap.containsKey("isClueMerge")){
+			if((Boolean) paramsMap.remove("isClueMerge")){
+				lsxsbh = SequenceUtils.getSequenceVal("SEQ_BO_EU_XSHB_XS", "L", userContext.getUserModel().getDepartmentId(), "yyyymm", 23);
+				List<String> glyw_xsbhs = Lists.newArrayList();
+				String uuid = StringUtils.nvlString(paramsMap.remove("pch"));
+				for (Map<String, Object> bizParamsMap : cbParamsList) {
+					BO recordData = new BO();
+					recordData.set("XSBH_NOW",lsxsbh);
+					recordData.set("XSBH_FROM",StringUtils.nvlString(bizParamsMap.get("GLYWBH")));
+					recordData.set("PCH",uuid);
+					recordData.setAll(super.createUserMap4DB(userContext, new String[] { "XXDJ" }));
+					glyw_xsbhs.add(StringUtils.nvlString(bizParamsMap.get("GLYWBH")));
+					xsgljlDatas.add(recordData);
+				}
+				String sql = new StringBuffer().append("select ID from BO_EU_XSHB_GLYW where ywbh in ('").append(StringUtils.join(glyw_xsbhs, "','")).append("')").toString();
+				List<RowMap> ids = DBSql.getMaps(sql);
+				for (RowMap glywbh: ids) {
+					idList.add(glywbh.getString("ID"));
+				}
+			}
+		}
+		returnMap.put("HBXSBH", lsxsbh);
+		List<BO> recordDatas = Lists.newArrayList();
 		for (Map<String, Object> bizParamsMap : cbParamsList) {
 			BO recordData = new BO();
 			recordData.setAll(bizParamsMap);
 			recordData.setAll(super.createUserMap4DB(userContext, new String[] { "XXDJ" }));
 			recordDatas.add(recordData);
 		}
+		int[] insertXsgljl = SDK.getBOAPI().createDataBO("BO_EU_XSGLJL", xsgljlDatas, userContext);
 		int[] insert = SDK.getBOAPI().createDataBO("BO_EU_XSHB_GLYW", recordDatas, userContext);
 		for (BO recordData : recordDatas) {
 			idList.add(recordData.getId());
 		}
 		returnMap.put("ID", idList);
+
 		return insert;
 	}
 

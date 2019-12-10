@@ -290,12 +290,12 @@
         </i-form>
         <div slot="footer">
             <i-button @click="sueInformation=false">取消</i-button>
-            <i-button v-show="sueInformationForm.submitShow" type="primary" @click="submitSue('sueInformationForm')">确定</i-button>
+            <i-button v-show="sueInformationForm.submitShow" type="primary" @click="clueImport()">确定</i-button>
         </div>
     </Modal>
 
     <!-- 线索导入模板 -->
-    <Modal title="线索基本信息录入" v-model="clueDownNyms" width="60%">
+    <Modal title="线索基本信息录入" v-model="clueDownNyms" width="60%" @on-ok="clueImport()">
         <i-form :label-width="120">
             <Row>
                 <i-col span="20" class="title_name">
@@ -788,6 +788,15 @@
             calloption:false,
         },
         methods:{
+            clueImport(){
+                this.$Modal.info({
+                    title: "提醒",
+                    content: "当前功能还在完善中，敬请等候！",
+                    onOk: () => {
+                        this.clueDownNyms=false
+                    }
+                });
+            },
             downLoadFile(mc,bh){
                 this.showLoadMask('文件下载中');
                 let json={

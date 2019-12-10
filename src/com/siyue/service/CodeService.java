@@ -203,6 +203,7 @@ public class CodeService {
 			resultMap.put("value", row.getString("CODE"));
 			resultMap.put("label", row.getString("NAME"));
 			resultMap.put("lev", row.getString("LEV"));
+			resultMap.put("table", table);
 			if ("1".equals(child)) {
 				resultMap.put("children", Lists.newArrayList());
 				resultMap.put("loading", false);
@@ -233,6 +234,7 @@ public class CodeService {
 			resultMap.put("value", row.getString("CODE"));
 			resultMap.put("label", row.getString("NAME"));
 			resultMap.put("lev", row.getString("LEV"));
+			resultMap.put("table", table);
 			if ("1".equals(child)) {
 				resultMap.put("children", getTreeComboForTreeSelect(row.getString("CODE"), table, row.getString("LEV")));
 				resultMap.put("loading", false);

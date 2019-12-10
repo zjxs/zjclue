@@ -4,7 +4,7 @@
     <createUser>admin</createUser>
     <createTime>2018-12-28 15:42:19</createTime>
     <updateUser></updateUser>
-    <updateTime>2019-11-12 14:23:58</updateTime>
+    <updateTime>2019-11-12 14:24:09</updateTime>
     <signature>tGOmxiTgjT/77UoYpSlq8Vc+hHPRoJWHdZexXc7zEpYuMNdhvSICeJnlc/RzRHGrkTNffXlxtxDEJoDLuLGxPFzWhPtBWY0DRpLmVpVBSOxOxMcclvd9/Yid02T3ASPv</signature>
     <managed>false</managed>
     <title>线索</title>
@@ -758,32 +758,6 @@
             <nullable>true</nullable>
             <defaultValue>0</defaultValue>
             <columnWidth>60</columnWidth>
-            <componentId>AWSUI.Text</componentId>
-            <componentSetting>{"search":"0"}</componentSetting>
-            <display>true</display>
-            <deleted>false</deleted>
-            <modify>true</modify>
-            <componentExtendCode></componentExtendCode>
-            <persistenceType>ENTITY</persistenceType>
-            <validateType></validateType>
-            <validateRule></validateRule>
-            <validateTip></validateTip>
-            <validateErr>0</validateErr>
-            <tooltip></tooltip>
-            <copy>false</copy>
-            <displayRule></displayRule>
-            <calcFormula></calcFormula>
-            <propsVal>{}</propsVal>
-        </boItem>
-        <boItem>
-            <id>d32b33c6-f8dc-4296-86ad-19d439dc7f50</id>
-            <name>QS_TIME</name>
-            <title>起诉时间</title>
-            <columnType>TEXT</columnType>
-            <length>128</length>
-            <nullable>true</nullable>
-            <defaultValue></defaultValue>
-            <columnWidth>100</columnWidth>
             <componentId>AWSUI.Text</componentId>
             <componentSetting>{"search":"0"}</componentSetting>
             <display>true</display>

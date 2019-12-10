@@ -4,7 +4,7 @@
     <createUser>admin</createUser>
     <createTime>2018-12-28 15:42:19</createTime>
     <updateUser></updateUser>
-    <updateTime>2019-11-13 15:56:06</updateTime>
+    <updateTime>2019-11-18 15:45:30</updateTime>
     <signature>tGOmxiTgjT/77UoYpSlq8Vc+hHPRoJWHdZexXc7zEpYuMNdhvSICeJnlc/RzRHGrkTNffXlxtxDEJoDLuLGxPFzWhPtBWY0DRpLmVpVBSOxOxMcclvd9/Yid02T3ASPv</signature>
     <managed>false</managed>
     <title>线索</title>
@@ -786,32 +786,6 @@
             <columnWidth>100</columnWidth>
             <componentId>AWSUI.DateTime</componentId>
             <componentSetting>{"placeholder":"","minDate":"","maxDate":"","showtype":"doubleCalendar","advSetting":"","dateFmt":"yyyy-MM-dd HH:mm:ss","showDayOfWeek":"false","dwfmt":"(EE)"}</componentSetting>
-            <display>true</display>
-            <deleted>false</deleted>
-            <modify>true</modify>
-            <componentExtendCode></componentExtendCode>
-            <persistenceType>ENTITY</persistenceType>
-            <validateType></validateType>
-            <validateRule></validateRule>
-            <validateTip></validateTip>
-            <validateErr>0</validateErr>
-            <tooltip></tooltip>
-            <copy>false</copy>
-            <displayRule></displayRule>
-            <calcFormula></calcFormula>
-            <propsVal>{}</propsVal>
-        </boItem>
-        <boItem>
-            <id>f72f4896-8db9-43fd-91fa-6e7f1347264d</id>
-            <name>QS_FILE</name>
-            <title>起诉法律文书</title>
-            <columnType>TEXT</columnType>
-            <length>400</length>
-            <nullable>true</nullable>
-            <defaultValue></defaultValue>
-            <columnWidth>200</columnWidth>
-            <componentId>AWSUI.Text</componentId>
-            <componentSetting>{"search":"0"}</componentSetting>
             <display>true</display>
             <deleted>false</deleted>
             <modify>true</modify>

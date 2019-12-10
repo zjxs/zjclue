@@ -159,7 +159,7 @@
                     </Row>
                 </div>
             </Panel>
-            <Panel name="3" v-if="relevanceLogisticsTable.showPanel" class="glwl">
+            <Panel name="3" v-show="refillData.rw.XSBH != null" class="glwl">
                 关联物流
                 <div slot="content">
                     <sy-table
@@ -173,7 +173,7 @@
                     </sy-table>
                 </div>
             </Panel>
-            <Panel name="4" v-if="relevanceEscapeeTable.showPanel" class="gltf">
+            <Panel name="4" v-show="refillData.rw.XSBH != null" class="gltf">
                 关联逃犯
                 <div slot="content">
                     <sy-table
@@ -188,7 +188,7 @@
                 </div>
             </Panel>
 
-            <Panel name="5" v-show="relevanceAJTable.showPanel">
+            <Panel name="5" v-show="refillData.rw.XSBH != null">
                 关联案件
                 <!-- 关联案件表格 -->
                 <div slot="content">
@@ -310,7 +310,7 @@
                                                         :ref="'CBASJ'+item.GTBH"
                                                         :url="myClueTable.url"
                                                         :columns="myClueTable.columns"
-                                                        :query-params="tabulardata"
+                                                        :query-params="bjson"
                                                         :pager-page-size="5"
                                                         :pager-page-size-opts="[5, 10, 20, 30]">
                                                 </sy-table>
@@ -336,7 +336,7 @@
                                                         :ref="'CBXS'+item.GTBH"
                                                         :url="cbxsGridTable.url"
                                                         :columns="cbxsGridTable.cbryGrid"
-                                                        :query-params="tabulardata"
+                                                        :query-params="bjson"
                                                         :pager-page-size="5"
                                                         :pager-page-size-opts="[5, 10, 20, 30]">
                                                 </sy-table>
@@ -349,7 +349,7 @@
                                                         :ref="'CBWP'+item.GTBH"
                                                         :url="seriesCheckGoodsTable.url"
                                                         :columns="seriesCheckGoodsTable.columns"
-                                                        :query-params="tabulardata"
+                                                        :query-params="bjson"
                                                         :pager-page-size="5"
                                                         :pager-page-size-opts="[5, 10, 20, 30]">
                                                 </sy-table>
@@ -427,7 +427,7 @@
                                                         :ref="'CBASJ'+item.GTBH"
                                                         :url="myClueTable.url"
                                                         :columns="myClueTable.columns"
-                                                        :query-params="tabulardata"
+                                                        :query-params="bjson"
                                                         :pager-page-size="5"
                                                         :pager-page-size-opts="[5, 10, 20, 30]"
                                                 >
@@ -454,7 +454,7 @@
                                                         :ref="'CBXS'+item.GTBH"
                                                         :url="cbxsGridTable.url"
                                                         :columns="cbxsGridTable.cbryGrid"
-                                                        :query-params="tabulardata"
+                                                        :query-params="bjson"
                                                         :pager-page-size="5"
                                                         :pager-page-size-opts="[5, 10, 20, 30]">
                                                 </sy-table>
@@ -467,7 +467,7 @@
                                                         :ref="'CBWP'+item.GTBH"
                                                         :url="seriesCheckGoodsTable.url"
                                                         :columns="seriesCheckGoodsTable.columns"
-                                                        :query-params="tabulardata"
+                                                        :query-params="bjson"
                                                         :pager-page-size="5"
                                                         :pager-page-size-opts="[5, 10, 20, 30]">
                                                 </sy-table>
@@ -1548,7 +1548,7 @@
     },
     seriesCheckGoodsTable:{
         url:'./jd?cmd=com.awspaas.user.apps.clue.getSeriesGoods&sid='+sid,
-            params:this.seriesCheckCaseParams,
+            params:this.bjson,
             onLoadSuccess: function(){
             let total = vm.$refs.seriesCheckGoods.getData().total;
             if(total == 0){
@@ -1754,7 +1754,6 @@
         {title: "户籍地址",key: "HJDZ_DZMC"},
     ],
         onLoadSuccess: function(){
-            debugger;
             let total = vm.$refs.relevanceEscapee.getData().total;
             if(total == 0){
                 vm.relevanceEscapeeTable.showPanel = false;
@@ -1829,7 +1828,7 @@
     //详细关联案事件
     myClueTable:{
         url: './jd?cmd=com.awspaas.user.apps.clue.getSeriesCase&sid='+sid,
-            queryParams :this.tabulardata,
+            queryParams :this.bjson,
             columns:[
             { title: '案件编号',key:'ASJBH',tooltip: true,width:240,
                 render: (h, params) => {
@@ -1876,7 +1875,7 @@
     //详细关联线索
     cbxsGridTable:{
         url: './jd?cmd=com.awspaas.user.apps.clue.getSeriesClue&sid='+sid,
-            queryParams :this.tabulardata,
+            queryParams :this.bjson,
             cbryGrid:[
             {title:'线索编号',key:'XSBH',width:230,render:(h,params)=>{
                 let joinStyle = {}, joinText='';

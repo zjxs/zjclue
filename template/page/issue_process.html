@@ -163,7 +163,7 @@
                     </Row>
                 </div>
             </Panel>
-            <Panel name="3" v-if="relevanceLogisticsTable.showPanel">
+            <Panel name="3" v-show="refillData.rw.XSBH != null">
                 关联物流
                 <div slot="content">
                     <sy-table
@@ -177,7 +177,7 @@
                     </sy-table>
                 </div>
             </Panel>
-            <Panel name="4" v-if="relevanceEscapeeTable.showPanel">
+            <Panel name="4" v-show="refillData.rw.XSBH != null">
                 关联逃犯
                 <div slot="content">
                     <sy-table
@@ -191,7 +191,7 @@
                     </sy-table>
                 </div>
             </Panel>
-            <Panel name="5" v-show="relevanceAJTable.showPanel">
+            <Panel name="5" v-show="refillData.rw.XSBH != null">
                 关联案件
                 <!-- 关联案件表格 -->
                 <div slot="content">

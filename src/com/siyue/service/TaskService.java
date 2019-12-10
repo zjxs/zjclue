@@ -1100,6 +1100,10 @@ public class TaskService extends BaseService {
 					commonService.updateTaskStatus(userContext, paramsMap, "05");
 					commonService.addProcessRecord(userContext, paramsMap, "01");
 				}
+			}else{
+				commonService.updateTaskProcessStatus(userContext, paramsMap, "05");
+				commonService.updateTaskStatus(userContext, paramsMap, "05");
+				commonService.addProcessRecord(userContext, paramsMap, "01");
 			}
 
 		}

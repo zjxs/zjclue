@@ -396,6 +396,17 @@
 								</Tooltip>
 							</form-item>
 						</i-col>
+
+						<i-col span="8">
+							<form-item v-show ="jnwd" label="境内窝点" prop="JNWD">
+								<Cascader ref="clueJnWd" filterable change-on-select v-model="newClue.JNWD" placeholder="请选择境内窝点"  table="code_xzqh" :data="jnwdDatas" :load-data="loadCascaderData"></Cascader>
+							</form-item>
+						</i-col>
+						<i-col span="8">
+							<form-item v-show="jwwd" label="境外窝点" prop="JWWD">
+								<Cascader ref="clueJwWd" filterable change-on-select v-model="newClue.JWWD" placeholder="请选择境外窝点" table="code_xzqh" :data="jwwdDatas" :load-data="loadCascaderData"></Cascader>
+							</form-item>
+						</i-col>
 					</Row>
 				</i-form>
 				<Row style="margin-top: -15px;padding:0px 20px">
@@ -674,7 +685,7 @@
                 </Row>
                 <!-- 已经关联的案件 -->
 				<Row class="each_cb">
-					<Row class="w_bg" v-if="ajcheckshow">
+					<Row class="w_bg" v-show="ajcheckshow">
 						<div class="gl_title">
 							<span>串并案件</span>
 						</div>
@@ -691,7 +702,7 @@
 				</Row>
                 <!-- 已经关联的线索 -->
 				<Row class="each_cb">
-					<Row class="w_bg" v-if="xscheckshow">
+					<Row class="w_bg" v-show="xscheckshow">
 						<div class="gl_title">
 							<span>串并线索</span>
 						</div>
@@ -708,7 +719,7 @@
                 </Row>
                 <!-- 已经关联的人员 -->
                 <Row class="each_cb">
-					<Row class="w_bg" v-if="rycheckshow">
+					<Row class="w_bg" v-show="rycheckshow">
 						<div class="gl_title">
 							<span>串并人员</span>
 						</div>
@@ -726,7 +737,7 @@
                 <!-- wpcheckshow -->
                 <!-- 已经关联的物品 -->
                 <Row class="each_cb">
-					<Row class="w_bg" v-if="wpcheckshow">
+					<Row class="w_bg" v-show="wpcheckshow">
 						<div class="gl_title">
 							<span>串并物品</span>
 						</div>
@@ -973,8 +984,18 @@
                     }
                  };
             return {
+				jnwd:false,
+				jwwd:false,
+            	//全局唯一标识
+				uuid:getUuid(32,2),
+            	//合并线索编号
+				mergeXsbh:[],
+            	//串并线索是否合并
+				isClueMerge:false,
 				//线索类型代码数据
 				xslxDatas:[],
+				jnwdDatas:[],
+				jwwdDatas:[],
 				xslxTable:'code_xshb_xslx',
             	//删除modal
             	deleteModel:false,
@@ -1005,7 +1026,9 @@
 					XSLXDM: "",
 					SFSMDM: "",
 					XSJBDM: "",
-					XSMS: ""
+					XSMS: "",
+					JWWD:"",
+					JNWD:""
 				},
                 GLXSID:[],
                 GLAJID:[],
@@ -1825,34 +1848,96 @@
 						this.newClue.XSLXDM = newValue;
 					}
 
-				}
+					if(this.newClue.XSLXDM == "0401"){
+						this.jwwd = false;
+						this.jnwd = true;
+					}else if(this.newClue.XSLXDM == "0402"){
+						this.jwwd = true;
+						this.jnwd = false;
+					}else if(this.newClue.XSLXDM == "0403"){
+						this.jwwd = true;
+						this.jnwd = true;
+					}else{
+						this.jwwd = false;
+						this.jnwd = false;
+					}
+
+				},
+				'newClue.JWWD'(newValue, oldValue){
+					newValue = newValue.toString();
+					if(newValue.indexOf(',') != -1){
+						this.newClue.JWWD = newValue.substring(newValue.lastIndexOf(",")+1,newValue.length)
+					}else{
+						this.newClue.JWWD = newValue;
+					}
+					vm.$refs['clueJwWd'].value=xs.JWWDARRY.split(',')
+
+				},
+				'newClue.JNWD'(newValue, oldValue){
+					newValue = newValue.toString();
+					if(newValue.indexOf(',') != -1){
+						this.newClue.JNWD = newValue.substring(newValue.lastIndexOf(",")+1,newValue.length)
+					}else{
+						this.newClue.JNWD = newValue;
+					}
+					vm.$refs['clueJnWd'].value=xs.JNWDARRY.split(',')
+
+				},
+
 			},
 			methods: {
 				cbxsModal () {
-					this.$Modal.confirm({
-						title: '合并线索',
-						content: '<p>是否要合并线索？</p>',
-						okText: '确定',
-						cancelText: '取消',
-						onOk: () => {
-							this.qxhbClue();
-						},
-						onCancel: () => {
-							this.addClueTab();
-						}
-					});
-
+					let idList = this.$refs.seriesClue.getSelectionsId();
+					if(idList == undefined || idList.length <= 0){
+						this.$Message.warning('请选择串并线索！');
+					}else{
+						this.$Modal.confirm({
+							title: '合并线索',
+							content: '<p>是否要合并线索？</p>',
+							okText: '确定',
+							cancelText: '取消',
+							onOk: () => {
+								this.clueMerge();
+							},
+							onCancel: () => {
+								this.addClueTab();
+							}
+						});
+					}
 				},
-				//取消合并线索
-				qxhbClue(){
-					alert("已经取消合并线索！！！")
-					vm.addClueModal = false;
+				//合并线索
+				clueMerge(){
+					//TODO 线索合并标识   选中线索ID
+					this.isClueMerge = true;
+					let idList = this.$refs.seriesClue.getSelectionsId();
+					if(idList == undefined || idList.length <= 0){
+						this.$Message.warning('请选择串并线索！');
+					}else{
+						this.addSeriesBiz(idList,'01',function(){
+							//回调函数需要初始化所有关联表
+							vm.addClueModal = false;
+							vm.xscheckshow = true;
+							setTimeout(() => {
+								vm.$refs['seriesCheckClue'].init();
+								if(vm.isClueMerge){
+									vm.ajcheckshow = true;
+									vm.rycheckshow = true;
+									vm.wpcheckshow = true;
+									vm.$refs['seriesCheckCase'].init();
+									vm.$refs['seriesCheckPerson'].init();
+									vm.$refs['seriesCheckGoods'].init();
+									vm.isClueMerge = false;
+								}
+
+							}, 1);
+						});
+					}
 				},
 				loadCascaderData(item, callback){
 					item.loading = true;
 					let json={
 					    "code": item.value,
-					    "table": this.xslxTable,
+					    "table": item.table,
 					    "search": "",
 					    "lev": item.lev
 					};
@@ -1889,9 +1974,9 @@
 					    });
 					}
 				},
-				getCascaderDataAll(dataName,$event){
+				getCascaderDataAll(dataName,$event,dataV){
 					let json={
-					    "table":this.xslxTable,
+					    "table":dataName,
 						"search": ""
 					};
 					let param = new URLSearchParams();
@@ -1902,7 +1987,7 @@
 					        method: "post",
 					        data: param
 					    }).then(response => {
-					        this.xslxDatas = response.data.data;
+					        this[dataV] = response.data.data;
 					    }).catch(error => {
 					        console.log(error);
 					    });
@@ -2126,6 +2211,10 @@
 								if(typeof xs == "object"){
 									newjson.YSXSBH = xs.XSBH;
 								}
+								debugger;
+								if(this.mergeXsbh.length != 0){
+									newjson.HBXSBH = this.mergeXsbh.join();
+								}
 							}
 							var transdata = {
 								data: {
@@ -2254,13 +2343,30 @@
                             GLYWLXDM : ywlxdm
                         });
                     });
+                    let json={
+						data:{BO_EU_XSHB_GLYW: params}
+					};
+                    if(this.isClueMerge){
+                    	json.data.isClueMerge=true;
+                    	json.data.pch = this.uuid;
+					}
+                    if(this.mergeXsbh.length != 0){
+						json.data.mergeXsbh=vm.mergeXsbh[vm.mergeXsbh.length-1];
+					}
+					let param = new URLSearchParams();
+					param.append("json",JSON.stringify(json));
                     axios({
                         url:'./jd?cmd=com.awspaas.user.apps.clue.addSeriesBiz&sid='+sid,
                         method:'post',
-                        params:{json:{data:{BO_EU_XSHB_GLYW: params}}}
+                        data:param
                     }).then(response=>{
                         if(response.data.result == 'ok'){
                             that.GLXSID = that.GLXSID.concat(response.data.data.ID);
+                            if(that.mergeXsbh.length !=0 && that.mergeXsbh[that.mergeXsbh.length-1] != response.data.data.HBXSBH){
+								that.mergeXsbh[that.mergeXsbh.length] = response.data.data.HBXSBH
+							}else{
+								that.mergeXsbh[0] = response.data.data.HBXSBH == undefined ? '' : response.data.data.HBXSBH;
+							}
                             that.seriesCheckCaseParams['gl.ID']=that.GLXSID.join();
                             callback(response);
                         }else{
@@ -2272,7 +2378,6 @@
                 },
 				//串并案件点击确定增加下方表格
 				addAjtab() {
-					debugger;
                     let idList = this.$refs.seriesCase.getSelectionsId();
 					if(idList == undefined || idList.length <= 0){
 						this.$Message.warning('请选择串并案件！');
@@ -2722,7 +2827,7 @@
                     }
                     clueIds = JSON.parse(clueIds);
                     let length = isEdit.length;
-                    let clueType = isEdit.substring((length-6),(length-4));
+					let clueType = JSON.parse(decodeURIComponent(isEdit)).XSLXDM;
                     if(clueIds.glywIDs.length != 0){
                         this.GLXSID = clueIds.glywIDs;
                         this.seriesCheckCaseParams['gl.ID']=this.GLXSID.join();
@@ -2740,6 +2845,8 @@
                     };
                     if(clueType == '02'){
                         // 贩枪
+						this.jwwd = false;
+						this.jnwd = false;
                         this.wlupload = true;
                         this.logisticsTab=true;
                         this.logisticsInfo.params.PCH = clueIds.glwlID;
@@ -2748,6 +2855,8 @@
                         }, 1);
                     }else if(clueType == '03'){
                          //逃犯
+						this.jwwd = false;
+						this.jnwd = false;
                         this.tfupload = true;
                         this.TFID = clueIds.gltfIDs;
                         this.escapeeCheckTable = true;
@@ -2755,7 +2864,16 @@
                         setTimeout(function(){
                             vm.$refs['relevanceEscapeeTable'].init();
                         }, 1);
-                    };
+                    }else if(clueType == '0401'){
+						this.jwwd = false;
+						this.jnwd = true;
+					}else if(clueType == '0402'){
+						this.jwwd = true;
+						this.jnwd = false;
+					}else if(clueType == '0403'){
+						this.jwwd = true;
+						this.jnwd = true;
+					};
                     if(clueIds.fjIDs.length != 0){
                         let json = { ID:clueIds.fjIDs.join()};
                         this.searchData(json, 'com.awspaas.user.apps.clue.getRelevanceAttachment', function(response) {
@@ -2794,13 +2912,24 @@
                     }
                 }
                 this.uploadList = this.$refs.upload.fileList;
-				this.getCascaderDataAll('code_xshb_xslx_new',true);
-
+				this.getCascaderDataAll('code_xshb_xslx',true,'xslxDatas');
+				this.getCascaderDataAll('code_city',true,'jwwdDatas');
+				this.getCascaderDataAll('code_xzqh',true,'jnwdDatas');
+				let clueType = JSON.parse(decodeURIComponent(isEdit)).XSLXDM;
 				setTimeout(() => {
 					if(typeof xs == 'object'){
 						this.$refs['clueType'].value=[xs.XSLXDM.substring(0,2),xs.XSLXDM];
+						this.$refs['clueType'].value=[xs.XSLXDM.substring(0,2),xs.XSLXDM];
+						this.$refs['clueJnWd'].value=xs.JNWDARRY.split(',');
+						this.$refs['clueJwWd'].value=xs.JWWDARRY.split(',');
 					}
 				}, 1);
+				setTimeout(() => {
+						this.$refs['clueJnWd'].value=xs.JNWDARRY.split(',');
+				},1000)
+				setTimeout(() => {
+					this.$refs['clueJwWd'].value=xs.JWWDARRY.split(',');
+				},1000)
 			},
 		})
 	</script>

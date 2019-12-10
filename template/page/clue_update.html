@@ -389,6 +389,16 @@
 								</Tooltip>
 							</form-item>
 						</i-col>
+						<i-col span="8">
+							<form-item v-show ="jnwd" label="境内窝点" prop="JNWD">
+								<Cascader ref="clueJnWd" filterable change-on-select v-model="newClue.JNWD" placeholder="请选择境内窝点"  table="code_xzqh" :data="jnwdDatas" :load-data="loadCascaderData"></Cascader>
+							</form-item>
+						</i-col>
+						<i-col span="8">
+							<form-item v-show="jwwd" label="境外窝点" prop="JWWD">
+								<Cascader ref="clueJwWd" filterable change-on-select v-model="newClue.JWWD" placeholder="请选择境外窝点" table="code_xzqh" :data="jwwdDatas" :load-data="loadCascaderData"></Cascader>
+							</form-item>
+						</i-col>
 					</Row>
 				</i-form>
 				<Row style="margin-top: -15px;padding:0px 20px">
@@ -568,7 +578,7 @@
 									    <label>串并线索</label>
 									    <div style="float:right;">
 									        <i-button @click="addClueModal=false">取消</i-button>
-									        <i-button type="primary" @click="addClueTab()">确定</i-button>
+									        <i-button type="primary" @click="cbxsModal">确定</i-button>
 											<i-button type="success" @click="pickUp()">提取</i-button>
 									    </div>
 									</div>
@@ -674,7 +684,7 @@
 					</row>
 				</Row>
 				<Row class="each_cb">
-					<Row class="w_bg" v-if="ajcheckshow">
+					<Row class="w_bg" v-show="ajcheckshow">
 						<div class="gl_title">
 							<span>串并案件</span>
 						</div>
@@ -691,7 +701,7 @@
 				</Row>
 
 				<Row class="each_cb">
-					<Row class="w_bg" v-if="xscheckshow">
+					<Row class="w_bg" v-show="xscheckshow">
 						<div class="gl_title">
 							<span>串并线索</span>
 						</div>
@@ -708,7 +718,7 @@
 				</Row>
 				<!-- 已经关联的物品 -->
 				<Row class="each_cb">
-					<Row class="w_bg" v-if="wpcheckshow">
+					<Row class="w_bg" v-show="wpcheckshow">
 						<div class="gl_title">
 							<span>串并物品</span>
 						</div>
@@ -726,7 +736,7 @@
 				</Row>
 				<!-- 已经关联的人员 -->
 				<Row class="each_cb">
-					<Row class="w_bg" v-if="rycheckshow">
+					<Row class="w_bg" v-show="rycheckshow">
 						<div class="gl_title">
 							<span>串并人员</span>
 						</div>
@@ -971,8 +981,18 @@
                     // }
                 };            
             return {
+				jnwd:false,
+				jwwd:false,
+				//全局唯一标识
+				uuid:getUuid(32,2),
+				//合并线索编号
+				mergeXsbh:[],
+				//串并线索是否合并
+				isClueMerge:false,
 				//线索类型代码数据
 				xslxDatas:[],
+				jnwdDatas:[],
+				jwwdDatas:[],
 				xslxTable:'code_xshb_xslx',
             	//删除modal
             	deleteModel:false,
@@ -1002,7 +1022,9 @@
 					XSLXDM: "",
 					SFSMDM: "",
 					XSJBDM: "",
-					XSMS: ""
+					XSMS: "",
+					JWWD:"",
+					JNWD:""
 				},
                 GLXSID:[],
                 GLAJID:[],
@@ -1737,67 +1759,134 @@
 						this.newClue.XSLXDM = newValue;
 					}
 					
-				}
+				},
+				'newClue.JWWD'(newValue, oldValue){
+					newValue = newValue.toString();
+					if(newValue.indexOf(',') != -1){
+						this.newClue.JWWD = newValue.substring(newValue.lastIndexOf(",")+1,newValue.length)
+					}else{
+						this.newClue.JWWD = newValue;
+					}
+					vm.$refs['clueJwWd'].value=xs.JWWDARRY.split(',')
+
+				},
+				'newClue.JNWD'(newValue, oldValue){
+					newValue = newValue.toString();
+					if(newValue.indexOf(',') != -1){
+						this.newClue.JNWD = newValue.substring(newValue.lastIndexOf(",")+1,newValue.length)
+					}else{
+						this.newClue.JNWD = newValue;
+					}
+					vm.$refs['clueJnWd'].value=xs.JNWDARRY.split(',')
+
+				},
 			},
 			methods: {
+				cbxsModal () {
+					let idList = this.$refs.seriesClue.getSelectionsId();
+					if(idList == undefined || idList.length <= 0){
+						this.$Message.warning('请选择串并线索！');
+					}else{
+						this.$Modal.confirm({
+							title: '合并线索',
+							content: '<p>是否要合并线索？</p>',
+							okText: '确定',
+							cancelText: '取消',
+							onOk: () => {
+								this.clueMerge();
+							},
+							onCancel: () => {
+								this.addClueTab();
+							}
+						});
+					}
+				},
+				//合并线索
+				clueMerge(){
+					//TODO 线索合并标识   选中线索ID
+					this.isClueMerge = true;
+					let idList = this.$refs.seriesClue.getSelectionsId();
+					if(idList == undefined || idList.length <= 0){
+						this.$Message.warning('请选择串并线索！');
+					}else{
+						this.addSeriesBiz(idList,'01',function(){
+							//回调函数需要初始化所有关联表
+							vm.addClueModal = false;
+							vm.xscheckshow = true;
+							setTimeout(() => {
+								vm.$refs['seriesCheckClue'].init();
+								if(vm.isClueMerge){
+									vm.ajcheckshow = true;
+									vm.rycheckshow = true;
+									vm.wpcheckshow = true;
+									vm.$refs['seriesCheckCase'].init();
+									vm.$refs['seriesCheckPerson'].init();
+									vm.$refs['seriesCheckGoods'].init();
+									vm.isClueMerge = false;
+								}
+
+							}, 1);
+						});
+					}
+				},
 				loadCascaderData(item, callback){
 					item.loading = true;
 					let json={
-					    "code": item.value,
-					    "table": this.xslxTable,
-					    "search": "",
-					    "lev": item.lev
+						"code": item.value,
+						"table": item.table,
+						"search": "",
+						"lev": item.lev
 					};
 					let param = new URLSearchParams();
 					param.append("json",JSON.stringify(json));
-					    axios({
-					        url: "./jd?sid="+sid+"&cmd=com.awspaas.user.apps.clue.getTreeComboForTreeSelect",
-					        method: "post",
-					        data: param
-					    }).then(response => {
-							item.children = response.data.data;
-							item.loading = false;
-							callback();
-					    }).catch(error => {
-					        console.log(error);
-					    });
+					axios({
+						url: "./jd?sid="+sid+"&cmd=com.awspaas.user.apps.clue.getTreeComboForTreeSelect",
+						method: "post",
+						data: param
+					}).then(response => {
+						item.children = response.data.data;
+						item.loading = false;
+						callback();
+					}).catch(error => {
+						console.log(error);
+					});
 				},
 				getCascaderData(dataName,$event){
 					let json={
-					    "table":this.xslxTable,
+						"table":this.xslxTable,
 						"search": ""
 					};
 					let param = new URLSearchParams();
 					param.append("json",JSON.stringify(json));
 					if($event){
-					    axios({
-					        url: "./jd?sid="+sid+"&cmd=com.awspaas.user.apps.clue.getTreeComboForTreeSelect",
-					        method: "post",
-					        data: param
-					    }).then(response => {
-					        this.xslxDatas = response.data.data;
-					    }).catch(error => {
-					        console.log(error);
-					    });
+						axios({
+							url: "./jd?sid="+sid+"&cmd=com.awspaas.user.apps.clue.getTreeComboForTreeSelect",
+							method: "post",
+							data: param
+						}).then(response => {
+							this.xslxDatas = response.data.data;
+						}).catch(error => {
+							console.log(error);
+						});
 					}
 				},
-				getCascaderDataAll(dataName,$event){
+				getCascaderDataAll(dataName,$event,dataV){
 					let json={
-					    "table":this.xslxTable,
+						"table":dataName,
 						"search": ""
 					};
 					let param = new URLSearchParams();
 					param.append("json",JSON.stringify(json));
 					if($event){
-					    axios({
-					        url: "./jd?sid="+sid+"&cmd=com.awspaas.user.apps.clue.getTreeComboForTreeSelectAll",
-					        method: "post",
-					        data: param
-					    }).then(response => {
-					        this.xslxDatas = response.data.data;
-					    }).catch(error => {
-					        console.log(error);
-					    });
+						axios({
+							url: "./jd?sid="+sid+"&cmd=com.awspaas.user.apps.clue.getTreeComboForTreeSelectAll",
+							method: "post",
+							data: param
+						}).then(response => {
+							this[dataV] = response.data.data;
+						}).catch(error => {
+							console.log(error);
+						});
 					}
 				},
 				del(row,xxbh,refs){
@@ -2673,7 +2762,7 @@
                         
                     }
                     let length = isEdit.length;
-                    let clueType = isEdit.substring((length-6),(length-4));
+					let clueType = JSON.parse(decodeURIComponent(isEdit)).XSLXDM;
 					clueIds=JSON.parse(clueIds);
                     if(clueIds.glywIDs.length != 0){
                         this.GLXSID = clueIds.glywIDs;
@@ -2706,7 +2795,16 @@
                         setTimeout(function(){
                             vm.$refs['relevanceEscapeeTable'].init();
                         }, 1); 
-                    };
+                    }else if(clueType == '0401'){
+						this.jwwd = false;
+						this.jnwd = true;
+					}else if(clueType == '0402'){
+						this.jwwd = true;
+						this.jnwd = false;
+					}else if(clueType == '0403'){
+						this.jwwd = true;
+						this.jnwd = true;
+					};
                     if(clueIds.fjIDs.length != 0){
                         let json = { ID:clueIds.fjIDs.join()};
                         this.searchData(json, 'com.awspaas.user.apps.clue.getRelevanceAttachment', function(response) {
@@ -2744,7 +2842,9 @@
                         })
                     }
                     this.uploadList = this.$refs.upload.fileList;
-					this.getCascaderDataAll('code_xshb_xslx_new',true);
+					this.getCascaderDataAll('code_xshb_xslx',true,'xslxDatas');
+					this.getCascaderDataAll('code_city',true,'jwwdDatas');
+					this.getCascaderDataAll('code_xzqh',true,'jnwdDatas');
 					setTimeout(() => {
 						this.$refs['clueType'].value=[xs.XSLXDM.substring(0,2),xs.XSLXDM];
 					}, 1);

@@ -333,4 +333,7 @@
 	<cmd-bean name="com.awspaas.user.apps.clue.getRelevanceAJByOther">
 		<param name="json"/>
 	</cmd-bean>
+	<cmd-bean name="com.awspaas.user.apps.clue.getxml">
+	</cmd-bean>
+
 </aws-actions>

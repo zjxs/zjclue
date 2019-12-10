@@ -6,6 +6,8 @@
 		<value>
 			<![CDATA[
         	select xs.*,
+        	(select string_agg(concat_ws(',',code_lev1,code_lev2,code_lev3,code),',' ) as xslxdm from code_xzqh where code=xs.JNWD) as JNWDArry,
+        	(select string_agg(concat_ws(',',code_lev1,code_lev2,code_lev3,code),',' ) as xslxdm from code_city where code=xs.JWWD) as JWWDArry,
         	(select count(0) from BO_EU_XSHB_GLYW g where xs.XSBH = g.GLYWBH and g.GLYWLXDM = '01' and g.XXSC_PDBZ='0') as GLXSS,
         	(select count(0) from BO_EU_XSHB_RW_GLXS g where xs.XSBH = g.XSBH and g.XXSC_PDBZ = '0' and (g.rwbh != '' or g.rwbh != null)) as GLRWS,
             (select string_agg(g.ID,',') from BO_EU_XSHB_GLYW g where xs.XSBH = g.GLYWBH and g.XXSC_PDBZ = '0' ) as GLYWID,
@@ -664,5 +666,6 @@
 				and roler.role_id = sr.role_id
 			]]></value>
 	</entry>
+
 
 </root>

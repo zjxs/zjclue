@@ -4,7 +4,7 @@
     <createUser>admin</createUser>
     <createTime>2018-12-28 15:42:19</createTime>
     <updateUser></updateUser>
-    <updateTime>2019-11-12 14:24:22</updateTime>
+    <updateTime>2019-11-12 14:24:28</updateTime>
     <signature>tGOmxiTgjT/77UoYpSlq8Vc+hHPRoJWHdZexXc7zEpYuMNdhvSICeJnlc/RzRHGrkTNffXlxtxDEJoDLuLGxPFzWhPtBWY0DRpLmVpVBSOxOxMcclvd9/Yid02T3ASPv</signature>
     <managed>false</managed>
     <title>线索</title>
@@ -810,8 +810,8 @@
             <nullable>true</nullable>
             <defaultValue></defaultValue>
             <columnWidth>100</columnWidth>
-            <componentId>AWSUI.Date</componentId>
-            <componentSetting>{}</componentSetting>
+            <componentId>AWSUI.DateTime</componentId>
+            <componentSetting>{"placeholder":"","minDate":"","maxDate":"","showtype":"doubleCalendar","advSetting":"","dateFmt":"yyyy-MM-dd HH:mm:ss","showDayOfWeek":"false","dwfmt":"(EE)"}</componentSetting>
             <display>true</display>
             <deleted>false</deleted>
             <modify>true</modify>

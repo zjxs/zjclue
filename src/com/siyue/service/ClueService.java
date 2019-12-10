@@ -4,13 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.UUID;
+import java.util.*;
 
 import org.apache.curator.shaded.com.google.common.collect.Maps;
 import org.apache.poi.ss.usermodel.Cell;
@@ -226,6 +220,13 @@ public class ClueService extends BaseService {
 		}
 
 		String xsbh = SequenceUtils.getSequenceVal("SEQ_BO_EU_XSHB_XS", "X", userContext.getUserModel().getDepartmentId(), "yyyymm", 23);
+        if(xsParamsMap.containsKey("HBXSBH")){
+			List<String> hbxsbh = Arrays.asList(StringUtils.nvlString(xsParamsMap.get("HBXSBH")));
+			String sql = "UPDATE BO_EU_XSGLJL SET XXSC_PDBZ='0',XSBH_NOW=? WHERE XSBH_NOW in ('"+StringUtils.join(hbxsbh,"','")+"')";
+			//TODO 更新线索编号和删除判断标识  HBXSBH   XXSC_PDBZ  BO_EU_XSGLJL
+			int bo_eu_xsgljl = DBSql.update(connection,sql, new String[]{xsbh});
+			System.out.println(bo_eu_xsgljl+">>>>>>>>>>>>>>>>>>>>>");
+		}
 		// 保存线索表
 		BO xsBO = new BO();
 		xsBO.setAll(xsParamsMap);
